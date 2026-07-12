@@ -1,0 +1,1702 @@
+/* =========================================================================
+ * style.css
+ * Poster PromptMaker
+ * -------------------------------------------------------------------------
+ * デザインの方針
+ *   「AIツール」ではなく「雑誌の誌面」に見せる。
+ *
+ *   - 明るい暖色のアイボリー地。発光やネオンは使わない。
+ *   - 色数は 2 つだけ（チャコール＝主役 / ローズトープ＝差し色）。
+ *     グラデーションは面ではなく“ごく薄い層”としてしか使わない。
+ *   - 見出しは明朝体。余白を広く、罫線は 1px のヘアラインで。
+ *   - 影は「浮かせる」ためではなく「紙を置いた」ことを示す程度に留める。
+ *
+ * 実装の方針
+ *   - 色・角丸・影・アニメ速度はすべて :root に集約。ここだけで着せ替えできる。
+ *   - フォントは OS 標準のみ。file:// でも欠けないようにする。
+ *   - BEM ゆるめの命名（block__element / block--modifier / is-state）。
+ * ========================================================================= */
+
+/* =========================================================================
+ * 1. デザイントークン
+ * ========================================================================= */
+
+:root {
+  /* --- 地の色：紙。わずかに赤みを含ませて冷たくしない ------------------ */
+  --paper: #f6f2ef;
+  --paper-deep: #ede6e1;
+  --surface: #fffdfc;
+  --surface-tint: #faf6f3;
+
+  /* --- 文字：真っ黒にせず、焦げ茶に寄せたチャコール -------------------- */
+  --ink: #2c2724;
+  --ink-soft: #6f6560;
+  --ink-faint: #a49892;
+
+  /* --- 差し色：ローズトープ（くすんだ赤み。甘くなりすぎない） ---------- */
+  --rose: #b08279;
+  --rose-deep: #8f635b;
+  --rose-mist: #ecdcd6;
+  --rose-veil: rgba(176, 130, 121, 0.09);
+
+  /* --- 罫線：線は必ず 1px。太らせない -------------------------------- */
+  --line: #e6ddd7;
+  --line-strong: #d3c6be;
+
+  /* --- 面：グラデーションはこの2つだけに閉じ込める -------------------- */
+  --wash-rose: linear-gradient(160deg, #e7d3cd, #cfb3ae);
+  --wash-ink: linear-gradient(160deg, #3a3330, #2c2724);
+
+  /* --- 角丸：小さめ。丸すぎると子供っぽくなる ------------------------ */
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+  --radius-pill: 999px;
+
+  /* --- 影：紙が机に落とす影の強さまで ------------------------------- */
+  --shadow-card: 0 1px 2px rgba(44, 39, 36, 0.03), 0 8px 24px rgba(44, 39, 36, 0.05);
+  --shadow-lift: 0 4px 16px rgba(44, 39, 36, 0.1);
+  --shadow-deep: 0 24px 60px rgba(44, 39, 36, 0.22);
+
+  /* --- 書体 ---------------------------------------------------------- */
+  /* 見出し用の明朝。日本語で一気に大人びる */
+  --font-serif: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", "Georgia", serif;
+  /* 本文用のゴシック */
+  --font-sans: "Yu Gothic", "Hiragino Sans", "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+
+  /* --- アニメーション：速く、短く。派手に跳ねさせない ---------------- */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --fast: 0.18s;
+  --slow: 0.42s;
+}
+
+/* =========================================================================
+ * 2. ベース
+ * ========================================================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * 背景の“にじみ”。前デザインのオーロラを、
+ * ほとんど気づかない程度の血色に落とす。動かさない。
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(60vw 50vh at 12% -10%, var(--rose-veil), transparent 70%),
+    radial-gradient(50vw 45vh at 100% 105%, rgba(176, 130, 121, 0.07), transparent 70%);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+:focus-visible {
+  outline: 1px solid var(--rose);
+  outline-offset: 3px;
+}
+
+/* =========================================================================
+ * 3. レイアウト
+ * ========================================================================= */
+
+.shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.column--output {
+  position: sticky;
+  top: 32px;
+}
+
+/* =========================================================================
+ * 4. ヘッダー
+ * ========================================================================= */
+
+.header {
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+
+.header__title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 14px;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 3.4vw, 40px);
+  font-weight: 400; /* 明朝は太らせない */
+  letter-spacing: 0.06em;
+}
+
+.header__logo {
+  font-size: 0.62em;
+  opacity: 0.55;
+}
+
+.header__sub {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+/* 「60秒」バッジ。塗らずに罫線だけで見せる */
+.header__badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 2px 11px;
+  border: 1px solid var(--rose);
+  border-radius: var(--radius-pill);
+  color: var(--rose-deep);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  vertical-align: 1px;
+}
+
+/* =========================================================================
+ * 5. タブ（PromptMaker シリーズ）
+ * -------------------------------------------------------------------------
+ * ピル型をやめ、下線で選択を示す。誌面の目次のように。
+ * ========================================================================= */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 36px;
+  padding-bottom: 2px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 18px;
+  color: var(--ink-faint);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  transition: color var(--fast) var(--ease);
+}
+
+/* 下線は擬似要素で。幅0→100% に伸ばす */
+.tab::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  bottom: -1px;
+  left: 18px;
+  height: 1px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transition: transform var(--slow) var(--ease);
+}
+
+.tab:hover:not(.is-disabled) {
+  color: var(--ink);
+}
+
+.tab.is-active {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.tab.is-active::after {
+  transform: scaleX(1);
+}
+
+.tab.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.32;
+}
+
+.tab-icon {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.tab-badge {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+/* =========================================================================
+ * 6. カード
+ * ========================================================================= */
+
+.card {
+  margin-bottom: 24px;
+  padding: 30px 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.card__title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 6px;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+/* 見出しの絵文字は主張させない */
+.card__title > span:first-child {
+  font-size: 13px;
+  opacity: 0.5;
+}
+
+.card__desc {
+  margin-bottom: 22px;
+  color: var(--ink-faint);
+  font-size: 11.5px;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+}
+
+/* 保存プリセット読込時の合図。光らせず、縁を一度だけ差す */
+.is-flash {
+  animation: flash var(--slow) var(--ease) 2;
+}
+
+@keyframes flash {
+  50% {
+    border-color: var(--rose);
+  }
+}
+
+/* =========================================================================
+ * 7. プリセット
+ * ========================================================================= */
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* --- 内蔵プリセット：サムネイル付きカードのグリッド ------------------- */
+
+#presets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(116px, 1fr));
+  gap: 14px;
+}
+
+.preset-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: transparent;
+  transition: transform var(--slow) var(--ease);
+}
+
+.preset-card:hover {
+  transform: translateY(-2px);
+}
+
+/* サムネイル領域：画像の有無にかかわらず 4:3 を保つ */
+.preset-card__thumb {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-tint);
+  transition: border-color var(--fast) var(--ease), box-shadow var(--slow) var(--ease);
+}
+
+.preset-card:hover .preset-card__thumb {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-lift);
+}
+
+/* 画像が読めなかったときの土台。くすんだ薔薇のウォッシュ */
+.preset-card__fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--wash-rose);
+}
+
+/*
+ * プレースホルダが14枚並ぶと単調なので、3種のウォッシュを巡回させる。
+ * どれも彩度を落とした同系色なので、混ざっても散らからない。
+ * （画像を置いたカードでは覆い隠されるため見えなくなる）
+ */
+.preset-card:nth-child(3n + 2) .preset-card__fallback {
+  background: linear-gradient(160deg, #e2dbd3, #c6bab0); /* グレージュ */
+}
+
+.preset-card:nth-child(3n + 3) .preset-card__fallback {
+  background: linear-gradient(160deg, #ded3d8, #bda9b3); /* モーヴ */
+}
+
+.preset-card__emoji {
+  font-size: 26px;
+  opacity: 0.75;
+  filter: saturate(0.55);
+}
+
+.preset-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--slow) var(--ease), transform 0.6s var(--ease);
+}
+
+.preset-card__thumb.has-image .preset-card__img {
+  opacity: 1;
+}
+
+.preset-card:hover .preset-card__thumb.has-image .preset-card__img {
+  transform: scale(1.04);
+}
+
+/* 拡大ボタン。画像が読めたときだけ hidden が外れる */
+.preset-card__zoom {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 253, 252, 0.9);
+  box-shadow: var(--shadow-lift);
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+
+.preset-card:hover .preset-card__zoom,
+.preset-card__zoom:focus-visible {
+  opacity: 1;
+}
+
+.preset-card__zoom:hover {
+  background: var(--surface);
+}
+
+/* カード本体＝プリセット適用ボタン */
+.preset-card__apply {
+  display: block;
+  width: 100%;
+  padding: 10px 4px 2px;
+  text-align: center;
+}
+
+.preset-card__name {
+  color: var(--ink-soft);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  transition: color var(--fast) var(--ease);
+}
+
+.preset-card:hover .preset-card__name {
+  color: var(--ink);
+}
+
+/* --- 保存プリセット：ピル型のまま ------------------------------------- */
+
+.preset {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  transition: all var(--fast) var(--ease);
+}
+
+.preset:hover {
+  border-color: var(--rose);
+  color: var(--ink);
+}
+
+.preset-icon {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.preset--user {
+  padding: 0 4px 0 0;
+  overflow: hidden;
+}
+
+.preset-load {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 8px 8px 15px;
+  border-radius: var(--radius-pill);
+  font-size: 12.5px;
+}
+
+.preset-load:hover {
+  color: var(--rose-deep);
+}
+
+.preset-delete {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: var(--ink-faint);
+  font-size: 14px;
+  line-height: 1;
+  transition: all var(--fast) var(--ease);
+}
+
+.preset-delete:hover {
+  background: var(--rose-mist);
+  color: var(--rose-deep);
+}
+
+/* =========================================================================
+ * 8. フィールド
+ * ========================================================================= */
+
+.field + .field {
+  margin-top: 26px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.field-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 13px;
+}
+
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.field-icon {
+  font-size: 11px;
+  opacity: 0.45;
+}
+
+.field-hint {
+  color: var(--ink-faint);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  letter-spacing: 0.03em;
+  transition: all var(--fast) var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--line-strong);
+  background: var(--surface-tint);
+  color: var(--ink);
+}
+
+/* 選択中はチャコールで塗りつぶす。差し色は使わず、黒で決める */
+.chip.is-active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.custom-input,
+.textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-tint);
+  font-size: 12.5px;
+  transition: all var(--fast) var(--ease);
+}
+
+.textarea {
+  margin-top: 0;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.custom-input::placeholder,
+.textarea::placeholder {
+  color: var(--ink-faint);
+}
+
+.custom-input:focus,
+.textarea:focus {
+  border-color: var(--rose);
+  background: var(--surface);
+  outline: none;
+}
+
+/* =========================================================================
+ * 9. 詳細設定（折りたたみ）
+ * ========================================================================= */
+
+.advanced {
+  margin-bottom: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.advanced__summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 24px 28px;
+  cursor: pointer;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  list-style: none;
+  user-select: none;
+}
+
+.advanced__summary::-webkit-details-marker {
+  display: none;
+}
+
+.advanced__summary > span:first-child {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.advanced__arrow {
+  margin-left: auto;
+  color: var(--ink-faint);
+  font-size: 9px;
+  transition: transform var(--slow) var(--ease);
+}
+
+.advanced[open] .advanced__arrow {
+  transform: rotate(180deg);
+}
+
+.advanced__body {
+  padding: 4px 28px 28px;
+  border-top: 1px solid var(--line);
+  animation: slideDown var(--slow) var(--ease);
+}
+
+/* 開いた直後は最初の .field の上罫線が二重になるので消す */
+.advanced__body > .field:first-child {
+  margin-top: 22px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* =========================================================================
+ * 9b. 掲載情報の折りたたみ（文言カード内のサブ折りたたみ）
+ * -------------------------------------------------------------------------
+ * 「最短の道」を邪魔しないよう、既定は畳んでおく。開くと転記欄が現れる。
+ * ========================================================================= */
+
+.subfold {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.subfold__summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 16px 2px 0;
+  cursor: pointer;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  list-style: none;
+  user-select: none;
+  transition: color var(--fast) var(--ease);
+}
+
+.subfold__summary::-webkit-details-marker {
+  display: none;
+}
+
+.subfold__summary:hover {
+  color: var(--ink);
+}
+
+.subfold__summary > span:first-child {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.subfold__arrow {
+  margin-left: auto;
+  color: var(--ink-faint);
+  font-size: 8px;
+  transition: transform var(--slow) var(--ease);
+}
+
+.subfold[open] .subfold__arrow {
+  transform: rotate(180deg);
+}
+
+.subfold__desc {
+  margin: 12px 0 4px;
+  color: var(--ink-faint);
+  font-size: 10.5px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+}
+
+.subfold__body {
+  animation: slideDown var(--slow) var(--ease);
+}
+
+/* 転記欄は数が多いので詰めて並べる。1行入力はコンパクトに */
+.subfold__body > .field + .field {
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.subfold__body .textarea {
+  margin-top: 8px;
+}
+
+/* =========================================================================
+ * 10. 仕上がり例
+ * ========================================================================= */
+
+.sample {
+  margin-bottom: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-tint);
+  animation: slideDown var(--slow) var(--ease);
+}
+
+.sample[hidden] {
+  display: none;
+}
+
+.sample__img {
+  display: block;
+  width: 100%;
+  max-height: 230px;
+  cursor: zoom-in;
+  object-fit: cover;
+}
+
+.sample__caption {
+  padding: 9px 12px;
+  color: var(--ink-faint);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+/* =========================================================================
+ * 11. 出力パネル
+ * ========================================================================= */
+
+.output-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.output-count {
+  color: var(--ink-faint);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.output {
+  max-height: min(50vh, 540px);
+  padding: 24px 22px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-tint);
+  /* 等幅は硬いので、本文と同じゴシックを字間広めで組む */
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  line-height: 2;
+  letter-spacing: 0.04em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.output::-webkit-scrollbar {
+  width: 6px;
+}
+
+.output::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-pill);
+  background: var(--line-strong);
+}
+
+/* =========================================================================
+ * 12. アクションボタン
+ * ========================================================================= */
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  transition: all var(--fast) var(--ease);
+}
+
+.btn:hover {
+  border-color: var(--line-strong);
+  background: var(--surface-tint);
+  color: var(--ink);
+}
+
+.btn:active {
+  transform: scale(0.99);
+}
+
+/* ボタン内の絵文字は控えめに */
+.btn > span:first-child {
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+/* 主要アクション：唯一の塗りつぶし。インクの黒で置く */
+.btn--primary {
+  grid-column: 1 / -1;
+  padding: 16px;
+  border-color: var(--ink);
+  background: var(--wash-ink);
+  color: var(--paper);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.btn--primary:hover {
+  border-color: var(--rose-deep);
+  background: var(--rose-deep);
+  color: var(--paper);
+}
+
+.btn--primary > span:first-child {
+  opacity: 0.7;
+}
+
+/* おまかせ / ランダム：ホバーで差し色をにじませる */
+.btn--accent:hover {
+  border-color: var(--rose);
+  background: var(--rose-veil);
+  color: var(--rose-deep);
+}
+
+/* =========================================================================
+ * 13. プリセット詳細モーダル
+ * ========================================================================= */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: rgba(44, 39, 36, 0.78);
+  animation: fadeIn var(--fast) var(--ease);
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+/* 見本（左）＋説明（右）の2枚組。狭い画面では縦積み */
+.modal__panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 0;
+  width: min(860px, 100%);
+  max-height: 86vh;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-deep);
+  animation: slideDown var(--slow) var(--ease);
+}
+
+.modal__media {
+  margin: 0;
+  background: var(--surface-tint);
+}
+
+.modal__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 86vh;
+  object-fit: cover;
+}
+
+.modal__caption {
+  display: none; /* 画像内に説明があるので通常は隠す。SR向けに残す */
+}
+
+.modal__body {
+  padding: 32px 30px;
+  overflow-y: auto;
+}
+
+.modal__title {
+  margin-bottom: 10px;
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.modal__desc {
+  margin-bottom: 22px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.modal__block {
+  margin-bottom: 20px;
+}
+
+.modal__block[hidden] {
+  display: none;
+}
+
+.modal__h4 {
+  margin-bottom: 10px;
+  color: var(--ink-faint);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.modal__uses {
+  list-style: none;
+}
+
+.modal__uses li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  letter-spacing: 0.03em;
+}
+
+.modal__uses li::before {
+  content: "";
+  position: absolute;
+  top: 0.65em;
+  left: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--rose);
+}
+
+.modal__specs {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  font-size: 12.5px;
+}
+
+.modal__specs dt {
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.modal__specs dd {
+  color: var(--ink);
+  word-break: break-word;
+}
+
+.modal__actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 26px;
+}
+
+.modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 253, 252, 0.92);
+  box-shadow: var(--shadow-lift);
+  color: var(--ink);
+  font-size: 13px;
+  transition: transform var(--slow) var(--ease);
+}
+
+.modal__close:hover {
+  transform: rotate(90deg);
+}
+
+@media (max-width: 680px) {
+  .modal {
+    padding: 16px;
+  }
+
+  .modal__panel {
+    grid-template-columns: 1fr;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal__img {
+    max-height: 38vh;
+  }
+}
+
+/* =========================================================================
+ * 14. トースト
+ * ========================================================================= */
+
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  z-index: 300;
+  padding: 13px 26px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  box-shadow: var(--shadow-deep);
+  color: var(--paper);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  transition: all var(--slow) var(--ease);
+  pointer-events: none;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* =========================================================================
+ * 15. レスポンシブ
+ * ========================================================================= */
+
+@media (max-width: 960px) {
+  .shell {
+    padding: 36px 18px 56px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* 1カラムでは sticky を解除しないと出力が画面を占有する */
+  .column--output {
+    position: static;
+  }
+
+  .header {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+  }
+
+  .card {
+    padding: 24px 20px;
+  }
+
+  .advanced__summary {
+    padding: 20px;
+  }
+
+  .advanced__body {
+    padding: 4px 20px 20px;
+  }
+
+  .output {
+    max-height: 42vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #presets {
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 10px;
+  }
+}
+
+/* =========================================================================
+ * 16. ヘッダーのガイド導線
+ * ========================================================================= */
+
+.header__links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.header__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 215px;
+  padding: 10px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  text-align: left;
+  text-decoration: none;
+  transition: all var(--fast) var(--ease);
+}
+
+.header__action-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.header__action b,
+.header__action small {
+  display: block;
+}
+
+.header__action b {
+  color: var(--ink);
+  font-size: 12px;
+  letter-spacing: 0.07em;
+}
+
+.header__action small {
+  margin-top: 2px;
+  color: var(--ink-faint);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+}
+
+.header__action--primary {
+  border-color: var(--rose);
+  background: var(--rose-veil);
+}
+
+.header__action:hover {
+  transform: translateY(-2px);
+  border-color: var(--rose);
+  background: var(--rose-veil);
+  box-shadow: 0 8px 20px rgba(114, 79, 76, 0.08);
+}
+
+@media (max-width: 560px) {
+  .header__links {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header__action {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* =========================================================================
+ * 17. 使い方ガイド（tutorial.html）
+ * ========================================================================= */
+
+.shell--guide {
+  max-width: 860px;
+}
+
+/* 戻る導線 */
+.guide-back {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: color var(--fast) var(--ease);
+}
+
+.guide-back:hover {
+  color: var(--rose-deep);
+}
+
+.guide-lead {
+  font-size: 14px;
+  line-height: 1.95;
+  letter-spacing: 0.02em;
+}
+
+.guide-note {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-left: 2px solid var(--line-strong);
+  background: var(--surface-tint);
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.85;
+}
+
+.guide-tip {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border: 1px solid var(--rose-mist);
+  background: var(--rose-veil);
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+  line-height: 1.85;
+}
+
+/* ステップ（最短の道） */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 8px 0 4px;
+  list-style: none;
+}
+
+.step {
+  padding: 22px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-tint);
+}
+
+.step__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  background: var(--wash-ink);
+  color: var(--paper);
+  font-family: var(--font-serif);
+  font-size: 15px;
+}
+
+.step__title {
+  margin-bottom: 8px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.step__text {
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.85;
+}
+
+/* こだわる道のブロック */
+.guide-block + .guide-block {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.guide-h3 {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.guide-text {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  line-height: 1.9;
+}
+
+/* 早見表 */
+.guide-table-wrap {
+  overflow-x: auto;
+}
+
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.guide-table th,
+.guide-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  letter-spacing: 0.02em;
+}
+
+.guide-table th {
+  color: var(--ink-faint);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.guide-table td:last-child {
+  color: var(--rose-deep);
+  white-space: nowrap;
+}
+
+.guide-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* 手順リスト */
+.guide-ol {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  line-height: 1.95;
+}
+
+.guide-ol li {
+  margin-bottom: 8px;
+}
+
+.guide-ol code,
+.guide-text code {
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--paper-deep);
+  font-family: "Consolas", "Menlo", monospace;
+  font-size: 11.5px;
+}
+
+/* 下部の戻る */
+.guide-foot {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.guide-foot .btn--primary {
+  display: inline-flex;
+  width: auto;
+  padding: 16px 40px;
+}
+
+@media (max-width: 680px) {
+  .steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================================
+ * 18. 見取り図（積み木ワイヤーフレーム）
+ * -------------------------------------------------------------------------
+ * LPの形をCSSだけで積み木状に見せる。画像不要・コスト0。
+ * 紙の誌面トーンに合わせ、発光は使わずヘアラインと2色で組む。
+ * ========================================================================= */
+
+.wf-wrap {
+  margin-bottom: 18px;
+}
+
+.wf-wrap__label {
+  margin-bottom: 8px;
+  color: var(--ink-faint);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+.wf {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-tint);
+}
+
+.wf__block {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 34px;
+  padding: 8px 14px 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--fast) var(--ease), transform var(--fast) var(--ease);
+  animation: slideDown var(--slow) var(--ease);
+}
+
+.wf__block:hover {
+  border-color: var(--line-strong);
+  transform: translateX(2px);
+}
+
+.wf__block.is-active {
+  border-color: var(--rose);
+}
+
+.wf__no {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--rose-mist);
+  color: var(--rose-deep);
+  font-size: 9px;
+  letter-spacing: 0;
+}
+
+.wf__label {
+  color: var(--ink-soft);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+}
+
+/* ファーストビュー：主役。ローズのウォッシュで大きく */
+.wf__block--hero {
+  min-height: 62px;
+  border-color: transparent;
+  background: var(--wash-rose);
+}
+
+.wf__block--hero .wf__label {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+/* CTA：唯一の塗り。インクで締める */
+.wf__block--cta {
+  min-height: 46px;
+  justify-content: center;
+  border-color: transparent;
+  background: var(--wash-ink);
+}
+
+.wf__block--cta .wf__label {
+  color: var(--paper);
+  font-weight: 600;
+}
+
+.wf__block--cta .wf__no {
+  background: rgba(255, 253, 252, 0.22);
+  color: var(--paper);
+}
+
+/* カード並び（メニュー・実績・機能）：右にミニカードの気配 */
+.wf__block--cards {
+  padding-right: 74px;
+}
+
+.wf__block--cards::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 58px;
+  height: 16px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--line-strong) 0 30%,
+    transparent 30% 38%,
+    var(--line-strong) 38% 68%,
+    transparent 68% 76%,
+    var(--line-strong) 76% 100%
+  );
+  opacity: 0.55;
+}
+
+/* ギャラリー：写真の帯の気配 */
+.wf__block--gallery {
+  padding-right: 74px;
+}
+
+.wf__block--gallery::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 58px;
+  height: 18px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg, var(--rose-mist) 0 14px, var(--surface) 14px 18px);
+}
+
+/* =========================================================================
+ * 19. ステップ②：画像スロット
+ * ========================================================================= */
+
+.imgslot {
+  display: grid;
+  grid-template-columns: 1fr auto 74px;
+  gap: 12px;
+  align-items: center;
+  padding: 13px 2px;
+  border-bottom: 1px solid var(--line);
+}
+
+.imgslot:last-child {
+  border-bottom: none;
+}
+
+.imgslot__head {
+  min-width: 0;
+}
+
+.imgslot__label {
+  display: block;
+  font-size: 12.5px;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+}
+
+.imgslot__ratio {
+  display: inline-block;
+  margin-top: 3px;
+  color: var(--rose-deep);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  border: 1px solid var(--rose-mist);
+  border-radius: var(--radius-pill);
+  padding: 1px 9px;
+}
+
+.imgslot__acts {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.imgslot__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all var(--fast) var(--ease);
+  white-space: nowrap;
+}
+
+.imgslot__btn:hover {
+  border-color: var(--rose);
+  color: var(--rose-deep);
+  background: var(--rose-veil);
+}
+
+.imgslot__thumb {
+  position: relative;
+  width: 74px;
+  height: 54px;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-tint);
+  overflow: hidden;
+}
+
+.imgslot__thumb.has {
+  border-style: solid;
+  border-color: var(--rose);
+}
+
+.imgslot__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imgslot__rm {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 253, 252, 0.92);
+  color: var(--rose-deep);
+  font-size: 12px;
+  line-height: 1;
+  box-shadow: var(--shadow-lift);
+}
+
+.imgcard-foot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+@media (max-width: 560px) {
+  .imgslot {
+    grid-template-columns: 1fr 74px;
+  }
+  .imgslot__acts {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+
+/* 見取り図クリックで、設計図側の該当箇所に差すしるし */
+.output-mark {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--rose-mist);
+  color: var(--ink);
+  animation: flash var(--slow) var(--ease) 2;
+}

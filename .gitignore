@@ -1,0 +1,12 @@
+# Temporary generation workspace
+samples2/
+
+# Source duplicates and exported archives inside finished samples
+samples/**/source/
+samples/**/archive/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp

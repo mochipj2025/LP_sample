@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>使い方ガイド ― LP StructureMaker</title>
+    <meta name="description" content="LP StructureMaker の使い方。3つ選ぶだけの最短の道から、そのままAIでLPを作る方法まで。" />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <div class="shell shell--guide">
+      <!-- 戻る導線 -->
+      <a class="guide-back" href="index.html">← ツールに戻る</a>
+
+      <!-- ============================================================
+           ヘッダー
+           ============================================================ -->
+      <header class="header">
+        <h1 class="header__title">
+          <span class="header__logo">📖</span>
+          <span>使い方ガイド</span>
+        </h1>
+        <p class="header__sub">
+          LP StructureMaker ― 3つ選ぶだけで、LPの「構成の設計図」が完成します。
+          <span class="header__badge">無料 / 60秒</span>
+        </p>
+      </header>
+
+      <!-- ============================================================
+           これは何のツール？
+           ============================================================ -->
+      <div class="card">
+        <h2 class="card__title"><span>✨</span><span>これは何のツール？</span></h2>
+        <p class="guide-lead">
+          「LPって、何をどの順番で書けばいいの？」に答えるツールです。
+          <b>業種・読み手・ゴール</b>の3つを選ぶだけで、あなたのLPに合った
+          <b>構成（骨組み）の設計図</b>が完成。右側の<b>見取り図</b>で、LPの形が目でわかります。
+        </p>
+        <p class="guide-note">
+          このツール自体はAIを使いません（＝<b>設計図の自動販売機</b>です）。だから何回使っても無料。
+          できあがった文章を ChatGPT や Claude に貼ると、原稿やLPそのものに変わります。
+        </p>
+      </div>
+
+      <!-- ============================================================
+           最短の道（60秒）
+           ============================================================ -->
+      <div class="card">
+        <h2 class="card__title"><span>⚡</span><span>最短の道：3ステップ（約60秒）</span></h2>
+        <p class="card__desc">迷ったらこれだけ。プリセットを押すだけで完成＆コピーまで終わります。</p>
+
+        <ol class="steps">
+          <li class="step">
+            <span class="step__num">1</span>
+            <h3 class="step__title">プリセットを選ぶ</h3>
+            <p class="step__text">
+              左上から、自分の商売に近いものを1つクリック。
+              業種・読み手・ゴール・トーンが一瞬で埋まり、設計図が<b>自動でコピー</b>されます。
+            </p>
+          </li>
+          <li class="step">
+            <span class="step__num">2</span>
+            <h3 class="step__title">見取り図で確認</h3>
+            <p class="step__text">
+              右側にLPの形が積み木で表示されます。ブロックを<b>クリック</b>すると、
+              設計図の「そのセクションに何を書くか」がハイライトされます。
+            </p>
+          </li>
+          <li class="step">
+            <span class="step__num">3</span>
+            <h3 class="step__title">AIに貼る</h3>
+            <p class="step__text">
+              ChatGPT か Claude を開いて貼り付け、送信。
+              「この構成でLPの原稿を書いて」と一言添えれば、原稿まで書いてくれます。
+            </p>
+          </li>
+        </ol>
+
+        <p class="guide-tip">
+          💡 迷ったら<b>「おまかせ」</b>ボタン。相性の良い組み合わせが1つ出ます。
+          業種・読み手・ゴールを選び直すと、見取り図と設計図が<b>その場で組み変わります</b>。
+        </p>
+      </div>
+
+      <!-- ============================================================
+           出力タイプ：設計図とLP制作プロンプト
+           ============================================================ -->
+      <div class="card">
+        <h2 class="card__title"><span>📤</span><span>出力タイプ：2つの使い方</span></h2>
+        <p class="card__desc">基本設定のいちばん下「出力タイプ」で切り替えます。</p>
+
+        <div class="guide-block">
+          <h3 class="guide-h3">🧱 構成の設計図（まず考えたい人）</h3>
+          <p class="guide-text">
+            LPに載せるセクションの順番と、各セクションに「何を書くか」のガイド。
+            自分で文章を書く指針にもなるし、AIに渡して原稿を書いてもらう土台にもなります。
+          </p>
+        </div>
+
+        <div class="guide-block">
+          <h3 class="guide-h3">🚀 LP制作プロンプト（そのまま作りたい人）</h3>
+          <p class="guide-text">
+            AIに<b>LPそのもの（動くWebページ）</b>を作らせる指示文です。
+            Claude / ChatGPT / v0 に貼ると、<b>その場でLPのプレビューが表示</b>されるよう指示済み。
+            コードがわからなくても、貼るだけで「動くLP」が目の前に出てきます。
+          </p>
+        </div>
+
+        <div class="guide-block">
+          <h3 class="guide-h3">🖼️ 必要な画像プロンプト集（画像を用意する人）</h3>
+          <p class="guide-text">
+            LPができたら、次は画像。この出力に切り替えると、<b>このLPに必要な画像の一覧</b>（メインビジュアル・メニュー写真・雰囲気カットなど）と、
+            <b>1枚ずつコピーして使える生成プロンプト</b>が出ます。業種に合ったテイストが固定済みなので、
+            全部同じスタイル指定で作れば世界観が揃います。
+          </p>
+        </div>
+
+        <p class="guide-note">
+          おすすめの流れ：まず「構成の設計図」で骨組みに納得 → 「LP制作プロンプト」に切り替えてコピー → AIへ。
+          切り替えても選択内容はそのまま引き継がれます。
+        </p>
+      </div>
+
+      <!-- ============================================================
+           こだわる道
+           ============================================================ -->
+      <div class="card">
+        <h2 class="card__title"><span>🔧</span><span>こだわる道：作り込みたい人へ</span></h2>
+        <p class="card__desc">最短の道はそのままに、必要な人だけ下の要素を足していけます。</p>
+
+        <div class="guide-block">
+          <h3 class="guide-h3">🏷️ 掲載情報を入れる（店名・価格・日時など）</h3>
+          <p class="guide-text">
+            折りたたみを開いて店名・価格・日時・場所・特徴を入れると、設計図と制作プロンプトに
+            <b>「この情報を正確に載せる」</b>指定が入ります。
+            空欄のままなら「<b>【店名】のように仮置きして、架空の実績を作らない</b>」という安全指示が自動で入るので、
+            AIが勝手に嘘の情報を作る事故を防げます。
+          </p>
+        </div>
+
+        <div class="guide-block">
+          <h3 class="guide-h3">👤 読み手で構成が変わる</h3>
+          <p class="guide-text">
+            「まだ知らない人」なら共感とベネフィットが厚く、「迷っている人」なら実績とFAQが厚く、
+            「あと一押しの人」なら料金と流れが前に、「常連さん」なら<b>お知らせ・特典</b>が最初に来ます。
+            読み手を選び直して、見取り図の変化を見てみてください。
+          </p>
+        </div>
+
+        <div class="guide-block">
+          <h3 class="guide-h3">🖼️ 画像は姉妹ツールで（Visual PromptMaker 連携）</h3>
+          <p class="guide-text">
+            設計図には、業種に合った<b>写真のテイスト</b>（例：飲食なら“シズル感のある料理写真”）が書かれています。
+            そのテイストのまま <b>Visual PromptMaker</b> の Graphic タブで画像プロンプトを作れば、
+            LP全体の世界観が揃います。
+          </p>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           業種の早見表
+           ============================================================ -->
+      <div class="card">
+        <h2 class="card__title"><span>🏪</span><span>業種で構成はこう変わる（早見表）</span></h2>
+        <p class="card__desc">「悩み解決」の型を全業種に当てはめない、が このツールの考え方です。</p>
+
+        <div class="guide-table-wrap">
+          <table class="guide-table">
+            <thead>
+              <tr><th>業種</th><th>構成の主役</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>飲食店・カフェ・バー</td><td>コンセプト → 看板メニュー → 雰囲気</td></tr>
+              <tr><td>サロン・整体・クリニック</td><td>共感（悩み）→ 選ばれる理由 → 実績</td></tr>
+              <tr><td>SaaS・アプリ</td><td>課題 → 機能 → 料金プラン</td></tr>
+              <tr><td>EC・物販</td><td>ベネフィット → こだわり → レビュー</td></tr>
+              <tr><td>セミナー・講座</td><td>得られる未来 → カリキュラム → 講師</td></tr>
+              <tr><td>コーポレート・個人</td><td>提案の核 → 強み → 実績</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           見本画像の足し方（管理者向け）
+           ============================================================ -->
+      <div class="card">
+        <h2 class="card__title"><span>🖼️</span><span>プリセットの見本画像を足す（管理者向け）</span></h2>
+        <p class="guide-text">
+          見本画像が無いプリセットは絵文字で表示されます。画像を足すには：
+        </p>
+        <ol class="guide-ol">
+          <li>Visual PromptMaker などでLPの完成イメージ画像を作る。</li>
+          <li><b>長辺720px・jpg</b>（150KB以下が目安）に整え、
+            <code>assets/presets/lp/&lt;プリセットID&gt;.jpg</code>（例 <code>resto.jpg</code>）で保存。</li>
+          <li>ツールを開き直すと、サムネイル・拡大・仕上がり例に自動で反映されます（コード変更は不要）。</li>
+        </ol>
+      </div>
+
+      <!-- 戻る導線（下） -->
+      <div class="guide-foot">
+        <a class="btn btn--primary" href="index.html"><span>🧱</span><span>ツールを使ってみる</span></a>
+      </div>
+    </div>
+  </body>
+</html>

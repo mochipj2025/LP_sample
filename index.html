@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LP StructureMaker ― 3つ選ぶだけでLPの構成ができる</title>
+    <meta name="description" content="業種・読み手・ゴールを選ぶだけで、LPの構成（骨組み）の設計図が完成。そのままAIに貼れば原稿もサイトも作れます。" />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧱</text></svg>"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <div class="shell">
+      <!-- ヘッダー -->
+      <header class="header">
+        <h1 class="header__title">
+          <span class="header__logo">🧱</span>
+          <span>LP StructureMaker</span>
+        </h1>
+        <p class="header__sub">
+          3つ選ぶだけ。LPの「構成の設計図」が完成し、そのままAIに貼れば原稿もサイトも作れます。
+          <span class="header__badge">無料 / 60秒</span>
+        </p>
+        <div class="header__links" aria-label="案内メニュー">
+          <a class="header__action header__action--primary" href="tutorial.html" target="_blank" rel="noopener">
+            <span class="header__action-icon">📖</span>
+            <span><b>はじめての方へ</b><small>使い方を3分で確認</small></span>
+          </a>
+          <a class="header__action" href="samples/index.html">
+            <span class="header__action-icon">✨</span>
+            <span><b>完成サンプルを見る</b><small>実際に作ったLPを確認</small></span>
+          </a>
+        </div>
+      </header>
+
+      <!-- タブ（PromptMaker シリーズ。app.js が自動生成） -->
+      <nav class="tabs" id="tabs" aria-label="PromptMaker シリーズ"></nav>
+
+      <!-- 本体：左「設定」／右「見取り図＋設計図」 -->
+      <main class="layout">
+        <!-- 左：設定 -->
+        <section class="column column--form" id="form">
+          <!-- プリセット -->
+          <div class="card">
+            <h2 class="card__title"><span>⚡</span><span>プリセット</span></h2>
+            <p class="card__desc">
+              迷ったらここから。1クリックで全項目が埋まり、設計図がコピーされます。
+            </p>
+            <div class="presets" id="presets"></div>
+          </div>
+
+          <!-- 保存済みプリセット（0件のとき hidden） -->
+          <div class="card" id="userPresetSection" hidden>
+            <h2 class="card__title"><span>⭐</span><span>保存した設定</span></h2>
+            <p class="card__desc">このブラウザに保存されています。</p>
+            <div class="presets" id="userPresets"></div>
+          </div>
+
+          <!-- ステップ①：基本設定 -->
+          <div class="card">
+            <h2 class="card__title"><span>①</span><span>基本設定</span></h2>
+            <p class="card__desc">3つ選ぶだけ。右の見取り図と出力がリアルタイムで変わります。</p>
+            <div id="basicFields"></div>
+          </div>
+
+          <!-- ステップ②：画像を用意する（template が imageSlots を持つときだけ表示） -->
+          <div class="card" id="imageCard" hidden>
+            <h2 class="card__title"><span>②</span><span>画像を用意する（任意）</span></h2>
+            <p class="card__desc">
+              各スロットの「📋 プロンプト」をコピー → 画像生成AI（Image 2.0 / Midjourney など）で作成 →
+              できた画像を「🖼 画像を選ぶ」でセット。セットした画像は下の「画像を書き出す」でまとめて保存でき、
+              ③のコード指示書に<b>自動で組み込まれます</b>。
+            </p>
+            <div id="imageSlots"></div>
+            <div class="imgcard-foot">
+              <button class="btn" id="imageZip" type="button"><span>🗂</span><span>画像を書き出す（zip）</span></button>
+              <span class="note" id="imageCount"></span>
+            </div>
+            <p class="note" style="margin-top:12px">
+              書き出した zip を展開すると <b>images</b> フォルダができます。③でAIが作った index.html を、その images フォルダと同じ場所に保存すれば完成です。
+            </p>
+          </div>
+
+          <!-- 掲載情報（折りたたみ） -->
+          <details class="advanced">
+            <summary class="advanced__summary">
+              <span>🏷️</span>
+              <span>掲載情報を入れる（店名・価格・日時など・任意）</span>
+              <span class="advanced__arrow">▼</span>
+            </summary>
+            <div class="advanced__body" id="infoFields"></div>
+          </details>
+
+          <!-- 詳細設定（折りたたみ） -->
+          <details class="advanced">
+            <summary class="advanced__summary">
+              <span>🔧</span>
+              <span>詳細設定</span>
+              <span class="advanced__arrow">▼</span>
+            </summary>
+            <div class="advanced__body" id="advancedFields"></div>
+          </details>
+        </section>
+
+        <!-- 右：見取り図＋設計図 -->
+        <section class="column column--output">
+          <div class="card">
+            <div class="output-head">
+              <h2 class="card__title"><span>③</span><span>完成した出力（コピーしてAIへ）</span></h2>
+              <span class="output-count" id="charCount">0 文字</span>
+            </div>
+
+            <!-- 仕上がり例（プリセット適用中＆画像があるときだけ表示） -->
+            <figure class="sample" id="sample" hidden>
+              <img class="sample__img" id="sampleImage" alt="" />
+              <figcaption class="sample__caption" id="sampleCaption"></figcaption>
+            </figure>
+
+            <!-- 見取り図（積み木ワイヤーフレーム。CSSだけ・画像不要） -->
+            <div class="wf-wrap">
+              <div class="wf-wrap__label">見取り図（このLPの形）</div>
+              <div class="wf" id="wireframe"></div>
+            </div>
+
+            <!-- そのまま ChatGPT / Claude に貼れる本文 -->
+            <pre class="output" id="output"></pre>
+
+            <div class="actions">
+              <button class="btn btn--primary" id="btnCopy" type="button">
+                <span>📋</span><span>コピーする</span>
+              </button>
+              <button class="btn btn--accent" id="btnOmakase" type="button">
+                <span>🎁</span><span>おまかせ</span>
+              </button>
+              <button class="btn btn--accent" id="btnRandom" type="button">
+                <span>🎲</span><span>ランダム</span>
+              </button>
+              <button class="btn" id="btnReset" type="button">
+                <span>↺</span><span>リセット</span>
+              </button>
+              <button class="btn" id="btnSave" type="button">
+                <span>💾</span><span>設定を保存</span>
+              </button>
+              <button class="btn" id="btnLoad" type="button">
+                <span>📂</span><span>設定を読込</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- プリセット詳細モーダル -->
+    <div class="modal" id="detail" role="dialog" aria-modal="true" aria-labelledby="detailTitle" hidden>
+      <div class="modal__panel">
+        <button class="modal__close" id="detailClose" type="button" aria-label="閉じる">✕</button>
+        <figure class="modal__media">
+          <img class="modal__img" id="detailImage" alt="" />
+          <figcaption class="modal__caption">仕上がり例</figcaption>
+        </figure>
+        <div class="modal__body">
+          <h3 class="modal__title" id="detailTitle"></h3>
+          <p class="modal__desc" id="detailDesc"></p>
+          <div class="modal__block" id="detailUsesBlock">
+            <h4 class="modal__h4">こんなときに</h4>
+            <ul class="modal__uses" id="detailUses"></ul>
+          </div>
+          <div class="modal__block">
+            <h4 class="modal__h4">埋まる主な設定</h4>
+            <dl class="modal__specs" id="detailSpecs"></dl>
+          </div>
+          <div class="modal__actions">
+            <button class="btn btn--primary" id="detailApplyCopy" type="button">
+              <span>📋</span><span>この設定でコピー</span>
+            </button>
+            <button class="btn" id="detailApply" type="button">
+              <span>✎</span><span>適用だけ（編集する）</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- スクリプト（file:// で直接開けるよう module は使わない） -->
+    <script src="js/core.js"></script>
+    <script src="js/template.lp.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
