@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aline（アライン）| バラバラな仕事を、ひとつに整える。チーム進捗管理SaaS</title>
+<meta name="description" content="タスク・進捗・ファイルが散らばって見えない。Alineならチームのプロジェクトをひとつのダッシュボードでまとめて把握できます。無料プランあり、今すぐ会員登録。">
+<style>
+:root{
+  --ink:#1c1f2b; --muted:#6b7280; --paper:#f7f7fb; --white:#fff;
+  --accent:#5b5bf0; --accent-2:#8f7bf5; --accent-soft:#eeecff; --line:#e6e6ef;
+  --sans:"Hiragino Sans","Noto Sans JP","Yu Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--white);font-family:var(--sans);line-height:1.85;font-size:16px}
+img{display:block;width:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1120px,calc(100% - 40px));margin:auto}
+.eyebrow{display:inline-block;font-size:.74rem;letter-spacing:.18em;color:var(--accent);font-weight:700;text-transform:uppercase}
+h2.title{margin:.5rem 0 1.4rem;font-size:clamp(1.6rem,3vw,2.3rem);font-weight:800;letter-spacing:.01em;line-height:1.5}
+.lead{color:var(--muted);max-width:44em;font-size:.98rem}
+.section-head{max-width:640px;margin:0 auto 52px;text-align:center}
+.section-head .lead{margin:0 auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:200px;padding:16px 30px;background:var(--accent);color:#fff;font-weight:700;font-size:.92rem;border:1px solid var(--accent);border-radius:999px;box-shadow:0 12px 26px rgba(91,91,240,.28);transition:.2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(91,91,240,.36)}
+.btn-outline{display:inline-flex;align-items:center;justify-content:center;min-width:200px;padding:15px 30px;border:1.5px solid var(--ink);color:var(--ink);font-weight:700;font-size:.9rem;border-radius:999px}
+.btn-outline.on-dark{border-color:#fff;color:#fff}
+section{padding:100px 0}
+.note{font-size:.78rem;color:var(--muted)}
+
+/* Header */
+header.gnav{position:absolute;inset:0 0 auto;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:26px 5vw}
+.logo{font-weight:800;font-size:1.2rem;letter-spacing:.02em}
+.logo span{color:var(--accent)}
+header.gnav .btn{min-width:0;padding:11px 22px;font-size:.78rem}
+
+/* FV */
+.fv{position:relative;background:linear-gradient(160deg,#f4f3ff 0%,#f7f7fb 55%,#ffffff 100%);overflow:hidden}
+.fv:before{content:"";position:absolute;top:-160px;right:-160px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(143,123,245,.22),transparent 70%)}
+.fv-inner{position:relative;max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center;padding:150px 24px 100px}
+.fv-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);border:1px solid #d9d4ff;padding:7px 16px;border-radius:999px;font-size:.78rem;font-weight:700;letter-spacing:.04em;margin-bottom:22px}
+.fv h1{font-size:clamp(2rem,4.2vw,3rem);font-weight:800;line-height:1.5;letter-spacing:.01em;margin-bottom:20px}
+.fv h1 em{font-style:normal;color:var(--accent)}
+.fv p.sub{font-size:1rem;color:var(--muted);margin-bottom:34px;max-width:460px}
+.fv-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.fv-note{margin-top:16px;font-size:.8rem;color:var(--muted)}
+.fv-meta{display:flex;gap:26px;margin-top:44px;flex-wrap:wrap}
+.fv-meta div{font-size:.8rem;color:var(--muted)}
+.fv-meta strong{display:block;font-size:1.35rem;color:var(--ink);font-weight:800}
+.fv-visual{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:0 30px 70px rgba(28,31,43,.16)}
+.fv-visual img{aspect-ratio:4/3}
+
+/* generic split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center}
+.split img{border-radius:var(--radius);box-shadow:0 20px 45px rgba(28,31,43,.10)}
+
+/* Empathy */
+.empathy{background:var(--white)}
+.empathy .split{grid-template-columns:1fr 1fr}
+.empathy img{aspect-ratio:4/3}
+.checks{display:grid;gap:0;margin:26px 0 0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.checks li{padding:18px 4px;border-bottom:1px solid var(--line);font-size:.98rem;display:flex;gap:12px}
+.checks li:before{content:"\2014";font-weight:800;color:var(--accent);flex:none}
+
+/* Benefit */
+.benefit{background:var(--paper)}
+.benefit .split{grid-template-columns:1fr 1fr}
+.benefit img{aspect-ratio:4/3}
+.benefit-list{display:flex;flex-direction:column;gap:26px;margin-top:8px}
+.benefit-item{display:flex;gap:18px}
+.benefit-num{flex:none;width:42px;height:42px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem}
+.benefit-item h3{margin:0 0 6px;font-size:1.08rem;font-weight:800}
+.benefit-item p{margin:0;color:var(--muted);font-size:.92rem}
+
+/* Feature */
+.feature{background:var(--white)}
+.feature .split{grid-template-columns:1fr 1fr}
+.feature img{aspect-ratio:4/3}
+.feature-cards{display:grid;gap:16px;margin-top:8px}
+.feature-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.feature-card .num{font-size:.72rem;font-weight:800;color:var(--accent);letter-spacing:.12em;margin-bottom:6px;display:block}
+.feature-card h3{margin:0 0 6px;font-size:1rem;font-weight:800}
+.feature-card p{margin:0;font-size:.88rem;color:var(--muted)}
+
+/* Flow */
+.flow{background:var(--paper)}
+.flow .split{grid-template-columns:1fr 1fr}
+.flow img{aspect-ratio:4/3}
+.steps{display:grid;gap:0;padding:0;margin:8px 0 0;list-style:none}
+.steps li{display:grid;grid-template-columns:auto 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+.steps li:last-child{border-bottom:0}
+.steps b{font-size:1.3rem;font-weight:800;color:var(--accent)}
+.steps strong{display:block;margin-bottom:4px;font-weight:800;font-size:1rem}
+.steps small{color:var(--muted);font-size:.86rem}
+
+/* Proof */
+.proof{background:var(--ink);color:#fff}
+.proof .eyebrow{color:var(--accent-2)}
+.proof .section-head h2{color:#fff}
+.proof .section-head .lead{color:#b7b9c9}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px}
+.stat{text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:30px 18px}
+.stat .num{font-size:2.1rem;font-weight:800}
+.stat .num span{font-size:1.1rem}
+.stat .label{margin-top:6px;font-size:.8rem;color:#b7b9c9}
+.voice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.voice-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:26px;display:flex;gap:18px}
+.voice-card img{width:64px;height:64px;border-radius:50%;object-fit:cover;flex:none}
+.voice-quote{font-size:.92rem;margin:0 0 12px}
+.voice-name{font-size:.8rem;color:#b7b9c9;font-weight:700}
+
+/* Pricing */
+.price{background:var(--white)}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.price-card{border:1px solid var(--line);border-radius:var(--radius);padding:34px 28px;display:flex;flex-direction:column;background:var(--paper)}
+.price-card.on{background:var(--ink);color:#fff;border-color:var(--ink);transform:translateY(-14px);box-shadow:0 24px 50px rgba(28,31,43,.22)}
+.price-badge{display:inline-block;align-self:flex-start;background:var(--accent);color:#fff;font-size:.7rem;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:999px;margin-bottom:14px}
+.price-card h3{margin:0 0 6px;font-size:1.1rem;font-weight:800}
+.price-card .desc{font-size:.85rem;color:var(--muted);margin-bottom:18px}
+.price-card.on .desc{color:#c7c9d6}
+.price-amount{font-size:2.1rem;font-weight:800;margin-bottom:2px}
+.price-amount small{font-size:.9rem;font-weight:600;margin-left:4px}
+.price-per{font-size:.76rem;color:var(--muted);margin-bottom:22px}
+.price-card.on .price-per{color:#c7c9d6}
+.price-feats{list-style:none;margin:0 0 26px;padding:0;display:grid;gap:10px;font-size:.86rem}
+.price-feats li{display:flex;gap:8px}
+.price-feats li:before{content:"\2713";color:var(--accent);font-weight:800;flex:none}
+.price-card.on .price-feats li:before{color:var(--accent-2)}
+.price-card .btn,.price-card .btn-outline{width:100%;margin-top:auto}
+.price-card.on .btn-outline{border-color:#fff;color:#fff}
+
+/* FAQ */
+.faq{background:var(--paper)}
+.faq .split{grid-template-columns:.85fr 1.15fr;align-items:flex-start}
+.faq img{aspect-ratio:4/3}
+.faq-list{display:flex;flex-direction:column;gap:14px}
+.faq-item{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.faq-q{display:flex;gap:12px;font-weight:800;font-size:.96rem;margin-bottom:8px}
+.faq-q .mark{color:var(--accent);flex:none}
+.faq-a{display:flex;gap:12px;font-size:.88rem;color:var(--muted)}
+.faq-a .mark{color:var(--muted);flex:none}
+
+/* CTA */
+.cta-final{position:relative;padding:110px 0;color:#fff;background:linear-gradient(160deg,#2a2a55 0%,#1c1f2b 60%);overflow:hidden}
+.cta-final:before{content:"";position:absolute;bottom:-200px;left:-160px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(91,91,240,.35),transparent 70%)}
+.cta-final-inner{position:relative;max-width:1120px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center}
+.cta-final h2{color:#fff}
+.cta-final .lead{color:#c7c9d6}
+.cta-actions{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+.cta-note{margin-top:20px;font-size:.8rem;color:#9fa2b8}
+.cta-visual{border-radius:var(--radius);overflow:hidden;box-shadow:0 26px 60px rgba(0,0,0,.4)}
+.cta-visual img{aspect-ratio:4/3}
+
+footer{padding:40px 20px;text-align:center;font-size:.75rem;letter-spacing:.03em;background:#14151d;color:#8b8da0}
+
+@media (max-width:860px){
+  section{padding:68px 0}
+  .fv-inner{grid-template-columns:1fr;padding-top:120px}
+  .split,.empathy .split,.benefit .split,.feature .split,.flow .split,.faq .split,.cta-final-inner{grid-template-columns:1fr}
+  .split img{order:-1}
+  .stats{grid-template-columns:1fr}
+  .voice-grid{grid-template-columns:1fr}
+  .price-grid{grid-template-columns:1fr}
+  .price-card.on{transform:none}
+  .fv-meta{gap:20px}
+}
+</style>
+</head>
+<body>
+<header class="gnav">
+  <a class="logo" href="#top">Al<span>i</span>ne</a>
+  <a class="btn" href="#cta">無料で会員登録</a>
+</header>
+
+<!-- ========== 1. ファーストビュー ========== -->
+<section class="fv" id="top">
+  <div class="fv-inner">
+    <div>
+      <span class="fv-badge">チームの進捗管理を、ひとつに。</span>
+      <h1>バラバラな仕事を、<br><em>ひとつのダッシュボード</em>に整える。</h1>
+      <p class="sub">タスクも、進捗も、ファイルも、あちこちのツールに散らばったまま。Alineなら、チームのプロジェクトが今どうなっているか、ひと目でわかります。</p>
+      <div class="fv-actions">
+        <a class="btn" href="#cta">無料で会員登録</a>
+        <a class="btn-outline" href="#feature">機能を見る</a>
+      </div>
+      <p class="fv-note">クレジットカード登録不要・無料プランからスタートできます</p>
+      <div class="fv-meta">
+        <div><strong>2,400+</strong>導入チーム</div>
+        <div><strong>98%</strong>継続利用率</div>
+        <div><strong>3分</strong>で登録完了</div>
+      </div>
+    </div>
+    <div class="fv-visual">
+      <img src="images/fv.webp" alt="Alineのダッシュボード画面。タスクの進捗やプロジェクト状況がグラフで一覧表示されている">
+    </div>
+  </div>
+</section>
+
+<!-- ========== 2. 共感（悩み・憧れ） ========== -->
+<section class="empathy">
+  <div class="wrap split">
+    <img src="images/empathy.webp" alt="複数のツールの画面に囲まれ、進捗管理に頭を悩ませるチームメンバー">
+    <div>
+      <span class="eyebrow">Your Concerns</span>
+      <h2 class="title">こんなことに、<br>心当たりありませんか？</h2>
+      <ul class="checks">
+        <li>タスクの進捗が、Excel・チャット・資料のあちこちに散らばっている</li>
+        <li>「これ、誰がいつまでにやるんだっけ？」を何度も聞き直している</li>
+        <li>ファイルや資料の在り処がわからず、探す時間だけが増えていく</li>
+        <li>ツールを増やすほど、逆にチームの情報がバラバラになっている気がする</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 3. ベネフィット（得られる未来） ========== -->
+<section class="benefit">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow">Get The Future</span>
+      <h2 class="title">Alineで、<br>得られる3つの未来</h2>
+      <div class="benefit-list">
+        <div class="benefit-item">
+          <div class="benefit-num">01</div>
+          <div>
+            <h3>チームの状況が、いつでもひと目でわかる</h3>
+            <p>誰が・何を・どこまで進めているか、ダッシュボードを開くだけで把握できます。</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-num">02</div>
+          <div>
+            <h3>「探す」「聞く」時間がなくなる</h3>
+            <p>情報がひとつにまとまるので、確認のためだけのやり取りから解放されます。</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-num">03</div>
+          <div>
+            <h3>チームが同じ方向を向いて、迷わず進める</h3>
+            <p>進捗と優先順位が全員に見えるから、認識のズレがなくなります。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <img src="images/benefit.webp" alt="Alineを使って笑顔で打ち合わせをするチームメンバー">
+  </div>
+</section>
+
+<!-- ========== 4. 特徴・機能 ========== -->
+<section class="feature" id="feature">
+  <div class="wrap split">
+    <img src="images/feature.webp" alt="Alineのダッシュボード画面の拡大。タスク件数や進捗グラフ、レポートが表示されている">
+    <div>
+      <span class="eyebrow">Features</span>
+      <h2 class="title">見える化だから、<br>チームが動きやすくなる。</h2>
+      <div class="feature-cards">
+        <div class="feature-card">
+          <span class="num">01</span>
+          <h3>進捗をリアルタイムに可視化</h3>
+          <p>タスク総数128件、完了75件、期限超過5件——といった状況が自動集計され、一画面でわかります。</p>
+        </div>
+        <div class="feature-card">
+          <span class="num">02</span>
+          <h3>使い慣れたツールと連携</h3>
+          <p>Excel・チャット・Docs・スライドなど、既存のファイルやタスクをそのまま取り込めます。</p>
+        </div>
+        <div class="feature-card">
+          <span class="num">03</span>
+          <h3>プロジェクト別の進捗を自動集計</h3>
+          <p>「Webサイトリニューアル 75%」のように、案件ごとの進み具合を自動でグラフ化します。</p>
+        </div>
+        <div class="feature-card">
+          <span class="num">04</span>
+          <h3>レポートをワンクリックで生成</h3>
+          <p>週次・月次の進捗レポートを自動作成。報告のための資料づくりが不要になります。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 5. 利用の流れ ========== -->
+<section class="flow">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow">Flow</span>
+      <h2 class="title">会員登録から、<br>使い始めるまでの流れ</h2>
+      <ol class="steps">
+        <li><b>01</b><span><strong>無料で会員登録</strong><small>メールアドレスだけで、3分で登録が完了します。</small></span></li>
+        <li><b>02</b><span><strong>チーム・プロジェクトを作成</strong><small>チームを招待し、進行中のプロジェクトを追加します。</small></span></li>
+        <li><b>03</b><span><strong>既存ツールと連携</strong><small>使っているツールのタスクやファイルを取り込みます。</small></span></li>
+        <li><b>04</b><span><strong>ダッシュボードで日々の進捗を確認</strong><small>あとは開くだけ。チームの状況がいつでもひと目でわかります。</small></span></li>
+      </ol>
+    </div>
+    <img src="images/flow.webp" alt="オンボーディング担当者がAlineの使い方を説明している様子">
+  </div>
+</section>
+
+<!-- ========== 6. 導入実績・お客様の声 ========== -->
+<section class="proof">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Voice &amp; Results</span>
+      <h2 class="title">導入実績・お客様の声</h2>
+      <p class="lead">スタートアップから100名規模のチームまで、幅広く導入いただいています。</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">2,400<span>チーム+</span></div><div class="label">累計導入チーム数</div></div>
+      <div class="stat"><div class="num">98<span>%</span></div><div class="label">継続利用率</div></div>
+      <div class="stat"><div class="num">40<span>%</span></div><div class="label">確認業務の削減率</div></div>
+    </div>
+    <div class="voice-grid">
+      <div class="voice-card">
+        <img src="images/proof-1.webp" alt="お客様の声1">
+        <div>
+          <p class="voice-quote">「毎朝バラバラのツールを見比べていた時間がなくなりました。ダッシュボードを開けば、チームの状況が全部わかります。」</p>
+          <div class="voice-name">30代・マーケティング部門 女性</div>
+        </div>
+      </div>
+      <div class="voice-card">
+        <img src="images/proof-2.webp" alt="お客様の声2">
+        <div>
+          <p class="voice-quote">「進捗確認のための会議が減りました。数字で状況が見えるので、報告資料を作る手間もなくなりました。」</p>
+          <div class="voice-name">40代・プロジェクトマネージャー 男性</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 7. 料金プラン ========== -->
+<section class="price">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Pricing</span>
+      <h2 class="title">シンプルな料金プラン</h2>
+      <p class="lead">まずは無料プランからお試しください。チームの規模に合わせて、いつでもアップグレードできます。</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Free</h3>
+        <p class="desc">個人・小さなチームのお試しに</p>
+        <div class="price-amount">¥0</div>
+        <div class="price-per">ずっと無料・登録3分</div>
+        <ul class="price-feats">
+          <li>3プロジェクトまで</li>
+          <li>メンバー3名まで</li>
+          <li>タスク・進捗の可視化</li>
+          <li>基本的なツール連携</li>
+        </ul>
+        <a class="btn-outline" href="#cta">無料で始める</a>
+      </div>
+      <div class="price-card on">
+        <span class="price-badge">一番人気</span>
+        <h3>スタンダード</h3>
+        <p class="desc">成長中のチームに最適</p>
+        <div class="price-amount">¥980<small>/人・月</small></div>
+        <div class="price-per">年払いで2ヶ月分お得</div>
+        <ul class="price-feats">
+          <li>プロジェクト数無制限</li>
+          <li>メンバー数無制限</li>
+          <li>レポート自動生成</li>
+          <li>全ツール連携・優先サポート</li>
+        </ul>
+        <a class="btn" href="#cta">無料トライアルを試す</a>
+      </div>
+      <div class="price-card">
+        <h3>プロ</h3>
+        <p class="desc">複数チーム・全社導入に</p>
+        <div class="price-amount">¥1,980<small>/人・月</small></div>
+        <div class="price-per">年払いで2ヶ月分お得</div>
+        <ul class="price-feats">
+          <li>スタンダードの全機能</li>
+          <li>部門横断のレポート</li>
+          <li>権限・セキュリティ管理</li>
+          <li>専任サポート担当</li>
+        </ul>
+        <a class="btn-outline" href="#cta">相談する</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 8. よくある質問 ========== -->
+<section class="faq">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow">FAQ</span>
+      <h2 class="title">よくある質問</h2>
+      <p class="lead">申し込み前の不安に、あらかじめお答えします。</p>
+      <img src="images/faq.webp" alt="Alineのサポート担当者が相談に応じている様子" style="margin-top:32px">
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q"><span class="mark">Q</span>無料プランでどこまで使えますか？</div>
+        <div class="faq-a"><span class="mark">A</span>3プロジェクト・メンバー3名まで、期間の制限なくご利用いただけます。まずは無料プランでお試しください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="mark">Q</span>今使っているExcelやチャットのデータは移行できますか？</div>
+        <div class="faq-a"><span class="mark">A</span>はい。既存のタスクやファイルを取り込むための連携機能をご用意しています。登録後の初期設定でご案内します。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="mark">Q</span>セキュリティは大丈夫ですか？</div>
+        <div class="faq-a"><span class="mark">A</span>通信・保存データはすべて暗号化されており、権限に応じたアクセス制御にも対応しています。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="mark">Q</span>契約期間の縛りはありますか？</div>
+        <div class="faq-a"><span class="mark">A</span>月払いプランはいつでも解約可能です。最低利用期間の縛りはございません。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="mark">Q</span>使い方がわからないときのサポートは？</div>
+        <div class="faq-a"><span class="mark">A</span>チャットサポートに加え、スタンダード以上のプランでは導入時のオンボーディング相談も承っています。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 9. 最後のひと押し（CTA） ========== -->
+<section class="cta-final" id="cta">
+  <div class="cta-final-inner">
+    <div>
+      <span class="eyebrow">Last Step</span>
+      <h2 class="title">バラバラだった仕事が、<br>今日からひとつになる。</h2>
+      <p class="lead">登録はメールアドレスだけ、3分で完了します。クレジットカードの登録は不要です。まずは無料プランからお試しください。</p>
+      <div class="cta-actions">
+        <a class="btn" href="#">無料で会員登録する</a>
+        <a class="btn-outline on-dark" href="#">導入について相談する</a>
+      </div>
+      <p class="cta-note">お申し込み・ご相談は無料です。しつこい営業は一切行いません。</p>
+    </div>
+    <div class="cta-visual">
+      <img src="images/cta.webp" alt="Alineのダッシュボード画面のイメージ">
+    </div>
+  </div>
+</section>
+
+<footer>© Aline — Sample landing page. 本ページの数値・お客様の声はサンプルです。実際のデータに差し替えてご利用ください。</footer>
+</body>

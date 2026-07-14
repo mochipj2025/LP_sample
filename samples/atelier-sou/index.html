@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>尾崎蒼 | Atelier Sou ― 藍のレイヤード・アブストラクト</title>
+<meta name="description" content="藍色を幾層にも重ねる抽象画家・尾崎蒼のアトリエ「Atelier Sou」公式ランディングページ。個人邸から店舗・オフィスまで、空間のための一点物をオーダーメイド制作します。">
+<style>
+:root{
+  --ink:#26282c; --muted:#767b82; --paper:#faf9f6; --white:#fff;
+  --indigo:#2f4157; --indigo-dark:#202d3c; --sand:#e9e3d6; --sand-soft:#f2ede1;
+  --line:#e4e0d8; --card:#fffefb;
+  --serif:"Yu Mincho","YuMincho","Hiragino Mincho ProN",serif;
+  --sans:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font-family:var(--sans);line-height:1.9;font-size:16px}
+img{display:block;width:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1120px,calc(100% - 40px));margin:auto}
+.eyebrow{display:inline-block;font-size:.72rem;letter-spacing:.22em;color:var(--indigo);font-weight:700;text-transform:uppercase}
+.title{margin:.6rem 0 1.5rem;font:400 clamp(1.7rem,3.2vw,2.4rem)/1.6 var(--serif);letter-spacing:.04em}
+.lead{color:var(--muted);max-width:620px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:230px;padding:17px 30px;background:var(--indigo);color:#fff;font-weight:700;letter-spacing:.1em;font-size:.86rem;border-radius:2px;border:1px solid var(--indigo);transition:.2s}
+.btn:hover{background:var(--indigo-dark);border-color:var(--indigo-dark)}
+.btn.ghost{background:transparent;color:var(--indigo);border-color:var(--indigo)}
+section{padding:100px 0}
+.center{text-align:center}
+.center .lead{margin-left:auto;margin-right:auto}
+
+header{position:absolute;inset:0 0 auto;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:30px 5vw}
+.logo{font:400 1.35rem/1 var(--serif);letter-spacing:.14em;color:#fff}
+.logo small{display:block;font:700 .58rem/1 var(--sans);letter-spacing:.24em;margin-top:6px;color:#e9e3d6}
+nav{display:flex;align-items:center;gap:34px;font-size:.8rem;letter-spacing:.06em;color:#fff}
+nav a{opacity:.92}
+nav .btn{min-width:0;padding:11px 22px;font-size:.75rem}
+
+.hero{position:relative;min-height:94vh;display:grid;align-items:center;color:#fff;background:#20242a}
+.hero img{position:absolute;inset:0;height:100%;filter:brightness(.6)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,#161a1ed6 0%,#161a1e8c 40%,transparent 72%)}
+.hero__copy{position:relative;z-index:1;width:min(1120px,calc(100% - 40px));margin:0 auto;padding:16vh 0 8vh}
+.hero .eyebrow{color:#e9e3d6}
+.hero h1{margin:18px 0 24px;font:400 clamp(2rem,4.6vw,3.4rem)/1.65 var(--serif);letter-spacing:.05em}
+.hero p{max-width:480px;margin-bottom:36px;color:#eeece6}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center}
+.split img{aspect-ratio:4/3;border-radius:2px}
+.split.rev img{order:2}
+
+.benefit{background:var(--white)}
+.benefit__cards{list-style:none;margin:36px 0 0;padding:0;display:grid;gap:22px}
+.benefit__card{display:flex;gap:20px;padding:0 0 22px;border-bottom:1px solid var(--line)}
+.benefit__card:last-child{border-bottom:none;padding-bottom:0}
+.benefit__card .num{flex:0 0 auto;font:400 1.4rem/1 var(--serif);color:var(--indigo);width:38px}
+.benefit__card b{display:block;font-size:1.05rem;margin-bottom:8px;font-weight:700}
+.benefit__card p{margin:0;color:var(--muted);font-size:.92rem}
+
+.gallery{background:var(--sand-soft)}
+.gallery__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:40px}
+.gallery__item{background:var(--card);border:1px solid var(--line)}
+.gallery__item img{aspect-ratio:4/3}
+.gallery__item .cap{padding:18px 20px}
+.gallery__item small{display:block;color:var(--indigo);font-size:.7rem;letter-spacing:.08em;margin-bottom:6px}
+.gallery__item b{display:block;font-size:.98rem;margin-bottom:4px}
+.gallery__item span{display:block;color:var(--muted);font-size:.84rem}
+
+.service{background:var(--white)}
+.service__grid{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center}
+.service img{aspect-ratio:4/3;border-radius:2px}
+.service__list{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:22px}
+.service__list li{padding:22px 24px;background:var(--sand-soft);border-left:2px solid var(--indigo)}
+.service__list b{display:block;font-size:1.02rem;margin-bottom:8px}
+.service__list p{margin:0 0 4px;color:var(--muted);font-size:.88rem}
+.service__list .meta{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:10px;font-size:.78rem;color:var(--indigo)}
+.service__list .meta span b{display:inline;font-size:.78rem;color:var(--indigo);margin:0}
+
+.flow{background:var(--sand-soft)}
+.flow__grid{display:grid;grid-template-columns:1fr 1.05fr;gap:6vw;align-items:center}
+.flow img{aspect-ratio:4/3;border-radius:2px}
+.steps{list-style:none;margin:26px 0 0;padding:0;counter-reset:step}
+.steps li{counter-increment:step;position:relative;padding:0 0 28px 48px;border-left:1px solid var(--line);margin-left:18px}
+.steps li:last-child{border-color:transparent;padding-bottom:0}
+.steps li:before{content:counter(step);position:absolute;left:-19px;top:-3px;width:38px;height:38px;border-radius:50%;background:var(--indigo);color:#fff;display:grid;place-items:center;font:400 1rem var(--serif)}
+.steps b{display:block;margin-bottom:5px;font-size:1rem}
+.steps p{margin:0;color:var(--muted);font-size:.88rem}
+
+.proof{background:var(--white)}
+.stat-row{display:flex;flex-wrap:wrap;gap:0;margin:34px 0 46px;border:1px solid var(--line)}
+.stat{flex:1;min-width:150px;text-align:center;padding:30px 16px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:none}
+.stat b{display:block;font:400 2rem/1 var(--serif);color:var(--indigo)}
+.stat span{display:block;margin-top:8px;font-size:.78rem;color:var(--muted)}
+.voice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.voice{display:grid;grid-template-columns:96px 1fr;gap:20px;padding:28px;border:1px solid var(--line);background:var(--card)}
+.voice img{aspect-ratio:1;border-radius:50%}
+.voice strong{display:block;margin-bottom:10px;font-size:1rem;font-weight:700}
+.voice p{margin:0 0 12px;font-size:.9rem;color:var(--ink)}
+.voice small{color:var(--muted);letter-spacing:.04em}
+
+.profile{background:var(--sand-soft)}
+.profile__grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:6vw;align-items:center}
+.profile img{aspect-ratio:3/4;border-radius:2px}
+.profile__meta{display:grid;gap:14px;margin:26px 0;padding:22px 24px;background:var(--card);border:1px solid var(--line)}
+.profile__meta div{display:flex;gap:16px;font-size:.88rem}
+.profile__meta b{flex:0 0 84px;color:var(--indigo);font-weight:700}
+.profile__meta span{color:var(--ink)}
+
+.cta{position:relative;padding:130px 0;color:#fff;text-align:center;background:#20242a;overflow:hidden}
+.cta img{position:absolute;inset:0;height:100%;filter:brightness(.38)}
+.cta__in{position:relative;z-index:1}
+.cta .eyebrow{color:#e9e3d6}
+.cta p{max-width:480px;margin:20px auto 34px;color:#eeece6}
+.cta .btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.cta .btn.ghost{color:#fff;border-color:#fff}
+
+footer{padding:40px 20px;text-align:center;font-size:.74rem;letter-spacing:.08em;background:#20242a;color:#c9c4b8}
+
+@media(max-width:840px){
+  section{padding:64px 0}
+  header{padding:22px 5vw}
+  nav a:not(.btn){display:none}
+  .split,.split.rev,.service__grid,.flow__grid,.profile__grid{grid-template-columns:1fr}
+  .split img,.split.rev img,.service img{order:-1}
+  .gallery__grid{grid-template-columns:1fr}
+  .voice-grid{grid-template-columns:1fr}
+  .stat-row{flex-wrap:wrap}
+  .stat{border-right:none;border-bottom:1px solid var(--line);flex:1 1 50%}
+  .hero__copy{padding:18vh 0 8vh}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#top">Atelier Sou<small>OZAKI SOU / PAINTER</small></a>
+  <nav>
+    <a href="#works">制作実績</a>
+    <a href="#voice">お客様の声</a>
+    <a href="#profile">プロフィール</a>
+    <a class="btn" href="#contact">問い合わせる</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero" id="top">
+    <img src="images/fv.webp" alt="アトリエで自身の抽象画の前に立つ画家">
+    <div class="hero__copy">
+      <span class="eyebrow">Atelier Sou / Painter Ozaki Sou</span>
+      <h1>その空間だけの、<br>一点の絵を。</h1>
+      <p>藍色を幾層にも重ね、光と時間の記憶を描く一点物の抽象画。個人邸から店舗・オフィスまで、空間に合わせたオーダーメイド制作を承ります。</p>
+      <a class="btn" href="#contact">問い合わせる</a>
+    </div>
+  </section>
+
+  <section class="benefit">
+    <div class="wrap split">
+      <img src="images/benefit.webp" alt="完成した作品を手に、微笑む女性">
+      <div>
+        <span class="eyebrow">What you get</span>
+        <h2 class="title">飾った瞬間から、<br>暮らしの景色が変わる。</h2>
+        <p class="lead">量産されたポスターやプリントとは違う、一点物だからこその存在感。Atelier Souが目指すのは、こんな毎日です。</p>
+        <ul class="benefit__cards">
+          <li class="benefit__card"><span class="num">01</span><div><b>その空間だけの、一点物の存在感</b><p>サイズも色調も、飾る場所に合わせて調整。同じものが二つとない、空間の主役になる一枚です。</p></div></li>
+          <li class="benefit__card"><span class="num">02</span><div><b>光の入り方で、毎日違う表情に出会える</b><p>層を重ねた藍色は、朝と夕で見え方が変わります。暮らしの中で飽きることのない絵です。</p></div></li>
+          <li class="benefit__card"><span class="num">03</span><div><b>作品にまつわる物語を、自分の言葉で語れる</b><p>制作の背景や込めた想いを知って選べるから、来客時にも自信を持ってご紹介いただけます。</p></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="gallery" id="works">
+    <div class="wrap">
+      <div class="center" style="max-width:620px;margin:0 auto">
+        <span class="eyebrow">Works</span>
+        <h2 class="title">制作実績・作品</h2>
+        <p class="lead" style="margin:0 auto">個人邸からアトリエ併設ギャラリーまで。藍色を主題にしたシリーズ「層 -layers-」を中心にご紹介します。</p>
+      </div>
+      <div class="gallery__grid">
+        <article class="gallery__item">
+          <img src="images/gallery-1.webp" alt="個人邸リビングに納品された抽象画">
+          <div class="cap"><small>個人邸・リビング（東京都内）</small><b>「層 -layers- 」原画制作・搬入設置</b><span>ソファ背面の壁一面に合わせたサイズで制作。原画制作から額装・設置まで担当。</span></div>
+        </article>
+        <article class="gallery__item">
+          <img src="images/gallery-2.webp" alt="藍色の抽象画のディテール">
+          <div class="cap"><small>シリーズ「層 -layers-」ディテール</small><b>原画制作（F100号）</b><span>藍染めの生地が幾重にも重なる様子から着想。マチエールまで一点ずつ手作業で仕上げています。</span></div>
+        </article>
+        <article class="gallery__item">
+          <img src="images/gallery-3.webp" alt="アトリエで筆を入れる制作風景">
+          <div class="cap"><small>制作風景</small><b>アトリエでの原画制作</b><span>下地から仕上げまで、すべての工程をアトリエ内で一人で担当しています。</span></div>
+        </article>
+        <article class="gallery__item">
+          <img src="images/gallery-4.webp" alt="ギャラリーを併設したアトリエの外観">
+          <div class="cap"><small>Atelier Sou 外観</small><b>ギャラリー併設アトリエ</b><span>作品の展示・打ち合わせ・工房見学も可能な、制作と発表を兼ねた空間です。</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="service">
+    <div class="wrap service__grid">
+      <div>
+        <span class="eyebrow">Service</span>
+        <h2 class="title">サービス内容</h2>
+        <p class="lead">原画のオーダーメイド制作を中心に、空間演出からワークショップまでご相談いただけます。</p>
+        <ul class="service__list">
+          <li>
+            <b>オーダーメイド原画制作</b>
+            <p>個人邸・店舗・オフィスのために、世界に一点だけの絵をお探しの方へ。</p>
+            <div class="meta"><span>対象：個人邸・店舗・オフィス</span><span>納品物：キャンバス原画（額装対応可）</span></div>
+          </li>
+          <li>
+            <b>空間演出・アートディレクション</b>
+            <p>内装にアートを取り入れたい店舗・宿泊施設のオーナー様へ。複数点の選定から配置プランまで一貫対応します。</p>
+            <div class="meta"><span>対象：店舗・施設運営者</span><span>納品物：作品提案書・配置プラン</span></div>
+          </li>
+          <li>
+            <b>複製画・アートプリント制作</b>
+            <p>原画は予算的に難しいが、同じ世界観を取り入れたい方向けの高品質プリントです。</p>
+            <div class="meta"><span>対象：はじめての方</span><span>納品物：アートプリント（額装オプションあり）</span></div>
+          </li>
+          <li>
+            <b>アトリエワークショップ</b>
+            <p>藍色の重ね塗り技法を実際に体験いただける少人数制の制作会です。</p>
+            <div class="meta"><span>対象：制作体験をしたい個人・グループ</span><span>納品物：当日制作した作品のお持ち帰り</span></div>
+          </li>
+        </ul>
+      </div>
+      <img src="images/feature.webp" alt="藍色の絵の具と筆、制作に使う道具">
+    </div>
+  </section>
+
+  <section class="flow">
+    <div class="wrap flow__grid">
+      <img src="images/flow.webp" alt="ヒアリングをしながら制作イメージをすり合わせる様子">
+      <div>
+        <span class="eyebrow">Flow</span>
+        <h2 class="title">利用の流れ</h2>
+        <ol class="steps">
+          <li><b>お問い合わせ</b><p>フォームまたはメールで、ご希望の雰囲気やサイズ、設置場所の写真などをお送りください。</p></li>
+          <li><b>ヒアリング・ラフ提案</b><p>オンラインまたはアトリエで直接、イメージをすり合わせながらラフ案をご提案します。</p></li>
+          <li><b>制作</b><p>ヒアリングをもとに、アトリエにて一点ずつ丁寧に制作します（制作期間目安：3〜6週間）。</p></li>
+          <li><b>納品・設置</b><p>完成後は写真でご確認いただいてから発送、またはご希望に応じて直接搬入・設置いたします。</p></li>
+        </ol>
+        <a class="btn" href="#contact" style="margin-top:30px">問い合わせる</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof" id="voice">
+    <div class="wrap">
+      <div class="center" style="max-width:620px;margin:0 auto">
+        <span class="eyebrow">Voice</span>
+        <h2 class="title">お客様の声</h2>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>80点+</b><span>累計制作実績</span></div>
+        <div class="stat"><b>4.9 / 5</b><span>納品後アンケート満足度</span></div>
+        <div class="stat"><b>約7日</b><span>問い合わせからラフ提案までの目安</span></div>
+      </div>
+      <div class="voice-grid">
+        <article class="voice">
+          <img src="images/proof-1.webp" alt="お客様の声・女性">
+          <div>
+            <strong>「部屋の主役になる絵に出会えました」</strong>
+            <p>リビングに飾ったところ、来客のたびに話題になります。色味の相談にも丁寧に応じていただけました。</p>
+            <small>40代・会社員</small>
+          </div>
+        </article>
+        <article class="voice">
+          <img src="images/proof-2.webp" alt="お客様の声・男性">
+          <div>
+            <strong>「店舗の雰囲気が一気に変わりました」</strong>
+            <p>内装のトーンに合わせた色味を提案していただき、お店の世界観がぐっと引き締まりました。</p>
+            <small>30代・カフェオーナー</small>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="profile" id="profile">
+    <div class="wrap profile__grid">
+      <img src="images/profile.webp" alt="画家・尾崎蒼のポートレート">
+      <div>
+        <span class="eyebrow">Profile</span>
+        <h2 class="title">尾崎 蒼<br><span style="font-size:.6em;color:var(--muted)">Ozaki Sou / Atelier Sou主宰</span></h2>
+        <p class="lead">美術大学卒業後、広告制作会社でデザイナーとして勤務。素材の質感や色の重なりに惹かれ独立し、藍染めや古い建物が纏う時間の記憶をテーマにした抽象画を制作しています。個展・グループ展多数、個人邸から商業施設まで幅広く手がけてきました。</p>
+        <div class="profile__meta">
+          <div><b>得意分野</b><span>藍色を基調としたレイヤード・アブストラクト（層を重ねる抽象表現）</span></div>
+          <div><b>大切にしていること</b><span>一枚の絵が、日々の暮らしの中でその人だけの物語を紡ぐ存在になること</span></div>
+        </div>
+        <a class="btn ghost" href="#contact">問い合わせる</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="contact">
+    <img src="images/cta.webp" alt="窓から光が差し込むアトリエの様子">
+    <div class="wrap cta__in">
+      <span class="eyebrow">Last step</span>
+      <h2 class="title" style="color:#fff">その空間に、<br>一点だけの絵を。</h2>
+      <p>まずはお気軽に、飾りたい場所の写真とご希望をお聞かせください。折り返しラフ案にてご提案いたします。</p>
+      <div class="btns">
+        <a class="btn" href="mailto:contact@atelier-sou.example.com">メールで問い合わせる</a>
+        <a class="btn ghost" href="tel:0300000000">電話で相談する</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+<footer>© Atelier Sou — Sample landing page</footer>
+</body>
+</html>

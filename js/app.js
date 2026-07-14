@@ -485,6 +485,8 @@
   function updatePrompt() {
     // プリセット適用・リセット等で state が作り直されても、画像は imageStore が正
     syncImagesToState();
+    // 同様に「実物を反映」チェックも refLockStore が正なので、ここで必ず復元する
+    syncRefLockToState();
     const text = template.build(state);
     dom.output.textContent = text;
     dom.charCount.textContent = text.length + ' 文字';
@@ -533,6 +535,16 @@
   const imageStore = {};
   let imageSlotSig = '';
 
+  /** @type {Object.<string,boolean>} スロットid -> 「実物を反映（写真を崩さない）」チェック状態 */
+  const refLockStore = {};
+
+  /** @type {Object.<string,boolean>} スロットid -> 「プロンプトをコピー済み」状態（進捗の可視化用） */
+  const copiedStore = {};
+
+  function syncRefLockToState() {
+    state._refLock = Object.assign({}, refLockStore);
+  }
+
   function slotFileName(slotId, dataURL) {
     const m = /^data:image\/(png|jpeg|jpg|webp|gif)/.exec(dataURL);
     let ext = m ? m[1] : 'jpg';
@@ -562,6 +574,38 @@
     toast('画像を外しました');
   }
 
+  /**
+   * アップロードした画像を WebP に変換する（Canvas 経由・依存ゼロ）。
+   * アニメーションが消えてしまう GIF は変換しない。
+   * 変換に対応していないブラウザや失敗時は、元の画像をそのまま使う
+   * （＝ UI が壊れることはない）。
+   *
+   * @param {File} file
+   * @param {string} dataURL - file を読み込んだ元の dataURL
+   * @param {function(string)} done - 使うべき dataURL（変換後 or 元のまま）を渡して呼ばれる
+   */
+  function toWebpDataURL(file, dataURL, done) {
+    if (file && file.type === 'image/gif') { done(dataURL); return; }
+
+    const img = new Image();
+    img.onload = function () {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        const webpURL = canvas.toDataURL('image/webp', 0.85);
+        // 非対応ブラウザは png 等に黙ってフォールバックすることがあるため、
+        // 実際に webp が返ってきたときだけ採用する
+        done(webpURL.indexOf('data:image/webp') === 0 ? webpURL : dataURL);
+      } catch (e) {
+        done(dataURL);
+      }
+    };
+    img.onerror = function () { done(dataURL); };
+    img.src = dataURL;
+  }
+
   /** 画像カードの再描画（スロット構成・文面が変わったときだけ） */
   function renderImageSlots() {
     if (!dom.imageCard) return;
@@ -581,6 +625,22 @@
       const head = el('div', 'imgslot__head');
       head.appendChild(el('span', 'imgslot__label', slot.label));
       head.appendChild(el('span', 'imgslot__ratio', slot.ratio));
+
+      const refLock = el('label', 'imgslot__reflock');
+      const refCheckbox = document.createElement('input');
+      refCheckbox.type = 'checkbox';
+      refCheckbox.checked = !!refLockStore[slot.id];
+      refCheckbox.addEventListener('change', function () {
+        if (refCheckbox.checked) refLockStore[slot.id] = true; else delete refLockStore[slot.id];
+        syncRefLockToState();
+        imageSlotSig = ''; // プロンプトに注記が付く/消えるので再構築する
+        renderImageSlots();
+        updatePrompt();
+      });
+      refLock.appendChild(refCheckbox);
+      refLock.appendChild(el('span', null, '実物を反映（写真を崩さない）'));
+      head.appendChild(refLock);
+
       row.appendChild(head);
 
       const acts = el('div', 'imgslot__acts');
@@ -588,11 +648,18 @@
       const copy = el('button', 'imgslot__btn', '📋 プロンプト');
       copy.type = 'button';
       copy.title = 'この画像の生成プロンプトをコピー';
+      if (copiedStore[slot.id]) copy.classList.add('is-copied');
       copy.addEventListener('click', function () {
         writeClipboard(slot.prompt, function (ok) {
+          if (ok) {
+            copiedStore[slot.id] = true;
+            copy.classList.add('is-copied');
+            copy.textContent = '✅ コピー済み';
+          }
           toast(ok ? '「' + slot.label + '」のプロンプトをコピーしました' : 'コピーできませんでした');
         });
       });
+      if (copiedStore[slot.id]) copy.textContent = '✅ コピー済み';
       acts.appendChild(copy);
 
       const pick = el('label', 'imgslot__btn');
@@ -605,7 +672,11 @@
         const f = input.files[0];
         if (!f) return;
         const reader = new FileReader();
-        reader.onload = function () { setSlotImage(slot, reader.result); };
+        reader.onload = function () {
+          toWebpDataURL(f, reader.result, function (finalDataURL) {
+            setSlotImage(slot, finalDataURL);
+          });
+        };
         reader.readAsDataURL(f);
       });
       pick.appendChild(input);
@@ -1076,23 +1147,3 @@
 
   function init() {
     cacheDom();
-
-    // 有効なテンプレートの先頭を初期表示にする
-    template = global.PromptMaker.getTemplates().filter(function (item) {
-      return item.enabled;
-    })[0];
-
-    state = Object.assign({}, template.defaults);
-
-    renderTabs();
-    renderPresets();
-    renderFields();
-    tagFieldKeys();
-    renderUserPresets();
-    syncAllFields();
-    updatePrompt();
-    bindActions();
-  }
-
-  document.addEventListener('DOMContentLoaded', init);
-})(window);

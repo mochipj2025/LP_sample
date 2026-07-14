@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ケツ整体 | 話してから、触れる。ぼきぼき鳴らさない整体</title>
+<meta name="description" content="福岡市の整体サロン「ケツ整体」。丁寧なカウンセリングと、痛くない・ぼきぼき鳴らさない施術で根本原因にアプローチ。初回限定1,000円。">
+<style>
+:root{
+  --ink:#26313a; --muted:#68767f; --paper:#f6f9fa; --white:#fff;
+  --accent:#5b8ba0; --accent-soft:#e7eff2; --line:#dfe7ea;
+  --serif:"Yu Mincho","Hiragino Mincho ProN",serif;
+  --sans:"Noto Sans JP","Yu Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font-family:var(--sans);line-height:1.9}
+img{display:block;width:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1100px,calc(100% - 40px));margin:auto}
+.eyebrow{font-size:.72rem;letter-spacing:.24em;color:var(--accent);text-transform:uppercase}
+.title{margin:.3rem 0 1.6rem;font:400 clamp(1.7rem,3.4vw,2.6rem)/1.5 var(--serif);letter-spacing:.06em}
+.lead{color:var(--muted);max-width:44em}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-width:220px;padding:16px 26px;background:var(--ink);color:#fff;letter-spacing:.14em;font-size:.85rem;border:1px solid var(--ink);border-radius:2px;transition:.2s}
+.btn:hover{background:var(--accent);border-color:var(--accent)}
+section{padding:92px 0}
+.note{font-size:.78rem;color:var(--muted)}
+
+header{position:absolute;inset:0 0 auto;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:26px 5vw}
+.logo{font:500 1.15rem var(--serif);letter-spacing:.2em;color:var(--ink)}
+header .btn{min-width:0;padding:10px 18px;font-size:.72rem;background:transparent;color:var(--ink);border-color:var(--ink)}
+
+.hero{position:relative;min-height:640px;height:82vw;max-height:760px;display:grid;align-items:end;background:#eef3f4;color:var(--ink)}
+.hero img{position:absolute;inset:0;height:100%;object-position:62% center}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#f6f9faf5 0%,#f6f9fad9 30%,#f6f9fa66 50%,transparent 68%)}
+.hero__copy{position:relative;z-index:1;width:min(1100px,calc(100% - 40px));margin:0 auto;padding:0 0 9vh}
+.hero h1{margin:16px 0 22px;font:400 clamp(2.1rem,4.6vw,3.6rem)/1.6 var(--serif);letter-spacing:.05em;max-width:11em}
+.hero p{max-width:420px;margin-bottom:30px;color:var(--muted)}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center}
+.empathy{background:#fff}
+.empathy .split{grid-template-columns:.9fr 1.1fr}
+.empathy img{aspect-ratio:3/2;border-radius:2px}
+.checks{display:grid;gap:0;margin:26px 0 0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.checks li{padding:16px 4px;border-bottom:1px solid var(--line);font-size:.96rem}
+.checks li:before{content:"—";margin-right:12px;color:var(--accent)}
+
+.concept{background:var(--accent-soft)}
+.concept .split{grid-template-columns:.85fr 1.15fr}
+.concept img{aspect-ratio:4/5;border-radius:2px}
+
+.benefit{background:#fff}
+.benefit__layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:5vw;align-items:center;margin-top:10px}
+.benefit__layout>img{aspect-ratio:4/5;border-radius:2px}
+.benefit__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.benefit__card{padding:28px 22px;background:var(--paper);border:1px solid var(--line);border-radius:2px}
+.benefit__card b{display:block;font:400 1.1rem var(--serif);margin-bottom:9px}
+.benefit__card p{margin:0;color:var(--muted);font-size:.87rem}
+.benefit__num{display:block;font-family:var(--serif);color:var(--accent);font-size:.8rem;margin-bottom:9px;letter-spacing:.1em}
+
+.profile{background:var(--accent-soft)}
+.profile .split{grid-template-columns:.8fr 1.2fr}
+.profile img{aspect-ratio:4/5;border-radius:2px}
+.profile .role{display:inline-block;margin-bottom:14px;padding:5px 12px;background:var(--white);border:1px solid var(--line);font-size:.72rem;letter-spacing:.1em;color:var(--accent)}
+
+.menu{background:#fff}
+.price-card{margin-top:10px;padding:44px;background:var(--ink);color:#fff;border-radius:2px;display:grid;gap:24px;grid-template-columns:1.2fr 1fr;align-items:center}
+.price-card .badge{display:inline-block;margin-bottom:14px;padding:5px 12px;background:var(--accent);font-size:.7rem;letter-spacing:.12em}
+.price-card h3{margin:0 0 12px;font:400 1.5rem var(--serif)}
+.price-card p{margin:0 0 20px;color:#cfd9dd;font-size:.9rem}
+.price-figures{text-align:right}
+.price-old{display:block;color:#9fb0b6;text-decoration:line-through;font-size:1rem}
+.price-new{display:block;font:400 3.2rem/1 var(--serif);margin:6px 0}
+.price-new small{font-size:1.1rem;margin-right:4px}
+.price-card .note{color:#a9b8bd}
+.gallery3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+.gallery3 figure{margin:0}
+.gallery3 img{aspect-ratio:4/3;border-radius:2px}
+.gallery3 figcaption{margin-top:10px;font-size:.82rem;color:var(--muted)}
+
+.voices{background:var(--accent-soft)}
+.stat{display:inline-block;margin:6px 0 0;padding:14px 22px;background:#fff;border:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+.stat b{color:var(--ink);font-family:var(--serif);font-size:1.2rem;margin:0 4px}
+.voice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:34px}
+.voice{display:grid;grid-template-columns:100px 1fr;gap:20px;padding:26px;background:#fff;border:1px solid var(--line);border-radius:2px}
+.voice img{aspect-ratio:1;border-radius:50%}
+.voice strong{display:block;margin-bottom:8px;font-family:var(--serif);font-size:1.02rem;font-weight:400}
+.voice p{margin:0 0 8px;font-size:.9rem;color:var(--ink)}
+.voice small{color:var(--muted)}
+
+.flow{background:#fff}
+.flow__grid{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center;margin-top:10px}
+.flow img{aspect-ratio:3/2;border-radius:2px}
+.steps{display:grid;gap:0;padding:0;margin:0;list-style:none}
+.steps li{display:grid;grid-template-columns:auto 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+.steps li:last-child{border-bottom:0}
+.steps b{font:400 1.4rem var(--serif);color:var(--accent)}
+.steps span{display:block}
+.steps strong{display:block;margin-bottom:4px;font-weight:500}
+.steps small{color:var(--muted);font-size:.86rem}
+
+.cta{position:relative;padding:110px 0;color:#fff;text-align:left;background:#22303a;overflow:hidden}
+.cta img{position:absolute;inset:0;height:100%;object-fit:cover;opacity:.28}
+.cta:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#1c2933ee 0%,#1c293399 60%,#1c293355 100%)}
+.cta__in{position:relative;max-width:560px}
+.cta h2{color:#fff}
+.cta p{color:#c7d3d7;margin-bottom:30px}
+.cta .btn{background:#fff;color:var(--ink);border-color:#fff}
+.cta__meta{margin-top:34px;padding-top:24px;border-top:1px solid #3a4a54;font-size:.85rem;color:#c7d3d7;display:grid;gap:6px}
+
+footer{padding:40px 20px;text-align:center;font-size:.75rem;letter-spacing:.08em;background:#1c2630;color:#aebac0}
+
+@media(max-width:820px){
+  section{padding:64px 0}
+  .split,.empathy .split,.concept .split,.profile .split,.flow__grid,.benefit__layout{grid-template-columns:1fr}
+  .split img,.benefit__layout>img{order:-1}
+  .checks{grid-template-columns:1fr}
+  .benefit__grid{grid-template-columns:1fr 1fr}
+  .gallery3{grid-template-columns:1fr}
+  .voice-grid{grid-template-columns:1fr}
+  .price-card{grid-template-columns:1fr}
+  .price-figures{text-align:left}
+  .hero{height:820px;max-height:none}
+  .hero:after{background:linear-gradient(0deg,#f6f9fa 0%,#f6f9faed 40%,transparent 74%)}
+  .hero__copy{padding-bottom:50px}
+  .cta__in{max-width:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#top">ケツ整体</a>
+  <a class="btn" href="#reserve">予約する</a>
+</header>
+<main>
+
+  <section class="hero" id="top">
+    <img src="images/fv.webp" alt="ケツ整体の施術風景、お客様の背中を丁寧に施術する様子">
+    <div class="hero__copy">
+      <span class="eyebrow">Fukuoka / 完全予約制</span>
+      <h1>その不調、根っこは<br>"お尻・骨盤"かもしれません。</h1>
+      <p>丁寧なカウンセリングから始める、痛くない・ぼきぼき鳴らさない整体。初めての方は1,000円でお試しいただけます。</p>
+      <a class="btn" href="#reserve">今すぐ予約する</a>
+    </div>
+  </section>
+
+  <section class="empathy">
+    <div class="wrap split">
+      <img src="images/empathy.webp" alt="腰やお尻まわりの重だるさを感じる女性">
+      <div>
+        <span class="eyebrow">Your concerns</span>
+        <h2 class="title">こんなお悩み、<br>ありませんか？</h2>
+        <ul class="checks">
+          <li>朝起きると腰やお尻のあたりが重だるい</li>
+          <li>長時間座りっぱなしで、お尻・腰まわりがガチガチに固まっている</li>
+          <li>整体は"ぼきぼき"鳴らされそうで、正直ちょっと怖い</li>
+          <li>いろいろ試したけれど、その場しのぎで根本的には変わらなかった</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="concept" id="concept">
+    <div class="wrap split">
+      <img src="images/concept.webp" alt="カウンセリングと丁寧な施術の様子">
+      <div>
+        <span class="eyebrow">Concept</span>
+        <h2 class="title">話してから、触れる。<br>ぼきぼき鳴らさない整体。</h2>
+        <p class="lead">ケツ整体が大切にしているのは、施術の前の対話です。今の状態やお悩みをじっくりお伺いしたうえで、力任せに関節を鳴らすような施術は行いません。お尻・骨盤まわりから全身のバランスを丁寧に整え、負担の少ない力加減で根本原因にアプローチします。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="benefit">
+    <div class="wrap">
+      <span class="eyebrow">Why choose us</span>
+      <h2 class="title">選ばれる理由</h2>
+      <div class="benefit__layout">
+        <img src="images/feature.webp" alt="施術で使用するオイルとタオル、落ち着いた施術スペース">
+        <div class="benefit__grid">
+          <div class="benefit__card"><span class="benefit__num">01</span><b>根本原因へのアプローチ</b><p>痛みのある場所だけでなく、骨盤の歪みや姿勢のクセなど、不調の元をたどって施術します。</p></div>
+          <div class="benefit__card"><span class="benefit__num">02</span><b>負担の少ない施術</b><p>ぼきぼきと関節を鳴らすような刺激の強い施術はいたしません。やさしい力加減で、身体に負担をかけません。</p></div>
+          <div class="benefit__card"><span class="benefit__num">03</span><b>丁寧なカウンセリング</b><p>施術前に今の状態やお悩みをしっかりお伺いし、納得いただいたうえで施術を始めます。</p></div>
+          <div class="benefit__card"><span class="benefit__num">04</span><b>寄り添う姿勢</b><p>一人ひとりの身体やペースに合わせて、無理のないケアをご提案します。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="wrap split">
+      <img src="images/profile.webp" alt="ケツ整体の施術者">
+      <div>
+        <span class="role">Therapist</span>
+        <h2 class="title">「痛くない」を、<br>まず自分自身で確かめてから。</h2>
+        <p class="lead">施術を担当するのは【施術者名】。【保有資格】を持ち、これまで【施術実績数】以上の方の身体と向き合ってきました。「力を入れれば効くわけではない」という考えのもと、丁寧なカウンセリングと負担の少ない施術にこだわっています。初めての方も、安心してお任せください。</p>
+        <p class="note">※氏名・資格・経験年数はご確認のうえ差し替えてください。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="menu" id="menu">
+    <div class="wrap">
+      <span class="eyebrow">Menu</span>
+      <h2 class="title">まずは1,000円で、<br>ケツ整体を体験してください。</h2>
+      <div class="price-card">
+        <div>
+          <span class="badge">おすすめ・初回限定</span>
+          <h3>初回限定コース</h3>
+          <p>丁寧なカウンセリングと、お尻・骨盤まわりを中心とした全身調整。ぼきぼき鳴らさない、やさしい施術を体感してください。</p>
+          <p class="note">※2回目以降のメニュー・料金は、初回カウンセリング時にご案内いたします。</p>
+        </div>
+        <div class="price-figures">
+          <span class="price-old">通常価格 9,000円</span>
+          <span class="price-new"><small>¥</small>1,000</span>
+          <span class="note">初回限定・税込</span>
+        </div>
+      </div>
+      <div class="gallery3">
+        <figure><img src="images/menu-1.webp" alt="首まわりを丁寧に施術する様子"><figcaption>負担の少ない手技で、首まわりから丁寧に。</figcaption></figure>
+        <figure><img src="images/menu-2.webp" alt="背中を施術する様子"><figcaption>お尻・骨盤まわりから全身のバランスを調整。</figcaption></figure>
+        <figure><img src="images/menu-3.webp" alt="施術の様子（俯瞰）"><figcaption>力任せにせず、状態を見ながら進めます。</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="voices" id="voice">
+    <div class="wrap">
+      <span class="eyebrow">Voice</span>
+      <h2 class="title">お客様の声</h2>
+      <span class="stat">施術実績<b>【 】</b>名（【 】年〜）</span>
+      <div class="voice-grid">
+        <article class="voice">
+          <img src="images/proof-1.webp" alt="お客様イメージ">
+          <div>
+            <strong>「怖くないですよ」の言葉どおりでした</strong>
+            <p>整体は痛いイメージがありましたが、ぼきぼき鳴らさない施術で終始リラックスできました。お尻から腰にかけて軽くなったのを感じます。</p>
+            <small>30代・会社員</small>
+          </div>
+        </article>
+        <article class="voice">
+          <img src="images/proof-2.webp" alt="お客様イメージ">
+          <div>
+            <strong>話をしっかり聞いてもらえて安心</strong>
+            <p>施術前にしっかりカウンセリングしてもらえるので、自分の身体の状態がよく分かります。無理のない力加減で、施術後も体が楽です。</p>
+            <small>40代・自営業</small>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="flow" id="flow">
+    <div class="wrap">
+      <span class="eyebrow">Flow</span>
+      <h2 class="title">ご予約から施術までの流れ</h2>
+      <div class="flow__grid">
+        <img src="images/flow.webp" alt="カウンセリングをしながら状態を説明する施術者">
+        <ol class="steps">
+          <li><b>01</b><span><strong>ご予約</strong><small>お電話またはWEBフォームからご予約ください。</small></span></li>
+          <li><b>02</b><span><strong>カウンセリング</strong><small>今の状態やお悩みを丁寧にお伺いします。</small></span></li>
+          <li><b>03</b><span><strong>施術</strong><small>お尻・骨盤まわりを中心に、負担の少ない施術を行います。</small></span></li>
+          <li><b>04</b><span><strong>アフターカウンセリング</strong><small>状態の変化と、次回以降のご案内をいたします。</small></span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="reserve">
+    <img src="images/cta.webp" alt="ケツ整体の落ち着いた施術ルーム">
+    <div class="wrap cta__in">
+      <span class="eyebrow" style="color:#fff">Reservation</span>
+      <h2 class="title">その違和感、<br>今日で終わりにしませんか。</h2>
+      <p>初めての方は1,000円（通常9,000円）でお試しいただけます。丁寧なカウンセリングから、無理のない施術まで。まずはお気軽にご予約ください。</p>
+      <a class="btn" href="tel:0000000000">今すぐ予約する（電話番号を差し替えてください）</a>
+      <div class="cta__meta">
+        <span>営業時間：10:00〜16:00（不定休）</span>
+        <span>住所：福岡市〇区〇丁目〇番地</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+<footer>© ケツ整体 — Sample landing page / 10:00-16:00（不定休）・福岡市〇区〇丁目〇番地</footer>
+</body>
+</html>

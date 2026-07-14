@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>伝わる資料作成 実践講座｜3ヶ月で「伝わる」が変わる</title>
+<style>
+  :root{
+    --navy:#1f3a52;
+    --navy-deep:#152838;
+    --accent:#c9a86a;
+    --cream:#faf7f2;
+    --cream-deep:#f1ece2;
+    --text:#2b2f33;
+    --sub:#6b7278;
+    --white:#ffffff;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Hiragino Sans","Yu Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--text);
+    background:var(--white);
+    line-height:1.8;
+  }
+  img{max-width:100%;display:block;}
+  a{text-decoration:none;color:inherit;}
+  .container{max-width:1080px;margin:0 auto;padding:0 24px;}
+  section{padding:88px 0;}
+  .eyebrow{
+    display:inline-block;
+    font-size:13px;
+    letter-spacing:.15em;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h2{
+    font-size:clamp(24px,3.2vw,34px);
+    font-weight:700;
+    color:var(--navy-deep);
+    margin-bottom:16px;
+    letter-spacing:.02em;
+  }
+  .lead{
+    color:var(--sub);
+    font-size:16px;
+    max-width:640px;
+  }
+  .section-head{text-align:center;margin-bottom:56px;}
+  .section-head .lead{margin:0 auto;}
+
+  /* Button */
+  .btn{
+    display:inline-block;
+    background:var(--accent);
+    color:var(--navy-deep);
+    font-weight:700;
+    padding:18px 48px;
+    border-radius:999px;
+    font-size:17px;
+    letter-spacing:.05em;
+    box-shadow:0 10px 24px rgba(201,168,106,.35);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(201,168,106,.45);}
+  .btn-outline{
+    display:inline-block;
+    border:1.5px solid var(--white);
+    color:var(--white);
+    padding:16px 44px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:16px;
+  }
+
+  /* ===== FV ===== */
+  .fv{
+    position:relative;
+    background:linear-gradient(180deg,var(--navy) 0%,var(--navy-deep) 100%);
+    color:var(--white);
+    padding:0;
+    overflow:hidden;
+  }
+  .fv-inner{
+    max-width:1080px;margin:0 auto;
+    display:grid;grid-template-columns:1.05fr .95fr;
+    align-items:center;gap:40px;
+    padding:96px 24px 80px;
+  }
+  .fv-badge{
+    display:inline-block;background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.25);
+    padding:6px 16px;border-radius:999px;font-size:13px;
+    letter-spacing:.08em;margin-bottom:24px;color:var(--accent);
+  }
+  .fv h1{
+    font-size:clamp(30px,4.4vw,46px);
+    font-weight:800;line-height:1.5;margin-bottom:20px;
+  }
+  .fv h1 span{color:var(--accent);}
+  .fv p.sub{
+    font-size:16px;color:#d7dee5;margin-bottom:36px;max-width:480px;
+  }
+  .fv-meta{
+    display:flex;gap:28px;margin-top:36px;
+    font-size:13px;color:#b9c3cc;flex-wrap:wrap;
+  }
+  .fv-meta div{display:flex;align-items:center;gap:8px;}
+  .fv-visual{
+    border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 30px 60px rgba(0,0,0,.35);
+  }
+  .fv-visual img{aspect-ratio:4/3;object-fit:cover;}
+
+  /* ===== Benefit ===== */
+  .benefit{background:var(--cream);}
+  .benefit-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;
+  }
+  .benefit-visual{border-radius:var(--radius);overflow:hidden;box-shadow:0 20px 40px rgba(31,58,82,.12);}
+  .benefit-list{display:flex;flex-direction:column;gap:28px;}
+  .benefit-item{display:flex;gap:18px;}
+  .benefit-num{
+    flex:none;width:40px;height:40px;border-radius:50%;
+    background:var(--navy);color:var(--white);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:15px;
+  }
+  .benefit-item h3{font-size:18px;color:var(--navy-deep);margin-bottom:6px;}
+  .benefit-item p{color:var(--sub);font-size:15px;}
+
+  /* ===== Feature ===== */
+  .feature{background:var(--white);}
+  .feature-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;
+  }
+  .feature-visual{border-radius:var(--radius);overflow:hidden;box-shadow:0 20px 40px rgba(31,58,82,.12);}
+  .feature-cards{display:grid;gap:20px;}
+  .feature-card{
+    background:var(--cream);border-radius:12px;padding:22px 24px;
+    border-left:4px solid var(--accent);
+  }
+  .feature-card h3{font-size:16px;color:var(--navy-deep);margin-bottom:6px;}
+  .feature-card p{font-size:14px;color:var(--sub);}
+
+  /* ===== Curriculum / Price ===== */
+  .curriculum{background:var(--navy-deep);color:var(--white);}
+  .curriculum .section-head h2{color:var(--white);}
+  .curriculum .section-head .lead{color:#b9c3cc;}
+  .curriculum-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:64px;
+  }
+  .curriculum-card{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:var(--radius);overflow:hidden;
+  }
+  .curriculum-card img{aspect-ratio:4/3;object-fit:cover;}
+  .curriculum-card-body{padding:22px 22px 26px;}
+  .curriculum-tag{font-size:12px;color:var(--accent);letter-spacing:.1em;font-weight:700;margin-bottom:8px;}
+  .curriculum-card-body h3{font-size:17px;margin-bottom:8px;}
+  .curriculum-card-body p{font-size:13.5px;color:#b9c3cc;}
+
+  .price-box{
+    background:var(--white);color:var(--text);
+    border-radius:var(--radius);padding:44px;
+    display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;
+  }
+  .price-details{display:grid;grid-template-columns:repeat(2,1fr);gap:20px 40px;}
+  .price-details dt{font-size:12px;color:var(--sub);letter-spacing:.08em;margin-bottom:4px;}
+  .price-details dd{font-size:15px;color:var(--navy-deep);font-weight:700;}
+  .price-cta{text-align:center;}
+  .price-cta .amount{font-size:13px;color:var(--sub);margin-bottom:4px;}
+  .price-cta .amount strong{font-size:32px;color:var(--navy-deep);display:block;}
+  .price-cta .btn{margin-top:16px;}
+
+  /* ===== Proof ===== */
+  .proof{background:var(--cream);}
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:64px;
+  }
+  .stat{text-align:center;background:var(--white);border-radius:var(--radius);padding:32px 20px;box-shadow:0 12px 28px rgba(31,58,82,.08);}
+  .stat .num{font-size:36px;font-weight:800;color:var(--navy);}
+  .stat .num span{font-size:18px;}
+  .stat .label{font-size:13px;color:var(--sub);margin-top:6px;}
+  .voice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;}
+  .voice-card{
+    background:var(--white);border-radius:var(--radius);
+    padding:28px;box-shadow:0 12px 28px rgba(31,58,82,.08);
+    display:flex;gap:20px;
+  }
+  .voice-card img{width:76px;height:76px;border-radius:50%;object-fit:cover;flex:none;}
+  .voice-quote{font-size:14.5px;color:var(--text);margin-bottom:12px;}
+  .voice-name{font-size:13px;color:var(--sub);font-weight:700;}
+
+  /* ===== Profile ===== */
+  .profile{background:var(--white);}
+  .profile-grid{
+    display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:center;
+  }
+  .profile-visual{border-radius:var(--radius);overflow:hidden;box-shadow:0 20px 40px rgba(31,58,82,.12);}
+  .profile-name{font-size:22px;font-weight:800;color:var(--navy-deep);margin-bottom:4px;}
+  .profile-role{font-size:14px;color:var(--accent);font-weight:700;margin-bottom:20px;}
+  .profile-bio p{color:var(--sub);font-size:15px;margin-bottom:14px;}
+
+  /* ===== FAQ ===== */
+  .faq{background:var(--cream);}
+  .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:flex-start;}
+  .faq-visual{border-radius:var(--radius);overflow:hidden;box-shadow:0 20px 40px rgba(31,58,82,.12);}
+  .faq-list{display:flex;flex-direction:column;gap:16px;}
+  .faq-item{background:var(--white);border-radius:12px;padding:22px 24px;box-shadow:0 8px 20px rgba(31,58,82,.06);}
+  .faq-q{display:flex;gap:12px;font-weight:700;color:var(--navy-deep);font-size:15px;margin-bottom:8px;}
+  .faq-q .mark{color:var(--accent);flex:none;}
+  .faq-a{display:flex;gap:12px;font-size:14px;color:var(--sub);}
+  .faq-a .mark{color:var(--sub);flex:none;}
+
+  /* ===== CTA ===== */
+  .cta-final{
+    position:relative;color:var(--white);
+    background:linear-gradient(180deg,var(--navy-deep) 0%,var(--navy) 100%);
+    overflow:hidden;
+  }
+  .cta-final-inner{
+    max-width:1080px;margin:0 auto;padding:0 24px;
+    display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+  }
+  .cta-visual{border-radius:var(--radius);overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,.35);}
+  .cta-final h2{color:var(--white);}
+  .cta-final .lead{color:#c7d0d8;}
+  .cta-actions{display:flex;gap:16px;margin-top:32px;flex-wrap:wrap;}
+  .cta-note{margin-top:20px;font-size:13px;color:#9fb0bd;}
+
+  footer{
+    background:var(--navy-deep);color:#8b98a3;
+    text-align:center;padding:32px 24px;font-size:12.5px;
+  }
+
+  @media (max-width:860px){
+    section{padding:64px 0;}
+    .fv-inner,.benefit-grid,.feature-grid,.profile-grid,.faq-grid,.cta-final-inner{
+      grid-template-columns:1fr;
+    }
+    .fv-inner{padding-top:64px;}
+    .curriculum-grid{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr;}
+    .voice-grid{grid-template-columns:1fr;}
+    .price-box{grid-template-columns:1fr;text-align:left;}
+    .price-details{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== 1. ファーストビュー ========== -->
+<header class="fv">
+  <div class="fv-inner">
+    <div>
+      <span class="fv-badge">信頼と実績の実践講座</span>
+      <h1>資料が変われば、<br><span>あなたの提案</span>は動き出す。</h1>
+      <p class="sub">「話はいいのに、資料で損している」——そんな社会人のための、伝わる資料作成 実践講座。全3回・少人数制で、あなたの実務資料が形になります。</p>
+      <a href="#cta" class="btn">今すぐ申し込む</a>
+      <div class="fv-meta">
+        <div>累計受講者 320名+</div>
+        <div>満足度 96%</div>
+        <div>定員12名の少人数制</div>
+      </div>
+    </div>
+    <div class="fv-visual">
+      <img src="images/fv.webp" alt="講座の様子">
+    </div>
+  </div>
+</header>
+
+<!-- ========== 2. ベネフィット ========== -->
+<section class="benefit">
+  <div class="container">
+    <div class="benefit-grid">
+      <div class="benefit-visual">
+        <img src="images/benefit.webp" alt="受講の様子">
+      </div>
+      <div>
+        <span class="eyebrow">GET THE FUTURE</span>
+        <h2>この講座で、<br>得られる3つの未来</h2>
+        <div class="benefit-list" style="margin-top:32px;">
+          <div class="benefit-item">
+            <div class="benefit-num">01</div>
+            <div>
+              <h3>資料作成の時間が半分に</h3>
+              <p>迷わず作れる「型」が身につき、ゼロから悩む時間がなくなります。</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-num">02</div>
+            <div>
+              <h3>「一発OK」が増える</h3>
+              <p>上司やクライアントにまっすぐ伝わる構成力が、そのまま評価につながります。</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-num">03</div>
+            <div>
+              <h3>人前で話す自信がつく</h3>
+              <p>資料と話し方が連動し、プレゼンでの説得力が目に見えて変わります。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 3. 講座の特徴 ========== -->
+<section class="feature">
+  <div class="container">
+    <div class="feature-grid">
+      <div>
+        <span class="eyebrow">FEATURES</span>
+        <h2>実践だから、身につく。<br>講座の特徴</h2>
+        <div class="feature-cards" style="margin-top:32px;">
+          <div class="feature-card">
+            <h3>現場で使える実践課題</h3>
+            <p>実際の業務資料を題材に、毎回ワーク形式で手を動かして学びます。</p>
+          </div>
+          <div class="feature-card">
+            <h3>プロ講師による1対1添削</h3>
+            <p>提出課題はすべて講師が個別にフィードバック。弱点をその場で解消します。</p>
+          </div>
+          <div class="feature-card">
+            <h3>何度でも見返せる録画講義</h3>
+            <p>講義はすべて録画。欠席時のフォローや復習にいつでも使えます。</p>
+          </div>
+          <div class="feature-card">
+            <h3>修了と同時に「成果物」が完成</h3>
+            <p>講座で使うのは自分の業務資料。終了時には実際に使える資料が手元に残ります。</p>
+          </div>
+        </div>
+      </div>
+      <div class="feature-visual">
+        <img src="images/feature.webp" alt="講座の教材とサポート">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 4. カリキュラム・料金 ========== -->
+<section class="curriculum">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">CURRICULUM &amp; PRICE</span>
+      <h2>カリキュラムと受講料</h2>
+      <p class="lead">全3回・実践形式で、資料作成の「型」を段階的に身につけます。</p>
+    </div>
+
+    <div class="curriculum-grid">
+      <div class="curriculum-card">
+        <img src="images/menu-1.webp" alt="第1回 講義の様子">
+        <div class="curriculum-card-body">
+          <div class="curriculum-tag">第1回</div>
+          <h3>伝わる資料の「型」を知る</h3>
+          <p>課題設定と構成づくり。読み手視点でのストーリー設計を学びます。</p>
+        </div>
+      </div>
+      <div class="curriculum-card">
+        <img src="images/menu-2.webp" alt="第2回 講義の様子">
+        <div class="curriculum-card-body">
+          <div class="curriculum-tag">第2回</div>
+          <h3>情報を絞り、視覚化する</h3>
+          <p>グラフ・図解の作り方と、伝わるレイアウトの基本原則を実践します。</p>
+        </div>
+      </div>
+      <div class="curriculum-card">
+        <img src="images/menu-3.webp" alt="第3回 講義の様子">
+        <div class="curriculum-card-body">
+          <div class="curriculum-tag">第3回</div>
+          <h3>伝える資料に仕上げる</h3>
+          <p>個別添削とプレゼン実践。完成した資料をその場で発表・講評します。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-box">
+      <dl class="price-details">
+        <div><dt>日程</dt><dd>2026年9月5日・12日・19日（土）10:00〜12:00</dd></div>
+        <div><dt>定員</dt><dd>12名（少人数制）</dd></div>
+        <div><dt>形式</dt><dd>オンライン（Zoom）／会場受講から選択可</dd></div>
+        <div><dt>持ち物</dt><dd>ノートPC、実務で使いたい資料（任意）</dd></div>
+      </dl>
+      <div class="price-cta">
+        <div class="amount">受講料（全3回・添削費込／税込）<strong>¥48,000</strong></div>
+        <a href="#cta" class="btn">この内容で申し込む</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 5. 受講生の声・実績 ========== -->
+<section class="proof">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">VOICE &amp; RESULTS</span>
+      <h2>受講生の声・実績</h2>
+      <p class="lead">これまで320名以上が受講し、多くの声をいただいています。</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">320<span>名+</span></div><div class="label">累計受講者数</div></div>
+      <div class="stat"><div class="num">96<span>%</span></div><div class="label">受講後アンケート満足度</div></div>
+      <div class="stat"><div class="num">40<span>%</span></div><div class="label">リピート・紹介率</div></div>
+    </div>
+
+    <div class="voice-grid">
+      <div class="voice-card">
+        <img src="images/proof-1.webp" alt="受講生の声1">
+        <div>
+          <p class="voice-quote">「毎回の添削が的確で、自分の弱点がはっきり分かりました。今では資料を見せるのが怖くなくなりました。」</p>
+          <div class="voice-name">30代・営業職 女性</div>
+        </div>
+      </div>
+      <div class="voice-card">
+        <img src="images/proof-2.webp" alt="受講生の声2">
+        <div>
+          <p class="voice-quote">「資料作成の時間が半分になりました。同じ内容でも構成を変えるだけで伝わり方がこんなに違うのかと驚きました。」</p>
+          <div class="voice-name">40代・企画職 男性</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 6. 講師紹介 ========== -->
+<section class="profile">
+  <div class="container">
+    <div class="profile-grid">
+      <div class="profile-visual">
+        <img src="images/profile.webp" alt="講師 田中美咲">
+      </div>
+      <div>
+        <span class="eyebrow">INSTRUCTOR</span>
+        <div class="profile-name" style="margin-top:16px;">田中 美咲</div>
+        <div class="profile-role">資料作成・プレゼンテーション講師</div>
+        <div class="profile-bio">
+          <p>外資系コンサルティングファームにて10年間、資料作成とプレゼンテーション指導に従事。独立後は、年間200件以上の企業研修・講座を担当。</p>
+          <p>「伝わる」を感覚ではなく型として分解し、誰でも再現できる形で伝えることを信条としています。現場での実務経験に基づいた、明日から使える指導が特徴です。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 7. よくある質問 ========== -->
+<section class="faq">
+  <div class="container">
+    <div class="faq-grid">
+      <div>
+        <span class="eyebrow">FAQ</span>
+        <h2>よくある質問</h2>
+        <p class="lead">申し込み前の不安に、あらかじめお答えします。</p>
+        <div class="faq-visual" style="margin-top:32px;">
+          <img src="images/faq.webp" alt="ご相談の様子">
+        </div>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q"><span class="mark">Q</span>パソコン初心者でも大丈夫ですか？</div>
+          <div class="faq-a"><span class="mark">A</span>基本的な操作ができれば問題ありません。ソフトの使い方より「考え方」を重視した講座です。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span class="mark">Q</span>仕事で忙しく、毎回参加できるか不安です。</div>
+          <div class="faq-a"><span class="mark">A</span>全回録画がありますので、欠席された回は後日視聴で補講いただけます。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span class="mark">Q</span>オンラインと会場、どちらがおすすめですか？</div>
+          <div class="faq-a"><span class="mark">A</span>内容は同じです。直接質問しながら学びたい方は会場、隙間時間に視聴したい方はオンラインがおすすめです。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span class="mark">Q</span>分割払いはできますか？</div>
+          <div class="faq-a"><span class="mark">A</span>クレジットカードによる分割払いに対応しています。お申し込みフォームでご選択いただけます。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q"><span class="mark">Q</span>講座後のサポートはありますか？</div>
+          <div class="faq-a"><span class="mark">A</span>修了生限定のコミュニティにご招待し、継続してご質問・ご相談いただけます。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 8. 最後のひと押し（CTA） ========== -->
+<section class="cta-final" id="cta">
+  <div class="container">
+    <div class="cta-final-inner">
+      <div>
+        <span class="eyebrow">LAST STEP</span>
+        <h2>迷っているなら、<br>まず話を聞いてみませんか。</h2>
+        <p class="lead">定員12名の少人数講座です。日程が合わない場合もお気軽にご相談ください。お申し込みはお早めに。</p>
+        <div class="cta-actions">
+          <a href="#" class="btn">今すぐ申し込む</a>
+          <a href="#" class="btn-outline">電話で問い合わせる</a>
+        </div>
+        <p class="cta-note">お申し込み・お問い合わせは無料です。しつこい勧誘は一切行いません。</p>
+      </div>
+      <div class="cta-visual">
+        <img src="images/cta.webp" alt="お申し込みのイメージ">
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  伝わる資料作成 実践講座　※本ページの数値・お客様の声はサンプルです。実際のデータに差し替えてご利用ください。
+</footer>
+
+</body>
+</html>

@@ -1610,6 +1610,22 @@ button {
   padding: 1px 9px;
 }
 
+.imgslot__reflock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.imgslot__reflock input {
+  margin: 0;
+  cursor: pointer;
+}
+
 .imgslot__acts {
   display: flex;
   gap: 6px;
@@ -1637,6 +1653,18 @@ button {
   border-color: var(--rose);
   color: var(--rose-deep);
   background: var(--rose-veil);
+}
+
+.imgslot__btn.is-copied {
+  border-color: #8fae86;
+  color: #4b6b46;
+  background: #e8efe4;
+}
+
+.imgslot__btn.is-copied:hover {
+  border-color: #6e9364;
+  color: #3c5638;
+  background: #dfe9d9;
 }
 
 .imgslot__thumb {
@@ -1692,11 +1720,4 @@ button {
   }
 }
 
-/* 見取り図クリックで、設計図側の該当箇所に差すしるし */
-.output-mark {
-  padding: 0 3px;
-  border-radius: 3px;
-  background: var(--rose-mist);
-  color: var(--ink);
-  animation: flash var(--slow) var(--ease) 2;
-}
+/* 見取り図クリックで、設計図

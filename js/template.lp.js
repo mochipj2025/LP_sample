@@ -289,7 +289,7 @@
   const USAGE_MAKE = '【使い方】① 下をコピー → ② Claude / ChatGPT / v0 に貼る → ③ その場でLPのプレビューが表示されます';
 
   function aim(state) {
-    const tone = state.tone ? state.tone + 'な' : '';
+    const tone = state.tone ? '「' + state.tone + '」を基調にした' : '';
     const type = state.type || '（業種未選択）';
     const reader = state.reader || '（読み手未選択）';
     const goal = state.goal || '（ゴール未選択）';
@@ -313,6 +313,14 @@
   }
 
   function tasteOf(state) {
+    const byType = {
+      '飲食店': 'シズル感のある料理写真／温かく落ち着いた照明',
+      'カフェ・ベーカリー': '明るい自然光／木の温もり／やわらかなカフェ写真',
+      'バー・居酒屋': '夜の暖色照明／料理とドリンクのシズル感',
+      '美容室': '清潔感のある実写／やわらかな自然光／髪の艶と毛流れ',
+      'ネイルサロン': '明るく清潔な実写／指先の色と質感が伝わる接写'
+    };
+    if (byType[state.type]) return byType[state.type];
     return {
       food: 'シズル感のある料理写真／温かい自然光',
       store: '清潔感のある実写・やわらかい自然光',
@@ -575,6 +583,13 @@
         '40代の日本人男性クライアント。発注者側の担当者として私服のオフィスカジュアルで完成物に満足する自然な表情'
       ]
     };
+    const byType = {
+      '個人・作家': [
+        '30代の日本人女性依頼者。受け取った作品を手に、私服で自然に微笑む利用者。作家本人やスタッフに見せない',
+        '40代の日本人男性依頼者。依頼した作品を手にして、私服で満足そうに微笑む利用者。作家本人やスタッフに見せない'
+      ]
+    };
+    if (byType[state.type]) return byType[state.type];
     return common[genreOf(state.type)] || common.store;
   }
 
@@ -596,9 +611,9 @@
       menu: '料理やドリンク', place: '暖色照明のカウンターと店内', detail: 'グラス、酒瓶、料理の盛り付け', people: '乾杯する客と接客するスタッフ', outside: '夜の店先、提灯や看板'
     },
     'サロン・整体': {
-      fv: '清潔な個室で行う穏やかな整体・ケアの施術。安心できる自然な表情',
+      fv: '清潔な個室で、施術ベッドにうつ伏せで横たわりリラックスする利用者の肩や背中に、施術者が両手を自然に添える整体シーン。体は真横から見た構図にして、腕や脚が不自然にねじれたり関節が破綻したりしないように、解剖学的に自然なポーズと体の向きで。安心できる穏やかな表情',
       concept: 'カウンセリングと丁寧な施術の手元のアップ',
-      menu: '施術・コース', place: '清潔で落ち着いた施術室', detail: '施術ベッド、タオル、ケア用品', people: '施術者とリラックスした利用者', outside: '入りやすいサロンの入口'
+      menu: '施術・コース', place: '清潔で落ち着いた施術室', detail: '施術ベッド、タオル、ケア用品', people: '施術ベッドにうつ伏せで横たわりリラックスする利用者と、その脇に自然な姿勢で立つ施術者。体の向きや手足の関節が破綻しない、解剖学的に自然なポーズで、真横または斜め後ろから見た構図', outside: '入りやすいサロンの入口'
     },
     '美容室': {
       fv: '洗練された美容室で、完成したヘアスタイルを美しく見せる日本人モデル',
@@ -651,7 +666,7 @@
     '飲食店': '店選びに迷い、スマートフォンで飲食店を比較している日本人の男女。自然な日常の表情',
     'カフェ・ベーカリー': '落ち着いて過ごせる場所を探し、街中でカフェを検索している日本人女性。少し疲れた自然な表情',
     'バー・居酒屋': '仕事帰りに入る店を決められず、スマートフォンで店を探す日本人の友人グループ',
-    'サロン・整体': '肩や腰のつらさを感じ、日常生活で体を気にしている日本人。症状を誇張しない自然な場面',
+    'サロン・整体': '肩や腰のつらさを感じ、日常生活で体を気にしている日本人。無理に体をひねらない、解剖学的に自然な立ち姿勢・座り姿勢で。症状を誇張しない自然な場面',
     '美容室': '髪型が決まらず鏡の前で髪を整えながら悩む日本人女性。傷みや広がりが自然に分かる場面',
     'ネイルサロン': '自分に似合うネイルが分からず、デザインを見比べながら迷う日本人女性の手元',
     'クリニック・歯科': '体や歯の不調に不安を感じ、受診先をスマートフォンで調べる日本人。怖さを煽らない穏やかな場面',
@@ -691,6 +706,14 @@
    * 画像スロット一覧 ― ステップ②と「画像プロンプト集」の共通ソース。
    * 各スロット＝1枚。id はファイル名の元（images/<id>.jpg）。prompt は1枚ごとに固有。
    */
+  /** 「実物を反映（写真を崩さない）」にチェックの入ったスロットへ追記する注記 */
+  function refLockNote(state, sid) {
+    if (!state._refLock || !state._refLock[sid]) return '';
+    return '\n※参照画像あり：アップロードする実在の人物・内装・外装の写真を元に加工してください。' +
+      '顔立ちや建物の造作・配置・構造など、実物の特徴は変えずに保ったまま、雰囲気やライティングだけ整えること。' +
+      '人物や建物を新しく作り変えたり、別人・別の建物にしたりしないこと。';
+  }
+
   function imageSlots(state) {
     const g = genreOf(state.type);
     const imageType = imageTypeOf(state);
@@ -719,9 +742,11 @@
           subject = shop + (shop ? 'の' : '') + (imageType ? imageType.concept : CONCEPT_SUBJ[g]);
         } else if (id === 'benefit') {
           label = def.label;
-          subject = imageType
-            ? imageType.people + '。サービスや商品を利用した後の満足感が伝わる明るい場面'
-            : '利用後の前向きな変化と満足感が伝わる場面';
+          subject = state.type === '個人・作家'
+            ? '完成した作品を主役にした、依頼者の理想が形になった瞬間が伝わるカット'
+            : imageType
+              ? imageType.people + '。サービスや商品を利用した後の満足感が伝わる明るい場面'
+              : '利用後の前向きな変化と満足感が伝わる場面';
         } else if (id === 'feature') {
           label = def.label;
           subject = state.type === 'SaaS・アプリ'
@@ -738,7 +763,7 @@
             const shot = hairShots[k % hairShots.length];
             label = 'ヘアスタイル｜' + shot.label;
             subject = shot.subject;
-            slots.push({ id: sid, label: label, ratio: def.ratio, prompt: finishPrompt(state, subject, def.ratio) });
+            slots.push({ id: sid, label: label, ratio: def.ratio, prompt: finishPrompt(state, subject, def.ratio) + refLockNote(state, sid) });
             continue;
           }
           const specialMenuShots = {
@@ -761,19 +786,16 @@
               { label: 'サービス1', subject: '企業の中心サービスを象徴する、実際の仕事現場と担当者' },
               { label: 'サービス2', subject: '専門的な技術や設備を使って作業する担当者の場面' },
               { label: 'サービス3', subject: '顧客と担当者が打ち合わせを行い、提案内容を確認する場面' }
-            ],
-            '個人・作家': [
-              { label: '代表作品', subject: '作家の代表作品を主役にした、質感が分かる端正な物撮り' },
-              { label: '制作風景', subject: 'アトリエで作品を制作する本人と手元、愛用する道具' },
-              { label: '納品イメージ', subject: '完成作品を丁寧に梱包、または依頼者へ手渡す場面' }
             ]
+            // '個人・作家' は TYPE_ORDERS のどのボリュームでも 'menu' セクションを使わないため、
+            // ここに専用ショットを置いても呼ばれない（重複定義を避けるため削除済み）。
           };
           const specialShots = specialMenuShots[state.type];
           if (specialShots) {
             const shot = specialShots[k % specialShots.length];
             label = menuLabel(g) + '｜' + shot.label;
             subject = shot.subject;
-            slots.push({ id: sid, label: label, ratio: def.ratio, prompt: finishPrompt(state, subject, def.ratio) });
+            slots.push({ id: sid, label: label, ratio: def.ratio, prompt: finishPrompt(state, subject, def.ratio) + refLockNote(state, sid) });
             continue;
           }
           // 1品目は掲載情報の商品・メニュー名をそのまま使う（あれば）
@@ -808,12 +830,12 @@
               ]
             },
             '個人・作家': {
-              names: ['Web制作', 'ブランド制作', '紙もの制作', 'パッケージ制作'],
+              names: ['代表作品', '素材・ディテール', '制作風景', 'アトリエ・活動の場'],
               subjects: [
-                '制作したWebサイトをノートPCとスマートフォンに表示した実績モックアップ',
-                'ロゴ、名刺、封筒を整然と並べたブランドデザインの実績モックアップ',
-                'パンフレットやフライヤーを美しく並べたグラフィックデザインの実績',
-                '制作した商品パッケージを主役にした上質な実績写真'
+                '代表的な作品を主役にした、質感が伝わる端正なカット',
+                '作品の素材やディテールが分かる寄りの接写',
+                '作品を制作する本人の手元と道具のクローズアップ。集中する様子',
+                'アトリエや活動場所の外観。個性が伝わる佇まい'
               ]
             }
           };
@@ -834,9 +856,11 @@
           subject = customerVoiceSubjects(state)[k % 2];
         } else if (id === 'flow') {
           label = def.label;
-          subject = imageType
-            ? imageType.people + '。初めての利用者に手順を分かりやすく案内している場面'
-            : '申し込みから利用までの流れが伝わる、案内を受ける利用者の場面';
+          subject = state.type === '個人・作家'
+            ? '本人が依頼者からの要望を丁寧にヒアリングし、メモを取る打ち合わせの場面'
+            : imageType
+              ? imageType.people + '。初めての利用者に手順を分かりやすく案内している場面'
+              : '申し込みから利用までの流れが伝わる、案内を受ける利用者の場面';
         } else if (id === 'access') {
           label = def.label;
           subject = imageType
@@ -844,10 +868,14 @@
             : '建物の入口と周辺が分かる明るい外観写真';
         } else if (id === 'profile') {
           label = def.label;
-          subject = '日本人の運営者・スタッフの上半身ポートレート。仕事場を背景に、親しみと信頼が伝わる自然な表情';
+          subject = state.type === '個人・作家'
+            ? '日本人の本人（作家）の上半身ポートレート。アトリエや仕事場を背景に、人柄が伝わる自然な表情'
+            : '日本人の運営者・スタッフの上半身ポートレート。仕事場を背景に、親しみと信頼が伝わる自然な表情';
         } else if (id === 'faq') {
           label = def.label;
-          subject = 'スタッフが利用者の質問に丁寧に答えている場面。安心感のある自然な会話';
+          subject = state.type === '個人・作家'
+            ? '本人が依頼者の質問に丁寧に答えている場面。安心感のある自然な会話'
+            : 'スタッフが利用者の質問に丁寧に答えている場面。安心感のある自然な会話';
         } else if (id === 'news') {
           label = def.label;
           subject = imageType
@@ -860,7 +888,7 @@
             : 'ブランドの世界観を表す、余白の広い明るい締めのビジュアル';
         }
 
-        slots.push({ id: sid, label: label, ratio: def.ratio, prompt: finishPrompt(state, subject, def.ratio) });
+        slots.push({ id: sid, label: label, ratio: def.ratio, prompt: finishPrompt(state, subject, def.ratio) + refLockNote(state, sid) });
       }
     });
     return slots;
@@ -1049,19 +1077,4 @@
     }
   ];
 
-  /* ======================================================================
-   * 8. 登録
-   * ====================================================================== */
-  global.PromptMaker.registerTemplate({
-    id: 'lp',
-    name: 'LP構成',
-    icon: '🧱',
-    enabled: true,
-    fields: FIELDS,
-    presets: PRESETS,
-    defaults: DEFAULT_STATE,
-    build: build,
-    wireframe: wireframe,
-    imageSlots: imageSlots
-  });
-})(window);
+  /* ===============

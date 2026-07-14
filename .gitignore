@@ -10,3 +10,10 @@ samples/**/archive/
 Thumbs.db
 desktop.ini
 *.tmp
+
+# Local scratch/test artifacts
+_synctest*.txt
+_to_delete/
+
+# Automation server secrets (future AI API integration, never commit keys)
+automa

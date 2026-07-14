@@ -151,4 +151,17 @@
     },
     storage: storage
   };
-})(window);
+
+  /* ------------------------------------------------------------------
+   * Node からも同じロジックを再利用できるようにする（将来のAI自動化用）
+   * ------------------------------------------------------------------
+   * ブラウザでは window.PromptMaker として動く。将来ローカルサーバーから
+   * 画像生成・LPコード生成APIを叩く自動化スクリプトを書くときは、
+   * この core.js と template.lp.js を Node からそのまま require して、
+   * ブラウザと全く同じプロンプト生成ロジックを使い回す想定。
+   * 詳しくは automation/README.md を参照。
+   * ------------------------------------------------------------------ */
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = global.PromptMaker;
+  }
+})(typeof window !== 'undefined' ? window : global);
