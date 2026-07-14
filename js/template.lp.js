@@ -1077,4 +1077,26 @@
     }
   ];
 
-  /* ===============
+  /* ======================================================================
+   * 8. 登録
+   * ====================================================================== */
+  global.PromptMaker.registerTemplate({
+    id: 'lp',
+    name: 'LP構成',
+    icon: '🧱',
+    enabled: true,
+    fields: FIELDS,
+    presets: PRESETS,
+    defaults: DEFAULT_STATE,
+    build: build,
+    wireframe: wireframe,
+    imageSlots: imageSlots
+  });
+
+  /* Node（将来の自動化スクリプト）からは、この template.lp.js を require するだけで
+   * 登録済みの 'lp' テンプレートを直接受け取れるようにする。core.js を先に
+   * require して global.PromptMaker を用意しておくこと（automation/README.md 参照）。 */
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = global.PromptMaker.getTemplate('lp');
+  }
+})(typeof window !== 'undefined' ? window : global);

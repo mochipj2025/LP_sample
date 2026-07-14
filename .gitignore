@@ -16,4 +16,7 @@ _synctest*.txt
 _to_delete/
 
 # Automation server secrets (future AI API integration, never commit keys)
-automa
+automation/.env
+automation/.env.*
+automation/node_modules/
+*.key

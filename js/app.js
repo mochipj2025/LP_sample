@@ -1147,3 +1147,23 @@
 
   function init() {
     cacheDom();
+
+    // 有効なテンプレートの先頭を初期表示にする
+    template = global.PromptMaker.getTemplates().filter(function (item) {
+      return item.enabled;
+    })[0];
+
+    state = Object.assign({}, template.defaults);
+
+    renderTabs();
+    renderPresets();
+    renderFields();
+    tagFieldKeys();
+    renderUserPresets();
+    syncAllFields();
+    updatePrompt();
+    bindActions();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})(window);

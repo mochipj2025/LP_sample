@@ -1720,4 +1720,11 @@ button {
   }
 }
 
-/* 見取り図クリックで、設計図
+/* 見取り図クリックで、設計図側の該当箇所に差すしるし */
+.output-mark {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--rose-mist);
+  color: var(--ink);
+  animation: flash var(--slow) var(--ease) 2;
+}
