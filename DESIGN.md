@@ -11,7 +11,7 @@
 |---|---|---|---|
 | LP作成 | `lp` | `js/template.lp.js` | 稼働中 |
 | 画像作成 | `visual` | `js/template.visual.js` | 稼働中 |
-| アイコン作成 | `icon` | `js/template.icon.js`（未作成） | 予定 |
+| アイコン作成 | `icon` | `js/template.icon.js` | 稼働中 |
 
 タブ（`#tabs`）でいつでも切り替えられる。切り替えると入力・プリセット・出力がその系統のものに丸ごと入れ替わる（`app.js` の `switchTemplate()`）。
 
@@ -32,7 +32,7 @@
 UI層          app.js（画面描画・状態管理・テンプレ非依存）
                │        └ wizard.js（ステップ進行の制御。app.js の上に薄く被せるだけ）
                │
-テンプレート層  template.lp.js / template.visual.js / template.icon.js（予定）
+テンプレート層  template.lp.js / template.visual.js / template.icon.js
                │        ↑ ここだけに「業種・出力内容の知識」を書く
                │
 コア層        core.js（テンプレート登録の仕組み・共通ユーティリティ）
@@ -83,7 +83,8 @@ global.PromptMaker.registerTemplate({
 
 - [x] 画像作成に `imageSlots` を追加（アップロード→自動リネーム→WebP変換→ZIP書き出しをLP作成と共有）
 - [x] `tutorial.html` に「はじめに：フォルダ＆GitHubリポジトリ準備」を追加（コピペ用プロンプト付き）
-- [ ] アイコン作成 PromptMaker（`template.icon.js`）― 作るなら `imageSlots` も最初から実装したい
+- [x] アイコン作成 PromptMaker（`template.icon.js`）― favicon・SNSアイコン・UI機能アイコンなど、
+      小さく表示される「印」向け。`imageSlots` も最初から実装済み。テイストの語彙はLP作成・画像作成と共通
 - [ ] LP作成の深掘り（見出し複数パターン生成・SEOメタ情報・多言語対応など）
 - [ ] 画像作成 × LP作成の連携強化（画像作成側で作ったテイストをLP側にそのまま引き継ぐ）
 - [ ] マスコット・相棒キャラ作成（`template.companion.js`、相棒maker移植）― §7 の整理待ち。なお会話ベースで先行して
@@ -93,4 +94,25 @@ global.PromptMaker.registerTemplate({
 ## 7. 外部エコシステムとの関係（要整理・未解決）
 
 このプロジェクト（`LPStructureMaker`）とは別に、同じ作者（もちすら氏）のリポジトリ
-`github.com/mochi
+`github.com/mochipj2025/Promptmaker002` に、すでに次のツール群が存在することが判明した。
+
+**本番ツール（7本）**
+- `simple-character-promptmaker/` … キャラクタープロンプトメーカー（全部入り・詳細編集）
+- `real-portrait-maker/` … リアルポートレートMaker
+- `art-character-maker/` … アートキャラクターMaker（水彩・絵本・版画調）
+- `anime-comic-maker/` … 漫画・アニメキャラMaker
+- `content-kit/` … Content Prompt Kit（漫画カット・雑誌ページ・SNS素材）
+- `lp-structure-maker/` … **LP構成Maker（このプロジェクトと役割が重なる可能性が高い）**
+- `five-question-character-maker/` … 本の世界転生オリキャラMaker
+
+**Dev試作（2本）**
+- `dev/companion-maker.html` … あなただけの相棒maker（§2フェーズ2の候補、上述）
+- `dev/character-promptmaker/` … キャラ案メモ maker
+
+**未解決の論点**
+
+1. **`lp-structure-maker/` との関係が最重要。** 向こうのREADME記載では「販売型・予約申込型・登録型・アプリ型・世界観型など8種類」から選ぶ設計になっており、このプロジェクトの「業種（飲食店・美容室・SaaS…）」ベースの設計とは分類軸が異なる。同一ツールの別バージョンなのか、意図的に別系統として両立させるのか、要確認。
+2. キャラクター系がすでに5本＋試作2本もある。相棒maker（マスコット作成）を新規に足すなら、この5本との違い・住み分けを先に言語化してから着手したい（さもないと6本目の重複ツールになる）。
+3. この2つのリポジトリ（`LPStructureMaker` 単体プロジェクトと `Promptmaker002` モノレポ）を将来的に統合するのか、独立のまま保つのかも未決定。
+
+**現時点の方針**：上記は保留のまま、今のプロジェクト（LP作成・画像作成）の作業を優先して進める。相棒maker等の追加は、この論点を整理してから着手する。

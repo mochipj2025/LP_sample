@@ -138,4 +138,58 @@
   color: var(--ink);
   font-family: var(--font-serif);
   font-weight: 400;
-  letter-spa
+  letter-spacing: 0.04em;
+}
+
+/* ---------------------------------------------------------------------
+ * 戻る／次へ バー
+ * ------------------------------------------------------------------- */
+
+.wizard-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.wizard-nav__hint {
+  color: var(--ink-faint);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  flex: 1;
+}
+
+.wizard-nav__back.is-invisible,
+.wizard-nav__next.is-invisible {
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------------------
+ * フィールドの常時表示サンプル（placeholder の使い回し）
+ * ------------------------------------------------------------------- */
+
+.wizard-example {
+  margin: -6px 0 14px;
+  color: var(--ink-faint);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 560px) {
+  .wizard-progress__label {
+    display: none;
+  }
+
+  .wizard-nav {
+    flex-wrap: wrap;
+  }
+
+  .wizard-nav__hint {
+    order: 3;
+    flex-basis: 100%;
+  }
+}

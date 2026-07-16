@@ -181,4 +181,28 @@
             <ul class="modal__uses" id="detailUses"></ul>
           </div>
           <div class="modal__block">
-            <h4 class="modal__h4">埋まる主�
+            <h4 class="modal__h4">埋まる主な設定</h4>
+            <dl class="modal__specs" id="detailSpecs"></dl>
+          </div>
+          <div class="modal__actions">
+            <button class="btn btn--primary" id="detailApplyCopy" type="button">
+              <span>📋</span><span>この設定でコピー</span>
+            </button>
+            <button class="btn" id="detailApply" type="button">
+              <span>✎</span><span>適用だけ（編集する）</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- スクリプト（file:// で直接開けるよう module は使わない） -->
+    <script src="js/core.js"></script>
+    <script src="js/template.lp.js"></script>
+    <script src="js/template.visual.js"></script>
+    <script src="js/template.icon.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

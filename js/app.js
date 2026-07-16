@@ -377,7 +377,7 @@
    * ここに書くのは「キー名の対応表」というデータだけで、業種知識のような
    * ロジックは書かない（app.js がテンプレ非依存である原則は変えない）。
    * ------------------------------------------------------------------ */
-  const CARRY_SAME_KEY = ['tone', 'ref', 'extra'];
+  const CARRY_SAME_KEY = ['tone', 'ref', 'extra', 'brandName', 'brandColor'];
   const CARRY_KEY_MAP = { infoName: 'brandName', brandName: 'infoName' };
 
   function carryStateAcrossTemplates(prevState, nextTemplate) {
@@ -398,6 +398,16 @@
     return carry;
   }
 
+  /**
+   * タブ（テンプレート）ごとのテーマ色を反映する。
+   * css/style.css 側で `.shell[data-active-template="visual"]` のように
+   * --rose 系トークンを上書きしているだけなので、ここでは属性を張るだけでよい
+   * （色の中身は一切知らない＝app.js がテンプレ非依存という原則を保つ）。
+   */
+  function applyTemplateTheme() {
+    if (dom.shell) dom.shell.dataset.activeTemplate = template.id;
+  }
+
   function switchTemplate(id) {
     if (!id || (template && template.id === id)) return;
     const next = global.PromptMaker.getTemplate(id);
@@ -408,6 +418,7 @@
     template = next;
     state = createState(template.defaults, carry);
     activePreset = null;
+    applyTemplateTheme();
 
     // 画像まわりの一時状態はテンプレートごとに意味が変わるため丸ごとリセット
     Object.keys(imageStore).forEach(function (k) { delete imageStore[k]; });
@@ -1129,4 +1140,275 @@
    * 失敗したら execCommand にフォールバックする。
    */
   function writeClipboard(text, done) {
-    if (global.navigator.clipboard && global.i
+    if (global.navigator.clipboard && global.isSecureContext) {
+      global.navigator.clipboard.writeText(text).then(
+        function () {
+          done(true);
+        },
+        function () {
+          done(legacyCopy(text));
+        }
+      );
+    } else {
+      done(legacyCopy(text));
+    }
+  }
+
+  /** 旧APIによるコピー（file:// 対策）。成否を返す */
+  function legacyCopy(text) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+
+    let ok = false;
+    try {
+      ok = document.execCommand('copy');
+    } catch (e) {
+      ok = false;
+    }
+    document.body.removeChild(area);
+    return ok;
+  }
+
+  /** 「コピーする」ボタン：現在の完成プロンプトをコピーする */
+  function copyPrompt() {
+    writeClipboard(dom.output.textContent, function (ok) {
+      toast(ok ? 'コピーしました' : 'コピーに失敗しました');
+    });
+  }
+
+  /**
+   * プリセットを適用し、そのまま完成プロンプトをコピーする。
+   * 「プリセットを押す＝1操作で完成＆コピー」を実現し、コピー忘れを無くす。
+   */
+  function applyPresetAndCopy(preset) {
+    applyPreset(preset);
+    writeClipboard(dom.output.textContent, function (ok) {
+      toast(
+        ok
+          ? '「' + preset.name + '」を適用してコピーしました📋'
+          : '「' + preset.name + '」を適用しました（コピーは失敗）'
+      );
+    });
+  }
+
+  /* ------------------------------------------------------------------
+   * ユーザープリセット（localStorage）
+   * ------------------------------------------------------------------ */
+
+  /** 今の入力内容に名前を付けて保存する */
+  function savePreset() {
+    const name = global.prompt('保存する名前を入力してください', state.theme || '無題');
+    if (!name) return;
+
+    const saved = storage.load(template.id);
+
+    // 同名があれば上書きする（増殖を防ぐ）
+    const index = saved.findIndex(function (item) {
+      return item.name === name;
+    });
+    const values = createState(state);
+    delete values._images; // 画像はブラウザ内メモリ管理。保存プリセットには含めない
+    const entry = { name: name, icon: '⭐', values: values };
+
+    if (index >= 0) saved[index] = entry;
+    else saved.push(entry);
+
+    if (storage.save(template.id, saved)) {
+      renderUserPresets();
+      toast('「' + name + '」を保存しました');
+    } else {
+      toast('保存できませんでした（ブラウザの設定を確認してください）');
+    }
+  }
+
+  /** 保存済みプリセットを一覧描画する。0 件なら見出しごと隠す */
+  function renderUserPresets() {
+    const saved = storage.load(template.id);
+    dom.userPresets.innerHTML = '';
+    dom.userPresetSection.hidden = saved.length === 0;
+
+    saved.forEach(function (preset, index) {
+      const chip = el('div', 'preset preset--user');
+
+      const load = el('button', 'preset-load');
+      load.type = 'button';
+      load.appendChild(el('span', 'preset-icon', preset.icon || '⭐'));
+      load.appendChild(el('span', null, preset.name));
+      load.addEventListener('click', function () {
+        applyPresetAndCopy(preset);
+      });
+
+      const remove = el('button', 'preset-delete', '×');
+      remove.type = 'button';
+      remove.title = '削除';
+      remove.addEventListener('click', function () {
+        const list = storage.load(template.id);
+        list.splice(index, 1);
+        storage.save(template.id, list);
+        renderUserPresets();
+        toast('削除しました');
+      });
+
+      chip.appendChild(load);
+      chip.appendChild(remove);
+      dom.userPresets.appendChild(chip);
+    });
+  }
+
+  /** 「プリセット読込」ボタン：保存欄までスクロールして注意を引く */
+  function loadPresetSection() {
+    const saved = storage.load(template.id);
+    if (saved.length === 0) {
+      toast('保存されたプリセットがありません');
+      return;
+    }
+    renderUserPresets();
+    dom.userPresetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    dom.userPresetSection.classList.remove('is-flash');
+    // リフローを挟まないとアニメーションが再生されない
+    void dom.userPresetSection.offsetWidth;
+    dom.userPresetSection.classList.add('is-flash');
+  }
+
+  /* ------------------------------------------------------------------
+   * トースト通知
+   * ------------------------------------------------------------------ */
+
+  let toastTimer = null;
+
+  function toast(message) {
+    dom.toast.textContent = message;
+    dom.toast.classList.add('is-visible');
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      dom.toast.classList.remove('is-visible');
+    }, 1800);
+  }
+
+  /* ------------------------------------------------------------------
+   * 起動
+   * ------------------------------------------------------------------ */
+
+  function cacheDom() {
+    dom.shell = document.querySelector('.shell');
+    dom.tabs = document.getElementById('tabs');
+    dom.form = document.getElementById('form');
+    dom.presets = document.getElementById('presets');
+    dom.userPresets = document.getElementById('userPresets');
+    dom.userPresetSection = document.getElementById('userPresetSection');
+    dom.basicFields = document.getElementById('basicFields');
+    dom.copyFields = document.getElementById('copyFields');
+    dom.infoFields = document.getElementById('infoFields');
+    dom.advancedFields = document.getElementById('advancedFields');
+    dom.output = document.getElementById('output');
+    dom.charCount = document.getElementById('charCount');
+    dom.wireframe = document.getElementById('wireframe');
+    dom.wfWrap = document.getElementById('wfWrap');
+    dom.imageCard = document.getElementById('imageCard');
+    dom.imageSlots = document.getElementById('imageSlots');
+    dom.imageZip = document.getElementById('imageZip');
+    dom.imageCount = document.getElementById('imageCount');
+    dom.toast = document.getElementById('toast');
+
+    dom.sample = document.getElementById('sample');
+    dom.sampleImage = document.getElementById('sampleImage');
+    dom.sampleCaption = document.getElementById('sampleCaption');
+
+    dom.detail = document.getElementById('detail');
+    dom.detailImage = document.getElementById('detailImage');
+    dom.detailTitle = document.getElementById('detailTitle');
+    dom.detailDesc = document.getElementById('detailDesc');
+    dom.detailUses = document.getElementById('detailUses');
+    dom.detailUsesBlock = document.getElementById('detailUsesBlock');
+    dom.detailSpecs = document.getElementById('detailSpecs');
+    dom.detailApplyCopy = document.getElementById('detailApplyCopy');
+    dom.detailApply = document.getElementById('detailApply');
+    dom.detailClose = document.getElementById('detailClose');
+  }
+
+  function bindActions() {
+    document.getElementById('btnCopy').addEventListener('click', copyPrompt);
+    document.getElementById('btnReset').addEventListener('click', reset);
+    document.getElementById('btnOmakase').addEventListener('click', omakase);
+    document.getElementById('btnRandom').addEventListener('click', randomize);
+    document.getElementById('btnSave').addEventListener('click', savePreset);
+    document.getElementById('btnLoad').addEventListener('click', loadPresetSection);
+    if (dom.imageZip) dom.imageZip.addEventListener('click', exportImagesZip);
+
+    // 右カラムの仕上がり例からも詳細モーダルを開ける
+    dom.sampleImage.addEventListener('click', function () {
+      if (activePreset) openDetail(activePreset, dom.sampleImage.src);
+    });
+
+    // 詳細モーダルの CTA
+    dom.detailApplyCopy.addEventListener('click', function () {
+      if (detailPreset) {
+        applyPresetAndCopy(detailPreset);
+        closeDetail();
+      }
+    });
+    dom.detailApply.addEventListener('click', function () {
+      if (detailPreset) {
+        applyPreset(detailPreset);
+        toast('「' + detailPreset.name + '」を適用しました');
+        closeDetail();
+      }
+    });
+
+    // 詳細モーダル：閉じるボタン・背景クリック・Esc の3経路で閉じる
+    dom.detailClose.addEventListener('click', closeDetail);
+    dom.detail.addEventListener('click', function (event) {
+      if (event.target === dom.detail) closeDetail();
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !dom.detail.hidden) closeDetail();
+    });
+  }
+
+  /**
+   * 描画後に .field へ data-key を張る。
+   * renderField の中で張ってもよいが、
+   * 「fields の定義順 = DOM の順」であることを利用して一括で付けたほうが単純。
+   */
+  function tagFieldKeys() {
+    const groups = ['basic', 'copy', 'info', 'advanced'];
+    groups.forEach(function (group) {
+      const container = dom[group + 'Fields'];
+      if (!container) return;
+      const fields = template.fields.filter(function (field) {
+        return field.group === group;
+      });
+      container.querySelectorAll(':scope > .field').forEach(function (node, index) {
+        node.dataset.key = fields[index].key;
+      });
+    });
+  }
+
+  function init() {
+    cacheDom();
+
+    // 有効なテンプレートの先頭を初期表示にする
+    template = global.PromptMaker.getTemplates().filter(function (item) {
+      return item.enabled;
+    })[0];
+
+    state = createState(template.defaults);
+    applyTemplateTheme();
+
+    renderTabs();
+    renderPresets();
+    renderFields();
+    tagFieldKeys();
+    renderUserPresets();
+    syncAllFields();
+    updatePrompt();
+    bindActions();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})(window);

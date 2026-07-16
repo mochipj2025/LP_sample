@@ -71,6 +71,31 @@
 }
 
 /* =========================================================================
+ * 1b. タブ（テンプレート）ごとのテーマ色
+ * -------------------------------------------------------------------------
+ * app.js が `.shell` に data-active-template="lp|visual|icon" を張るだけで、
+ * ここで --rose 系トークンを上書きする。既存のスタイルは全部 --rose 経由で
+ * 書かれているので、新しいCSSを1行も足さずに「タブごとに差し色が変わる」
+ * 体験だけが手に入る。LP作成（既定値）は :root のローズのまま何も上書きしない。
+ * ========================================================================= */
+
+.shell[data-active-template="visual"] {
+  --rose: #6b83a0;
+  --rose-deep: #52657d;
+  --rose-mist: #dbe3ea;
+  --rose-veil: rgba(107, 131, 160, 0.09);
+  --wash-rose: linear-gradient(160deg, #d7e2ec, #a9c0d6);
+}
+
+.shell[data-active-template="icon"] {
+  --rose: #7c8f6a;
+  --rose-deep: #5f6f50;
+  --rose-mist: #e2e6da;
+  --rose-veil: rgba(124, 143, 106, 0.09);
+  --wash-rose: linear-gradient(160deg, #dfe6d5, #b9c7a4);
+}
+
+/* =========================================================================
  * 2. ベース
  * ========================================================================= */
 
@@ -1706,4 +1731,211 @@ button {
 }
 
 .imgslot__ratio {
-  
+  display: inline-block;
+  margin-top: 3px;
+  color: var(--rose-deep);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  border: 1px solid var(--rose-mist);
+  border-radius: var(--radius-pill);
+  padding: 1px 9px;
+}
+
+.imgslot__reflock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.imgslot__reflock input {
+  margin: 0;
+  cursor: pointer;
+}
+
+.imgslot__acts {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.imgslot__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all var(--fast) var(--ease);
+  white-space: nowrap;
+}
+
+.imgslot__btn:hover {
+  border-color: var(--rose);
+  color: var(--rose-deep);
+  background: var(--rose-veil);
+}
+
+.imgslot__btn.is-copied {
+  border-color: #8fae86;
+  color: #4b6b46;
+  background: #e8efe4;
+}
+
+.imgslot__btn.is-copied:hover {
+  border-color: #6e9364;
+  color: #3c5638;
+  background: #dfe9d9;
+}
+
+.imgslot__thumb {
+  position: relative;
+  width: 74px;
+  height: 54px;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-tint);
+  overflow: hidden;
+}
+
+.imgslot__thumb.has {
+  border-style: solid;
+  border-color: var(--rose);
+}
+
+.imgslot__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imgslot__rm {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 253, 252, 0.92);
+  color: var(--rose-deep);
+  font-size: 12px;
+  line-height: 1;
+  box-shadow: var(--shadow-lift);
+}
+
+.imgcard-foot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+@media (max-width: 560px) {
+  .imgslot {
+    grid-template-columns: 1fr 74px;
+  }
+  .imgslot__acts {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+
+/* 見取り図クリックで、設計図側の該当箇所に差すしるし */
+.output-mark {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--rose-mist);
+  color: var(--ink);
+  animation: flash var(--slow) var(--ease) 2;
+}
+
+/* =========================================================================
+ * 20. 老眼配慮 ― 可読性を上げるオーバーライド
+ * -------------------------------------------------------------------------
+ * 上のトークン・レイアウトはそのまま。ここでは「実際に読む・押す」文字だけを
+ * 一段大きく・行間広めにして、雑誌のような余白と明朝見出しの上品さを保った
+ * まま見やすくする。絵文字・極小バッジ・削除ボタンの×まで一律に拡大すると
+ * 野暮ったくなるので、対象は本文・見出し・入力欄・ボタンに絞っている。
+ *
+ * CSSの「後に書いたルールが勝つ」性質を利用し、既存ルールは書き換えずに
+ * ここでだけ値を上書きする（同じセレクタなので詳細度は変わらない）。
+ * ========================================================================= */
+
+body {
+  font-size: 17px;
+  line-height: 1.9;
+}
+
+.header__sub {
+  font-size: 14.5px;
+}
+
+.card__title {
+  font-size: 19px;
+}
+
+.card__desc {
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.field-label {
+  font-size: 14.5px;
+}
+
+.field-hint {
+  font-size: 12.5px;
+}
+
+.chip {
+  padding: 9px 16px;
+  font-size: 14.5px;
+}
+
+.custom-input,
+.textarea {
+  padding: 13px 16px;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.output {
+  padding: 26px 24px;
+  font-size: 15px;
+  line-height: 2.05;
+}
+
+.btn {
+  padding: 14px 12px;
+  font-size: 14px;
+}
+
+.btn--primary {
+  padding: 18px;
+  font-size: 15px;
+}
+
+.note,
+.guide-text,
+.guide-lead,
+.step__text {
+  font-size: 13.5px;
+  line-height: 1.85;
+}
+
+@media (max-width: 680px) {
+  body {
+    font-size: 16.5px;
+  }
+}

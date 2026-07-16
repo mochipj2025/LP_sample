@@ -191,4 +191,24 @@
           </div>
           <div class="modal__actions">
             <button class="btn btn--primary" id="detailApplyCopy" type="button">
-              <span>📋</span><span
+              <span>📋</span><span>この設定でコピー</span>
+            </button>
+            <button class="btn" id="detailApply" type="button">
+              <span>✎</span><span>適用だけ（編集する）</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- スクリプト：既存4本はそのまま。ステップ制御だけ wizard.js で足す -->
+    <script src="js/core.js"></script>
+    <script src="js/template.lp.js"></script>
+    <script src="js/template.visual.js"></script>
+    <script src="js/template.icon.js"></script>
+    <script src="js/app.js"></script>
+    <script src="wizard/js/wizard.js"></script>
+  </body>
+</html>

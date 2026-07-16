@@ -174,4 +174,96 @@
     var title = document.createElement('strong');
     title.textContent = step.title;
     text.appendChild(title);
-    text.appendChild(document.createTextNode('　' + (step.blurb |
+    text.appendChild(document.createTextNode('　' + (step.blurb || '')));
+
+    box.appendChild(icon);
+    box.appendChild(text);
+  }
+
+  function renderNav() {
+    var steps = visibleSteps();
+    var idx = currentIndex(steps);
+
+    var back = document.getElementById('wizardBack');
+    var next = document.getElementById('wizardNext');
+    var hint = document.getElementById('wizardHint');
+    if (!back || !next || !hint) return;
+
+    back.classList.toggle('is-invisible', idx <= 0);
+
+    var isLast = idx === steps.length - 1;
+    next.classList.toggle('is-invisible', isLast);
+
+    if (isLast) {
+      hint.textContent = '完成です。上の出力をコピーして ChatGPT / Claude に貼り付けてください。';
+    } else {
+      next.textContent = idx === 0 ? 'スキップして次へ →' : '次へ →';
+      hint.textContent = 'ステップ ' + (idx + 1) + ' / ' + steps.length;
+    }
+  }
+
+  /**
+   * プリセットを押したら、その場で「完成」まで連れて行く。
+   * app.js 側のクリックハンドラ（適用＋コピー）はボタン自体に付いているので、
+   * 親要素にバブリングしてくるここでは「押されたあと」に反応するだけでよい。
+   */
+  function bindPresetShortcut(containerId, buttonSelector) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    container.addEventListener('click', function (event) {
+      if (event.target.closest(buttonSelector)) {
+        showStep('output');
+      }
+    });
+  }
+
+  /**
+   * 各テキスト欄の下に「例：」を常時表示する。
+   * app.js が textarea.placeholder にセットした例文（template.lp.js 側の定義）を
+   * そのまま使い回すので、テンプレート固有の知識はここには書かない。
+   * placeholder は入力すると消えてしまうので、チュートリアル版では
+   * 常に見える形にして「どう書けばいいか」の見本にする。
+   */
+  function addFieldExamples() {
+    ['basicFields', 'infoFields', 'advancedFields'].forEach(function (containerId) {
+      var container = document.getElementById(containerId);
+      if (!container) return;
+
+      container.querySelectorAll('textarea[placeholder]').forEach(function (area) {
+        if (!area.placeholder || area.dataset.exampleAdded) return;
+        area.dataset.exampleAdded = '1';
+
+        var hint = document.createElement('div');
+        hint.className = 'wizard-example';
+        hint.textContent = '例：' + area.placeholder.replace(/^例[）)]\s*/, '');
+        area.insertAdjacentElement('afterend', hint);
+      });
+    });
+  }
+
+  function init() {
+    var back = document.getElementById('wizardBack');
+    var next = document.getElementById('wizardNext');
+    if (back) back.addEventListener('click', goBack);
+    if (next) next.addEventListener('click', goNext);
+
+    bindPresetShortcut('presets', '.preset-card__apply');
+    bindPresetShortcut('userPresets', '.preset-load');
+
+    // タブ切替で別テンプレートに変わると、必要なステップ（画像など）も変わりうるので
+    // その場で見え方を再計算する（app.js のタブ切替は同期処理なので、
+    // ここに来た時点でフィールドの再描画はもう終わっている）。
+    var tabsEl = document.getElementById('tabs');
+    if (tabsEl) {
+      tabsEl.addEventListener('click', function () {
+        addFieldExamples();
+        showStep(STEPS[0].key);
+      });
+    }
+
+    addFieldExamples();
+    showStep(STEPS[0].key);
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
