@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>使い方ガイド ― LP StructureMaker</title>
-    <meta name="description" content="LP StructureMaker の使い方。3つ選ぶだけの最短の道から、そのままAIでLPを作る方法まで。" />
+    <meta name="description" content="LP StructureMaker の使い方。はじめてでも、選んで作れる最短の道から、画像まで揃えてそのままAIでLPを作る方法まで。" />
 
     <link
       rel="icon"
@@ -28,7 +28,7 @@
           <span>使い方ガイド</span>
         </h1>
         <p class="header__sub">
-          LP StructureMaker ― 3つ選ぶだけで、LPの「構成の設計図」が完成します。
+          LP StructureMaker ― はじめてでも、選んで作れる。LPの「構成の設計図」から画像まで揃います。
           <span class="header__badge">無料 / 60秒</span>
         </p>
       </header>
@@ -46,6 +46,63 @@
         <p class="guide-note">
           このツール自体はAIを使いません（＝<b>設計図の自動販売機</b>です）。だから何回使っても無料。
           できあがった文章を ChatGPT や Claude に貼ると、原稿やLPそのものに変わります。
+        </p>
+      </div>
+
+      <!-- ============================================================
+           はじめに：フォルダ＆GitHubリポジトリの準備（初回だけ）
+           ============================================================ -->
+      <div class="card" id="setup">
+        <h2 class="card__title"><span>🗂️</span><span>はじめに：フォルダとリポジトリを用意する（初回だけ）</span></h2>
+        <p class="card__desc">
+          プロンプトをAIに貼る前に、保存先を先に作っておくと、あとで画像zipを展開して置くだけ・GitHubにpushするだけで
+          公開まで進められます。すでに作業用フォルダがある人はこのカードは読み飛ばしてOK。
+        </p>
+
+        <ol class="steps">
+          <li class="step">
+            <span class="step__num">1</span>
+            <h3 class="step__title">フォルダを作る</h3>
+            <p class="step__text">
+              ターミナル、または Claude Code / Codex のようなAIエージェントに、下のプロンプトをそのまま貼るだけでOK。
+            </p>
+          </li>
+          <li class="step">
+            <span class="step__num">2</span>
+            <h3 class="step__title">GitHubにリポジトリを作る</h3>
+            <p class="step__text">
+              <a href="https://github.com/new" target="_blank" rel="noopener">github.com/new</a> から手動で作るか、
+              エージェントに任せるなら続けて下のプロンプトを貼る。
+            </p>
+          </li>
+          <li class="step">
+            <span class="step__num">3</span>
+            <h3 class="step__title">作業に入る</h3>
+            <p class="step__text">
+              ここまでできたら、下の「最短の道」からツールを使い始めてOK。画像ができたら書き出したZIPをこのフォルダに展開してpushするだけ。
+            </p>
+          </li>
+        </ol>
+
+        <p class="guide-code__label">🤖 AIエージェント（Claude Code / Codex など）に貼るプロンプト</p>
+        <pre class="guide-code">新しいプロジェクト用フォルダ「(サイト名をここに)」を作成し、その中に移動して git init を実行してください。
+続けて GitHub に同名の空リポジトリを作成してください
+（gh コマンドが使えるなら `gh repo create (サイト名) --public --source=. --remote=origin --push` を実行、
+使えない場合は https://github.com/new から手動で作成してもらい、できたリポジトリのURLを私に教えてください）。
+リポジトリができたら、このフォルダをそのリモート（origin）にひも付けて、空コミットを1つ push してください。
+終わったら「フォルダとリポジトリの準備ができました」と教えてください。</pre>
+
+        <p class="guide-code__label">⌨️ 手動でやる場合（ターミナル）</p>
+        <pre class="guide-code">mkdir (サイト名) &amp;&amp; cd (サイト名)
+git init
+# → https://github.com/new で同名のリポジトリを作成したあと
+git remote add origin https://github.com/(あなたのアカウント名)/(サイト名).git
+git add . &amp;&amp; git commit -m "first commit"
+git push -u origin main</pre>
+
+        <p class="guide-note">
+          💡 このフォルダに、②で書き出す画像の <b>zip</b> を展開し、AIに作らせた <b>index.html</b> を置いて push すれば、
+          そのまま GitHub Pages などで公開できる状態になります。
         </p>
       </div>
 
@@ -145,69 +202,4 @@
           </p>
         </div>
 
-        <div class="guide-block">
-          <h3 class="guide-h3">👤 読み手で構成が変わる</h3>
-          <p class="guide-text">
-            「まだ知らない人」なら共感とベネフィットが厚く、「迷っている人」なら実績とFAQが厚く、
-            「あと一押しの人」なら料金と流れが前に、「常連さん」なら<b>お知らせ・特典</b>が最初に来ます。
-            読み手を選び直して、見取り図の変化を見てみてください。
-          </p>
-        </div>
-
-        <div class="guide-block">
-          <h3 class="guide-h3">🖼️ 画像は姉妹ツールで（Visual PromptMaker 連携）</h3>
-          <p class="guide-text">
-            設計図には、業種に合った<b>写真のテイスト</b>（例：飲食なら“シズル感のある料理写真”）が書かれています。
-            そのテイストのまま <b>Visual PromptMaker</b> の Graphic タブで画像プロンプトを作れば、
-            LP全体の世界観が揃います。
-          </p>
-        </div>
-      </div>
-
-      <!-- ============================================================
-           業種の早見表
-           ============================================================ -->
-      <div class="card">
-        <h2 class="card__title"><span>🏪</span><span>業種で構成はこう変わる（早見表）</span></h2>
-        <p class="card__desc">「悩み解決」の型を全業種に当てはめない、が このツールの考え方です。</p>
-
-        <div class="guide-table-wrap">
-          <table class="guide-table">
-            <thead>
-              <tr><th>業種</th><th>構成の主役</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>飲食店・カフェ・バー</td><td>コンセプト → 看板メニュー → 雰囲気</td></tr>
-              <tr><td>サロン・整体・クリニック</td><td>共感（悩み）→ 選ばれる理由 → 実績</td></tr>
-              <tr><td>SaaS・アプリ</td><td>課題 → 機能 → 料金プラン</td></tr>
-              <tr><td>EC・物販</td><td>ベネフィット → こだわり → レビュー</td></tr>
-              <tr><td>セミナー・講座</td><td>得られる未来 → カリキュラム → 講師</td></tr>
-              <tr><td>コーポレート・個人</td><td>提案の核 → 強み → 実績</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ============================================================
-           見本画像の足し方（管理者向け）
-           ============================================================ -->
-      <div class="card">
-        <h2 class="card__title"><span>🖼️</span><span>プリセットの見本画像を足す（管理者向け）</span></h2>
-        <p class="guide-text">
-          見本画像が無いプリセットは絵文字で表示されます。画像を足すには：
-        </p>
-        <ol class="guide-ol">
-          <li>Visual PromptMaker などでLPの完成イメージ画像を作る。</li>
-          <li><b>長辺720px・jpg</b>（150KB以下が目安）に整え、
-            <code>assets/presets/lp/&lt;プリセットID&gt;.jpg</code>（例 <code>resto.jpg</code>）で保存。</li>
-          <li>ツールを開き直すと、サムネイル・拡大・仕上がり例に自動で反映されます（コード変更は不要）。</li>
-        </ol>
-      </div>
-
-      <!-- 戻る導線（下） -->
-      <div class="guide-foot">
-        <a class="btn btn--primary" href="index.html"><span>🧱</span><span>ツールを使ってみる</span></a>
-      </div>
-    </div>
-  </body>
-</html>
+        <d

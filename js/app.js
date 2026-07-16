@@ -2,7 +2,7 @@
  * app.js
  * UI レイヤー
  * -------------------------------------------------------------------------
- * ここにはポスター固有の知識を書かない。
+ * ここにはLPや画像作成など、個別テンプレート固有の知識を書かない。
  * 「登録されたテンプレートの fields を読んで UI を描き、
  *   state を更新し、build() を呼んで右カラムに流し込む」だけを担当する。
  *
@@ -19,10 +19,10 @@
    * サンプル画像の設定
    * ------------------------------------------------------------------
    * 画像の置き場所は  assets/presets/<templateId>/<presetId>.<ext>
-   *   例) assets/presets/poster/summer.png
+   *   例) assets/presets/lp/cafe.png
    *
    * テンプレートごとにフォルダを分けているので、
-   * Movie / Thumbnail を追加しても同名プリセットが衝突しない。
+   * 別テンプレートを追加しても同名プリセットが衝突しない。
    *
    * 拡張子は下の順に試し、最初に読めたものを採用する。
    * 全部失敗したら「画像なし」として絵文字のプレースホルダに切り替える。
@@ -30,9 +30,9 @@
    * ------------------------------------------------------------------ */
 
   const ASSET_DIR = 'assets/presets';
-  // 同梱のサンプルは jpg（写真は jpg のほうが桁違いに軽い）。
-  // 先頭で当たれば、余計なリクエスト（404）が1本も出ない。
-  const IMAGE_EXTS = ['jpg', 'webp', 'png', 'jpeg'];
+  // 現在同梱しているLPプリセットは png。実在する形式から試して
+  // ページを開くたびに不要な404を発生させない。
+  const IMAGE_EXTS = ['png', 'webp', 'jpg', 'jpeg'];
 
   /** プリセットのサンプル画像のベースパス（拡張子なし）を返す */
   function imageBasePath(preset) {
@@ -94,6 +94,29 @@
 
   /** DOM 参照をまとめて持つ（毎回 querySelector しないため） */
   const dom = {};
+
+  /**
+   * state は文字列・配列・プレーンオブジェクトだけで構成する。
+   * Object.assign だけでは配列が defaults / preset と参照共有されるため、
+   * state を作る入口で必ず複製する。
+   * 旧版の infoProduct / infoPrice も現行の menuItems へ移行する。
+   */
+  function createState() {
+    const merged = {};
+    Array.prototype.forEach.call(arguments, function (source) {
+      if (!source) return;
+      Object.assign(merged, JSON.parse(JSON.stringify(source)));
+    });
+
+    if ((!Array.isArray(merged.menuItems) || merged.menuItems.length === 0) &&
+        (merged.infoProduct || merged.infoPrice)) {
+      merged.menuItems = [{ name: merged.infoProduct || '', price: merged.infoPrice || '' }];
+    }
+    delete merged.infoProduct;
+    delete merged.infoPrice;
+
+    return merged;
+  }
 
   /* ------------------------------------------------------------------
    * 小さなヘルパ
@@ -163,6 +186,109 @@
     return wrap;
   }
 
+  /* ------------------------------------------------------------------
+   * 描画：くり返し入力（repeater）フィールド
+   * ------------------------------------------------------------------
+   * 「商品名＋価格」のように、行を増減できる入力群。
+   * state[field.key] は [{name, price}, ...] のような配列で持つ。
+   * ここでもテンプレ固有の知識は持たない（sub フィールドの key/placeholder は
+   * すべて template 側の field 定義から読むだけ）。
+   * ------------------------------------------------------------------ */
+
+  /** 1件も入っていなければ、空の1行を見せる（0行だと「＋」しか出ず迷子になるため） */
+  function repeaterItems(field) {
+    const list = state[field.key];
+    return Array.isArray(list) && list.length ? list : [{}];
+  }
+
+  /** 行を1件更新する。DOM は再構築しない（入力中にフォーカスが飛ばないよう） */
+  function setRepeaterItemValue(fieldKey, index, subKey, value) {
+    const items = Array.isArray(state[fieldKey])
+      ? state[fieldKey].map(function (item) { return Object.assign({}, item); })
+      : [];
+    if (!items[index]) items[index] = {};
+    items[index][subKey] = value;
+    state[fieldKey] = items;
+
+    if (activePreset) {
+      activePreset = null;
+      updateSample();
+    }
+    updatePrompt();
+  }
+
+  /** rowsContainer の中身を、現在の state から作り直す（行の増減時だけ呼ぶ） */
+  function renderRepeaterRows(field, rowsContainer) {
+    const items = repeaterItems(field);
+    rowsContainer.innerHTML = '';
+
+    items.forEach(function (item, index) {
+      const row = el('div', 'repeater__row');
+
+      field.itemFields.forEach(function (sub) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'repeater__input';
+        input.placeholder = sub.placeholder || '';
+        input.value = item[sub.key] || '';
+        if (sub.flex) input.style.flexGrow = String(sub.flex);
+
+        input.addEventListener('input', function () {
+          setRepeaterItemValue(field.key, index, sub.key, input.value);
+        });
+
+        row.appendChild(input);
+      });
+
+      const remove = el('button', 'repeater__remove', '×');
+      remove.type = 'button';
+      remove.title = 'この行を削除';
+      remove.disabled = items.length <= 1;
+      if (items.length <= 1) remove.classList.add('is-disabled');
+
+      remove.addEventListener('click', function () {
+        const arr = Array.isArray(state[field.key]) ? state[field.key].slice() : [];
+        arr.splice(index, 1);
+        state[field.key] = arr;
+        if (activePreset) { activePreset = null; updateSample(); }
+        renderRepeaterRows(field, rowsContainer);
+        updatePrompt();
+      });
+
+      row.appendChild(remove);
+      rowsContainer.appendChild(row);
+    });
+  }
+
+  /** repeater 型フィールドを描画する */
+  function renderRepeaterField(field) {
+    const wrap = el('div', 'field');
+    wrap.appendChild(renderFieldHeader(field));
+
+    const rowsContainer = el('div', 'repeater__rows');
+    wrap.appendChild(rowsContainer);
+    renderRepeaterRows(field, rowsContainer);
+
+    const addBtn = el('button', 'repeater__add', field.addLabel || '＋ 追加');
+    addBtn.type = 'button';
+    addBtn.addEventListener('click', function () {
+      const arr = Array.isArray(state[field.key]) ? state[field.key].slice() : [];
+      arr.push({});
+      state[field.key] = arr;
+      if (activePreset) { activePreset = null; updateSample(); }
+      renderRepeaterRows(field, rowsContainer);
+      updatePrompt();
+
+      const rows = rowsContainer.querySelectorAll('.repeater__row');
+      const lastRow = rows[rows.length - 1];
+      const firstInput = lastRow && lastRow.querySelector('input');
+      if (firstInput) firstInput.focus();
+    });
+    wrap.appendChild(addBtn);
+
+    return wrap;
+  }
+
   /** textarea 型フィールドを描画する */
   function renderTextareaField(field) {
     const wrap = el('div', 'field');
@@ -198,7 +324,9 @@
 
   /** 1 フィールドを型に応じて描画する */
   function renderField(field) {
-    return field.type === 'textarea' ? renderTextareaField(field) : renderChipsField(field);
+    if (field.type === 'textarea') return renderTextareaField(field);
+    if (field.type === 'repeater') return renderRepeaterField(field);
+    return renderChipsField(field);
   }
 
   /* ------------------------------------------------------------------
@@ -219,12 +347,82 @@
         tab.classList.add('is-disabled');
         tab.disabled = true;
         tab.appendChild(el('span', 'tab-badge', '準備中'));
+      } else {
+        tab.addEventListener('click', function () {
+          switchTemplate(item.id);
+        });
       }
       if (item.id === template.id) {
         tab.classList.add('is-active');
       }
       dom.tabs.appendChild(tab);
     });
+  }
+
+  /**
+   * タブを切り替えて、別の PromptMaker テンプレートに丸ごと入れ替える。
+   * 画面の骨格（カードやid）は共通なので、中身（プリセット・fields・state）だけ
+   * 作り直す。画像まわりの一時状態（imageStore 等）はテンプレート固有の
+   * 概念なので、切り替え時にリセットする。
+   */
+  /* ------------------------------------------------------------------
+   * タブ切替時の状態引き継ぎ
+   * ------------------------------------------------------------------
+   * switchTemplate() は基本的に state を作り直すが、キーが完全に同じ意味で
+   * 存在する項目（トーン・参考・補足など）まで消してしまうと、「LP作成で
+   * トーンを決めた→画像作成に切り替えたら世界観が振り出しに戻る」という
+   * 体験になる。ここに列挙したキーだけは、切替後の新テンプレートにその
+   * 名前（または対応表の行き先の名前）のフィールドがある場合に限り引き継ぐ。
+   *
+   * ここに書くのは「キー名の対応表」というデータだけで、業種知識のような
+   * ロジックは書かない（app.js がテンプレ非依存である原則は変えない）。
+   * ------------------------------------------------------------------ */
+  const CARRY_SAME_KEY = ['tone', 'ref', 'extra'];
+  const CARRY_KEY_MAP = { infoName: 'brandName', brandName: 'infoName' };
+
+  function carryStateAcrossTemplates(prevState, nextTemplate) {
+    const carry = {};
+    const nextKeys = nextTemplate.fields.map(function (f) { return f.key; });
+
+    CARRY_SAME_KEY.forEach(function (key) {
+      if (nextKeys.indexOf(key) >= 0 && prevState[key]) carry[key] = prevState[key];
+    });
+
+    Object.keys(CARRY_KEY_MAP).forEach(function (fromKey) {
+      const toKey = CARRY_KEY_MAP[fromKey];
+      if (nextKeys.indexOf(toKey) >= 0 && prevState[fromKey] && !carry[toKey]) {
+        carry[toKey] = prevState[fromKey];
+      }
+    });
+
+    return carry;
+  }
+
+  function switchTemplate(id) {
+    if (!id || (template && template.id === id)) return;
+    const next = global.PromptMaker.getTemplate(id);
+    if (!next) return;
+
+    const carry = template ? carryStateAcrossTemplates(state, next) : {};
+
+    template = next;
+    state = createState(template.defaults, carry);
+    activePreset = null;
+
+    // 画像まわりの一時状態はテンプレートごとに意味が変わるため丸ごとリセット
+    Object.keys(imageStore).forEach(function (k) { delete imageStore[k]; });
+    Object.keys(refLockStore).forEach(function (k) { delete refLockStore[k]; });
+    Object.keys(copiedStore).forEach(function (k) { delete copiedStore[k]; });
+    imageSlotSig = '';
+
+    renderTabs();
+    renderPresets();
+    renderFields();
+    tagFieldKeys();
+    renderUserPresets();
+    syncAllFields();
+    updatePrompt();
+    updateSample();
   }
 
   /**
@@ -316,7 +514,7 @@
    * 空・'なし' は出さない。
    */
   function buildSpecPairs(preset) {
-    const merged = Object.assign({}, template.defaults, preset.values);
+    const merged = createState(template.defaults, preset.values);
     return template.fields
       .filter(function (field) {
         return field.group === 'basic';
@@ -457,6 +655,16 @@
       chip.classList.toggle('is-active', chip.dataset.value === value);
     });
 
+    // repeater：プリセット適用・リセットで配列ごと入れ替わるので、行を作り直す
+    const repeaterField = template.fields.find(function (f) {
+      return f.key === key && f.type === 'repeater';
+    });
+    if (repeaterField) {
+      const fieldEl = dom.form.querySelector('.field[data-key="' + key + '"]');
+      const rowsEl = fieldEl && fieldEl.querySelector('.repeater__rows');
+      if (rowsEl) renderRepeaterRows(repeaterField, rowsEl);
+    }
+
     if (skipInputSync) return;
 
     const input = dom.form.querySelector('[data-custom-for="' + key + '"]');
@@ -500,7 +708,12 @@
    * app.js はLPの知識を持たない ―― ブロックを積むだけ。
    */
   function renderWireframe() {
-    if (!dom.wireframe || typeof template.wireframe !== 'function') return;
+    if (!dom.wireframe) return;
+
+    const hasWireframe = typeof template.wireframe === 'function';
+    if (dom.wfWrap) dom.wfWrap.hidden = !hasWireframe;
+    if (!hasWireframe) { dom.wireframe.innerHTML = ''; return; }
+
     const blocks = template.wireframe(state) || [];
     dom.wireframe.innerHTML = '';
     blocks.forEach(function (b, i) {
@@ -612,7 +825,25 @@
     if (typeof template.imageSlots !== 'function') { dom.imageCard.hidden = true; return; }
 
     const slots = template.imageSlots(state);
-    const sig = (state.type || '') + '|' + (state.tone || '') + '|' + (state.infoName || '') + '|' + (state.infoProduct || '') + '|' + slots.map(function (s) { return s.id; }).join(',');
+    const validIds = {};
+    slots.forEach(function (slot) { validIds[slot.id] = true; });
+
+    // 商品数を減らしたときなど、画面から消えたスロットの画像をZIPへ残さない。
+    let removedImage = false;
+    [imageStore, refLockStore, copiedStore].forEach(function (store) {
+      Object.keys(store).forEach(function (id) {
+        if (validIds[id]) return;
+        if (store === imageStore) removedImage = true;
+        delete store[id];
+      });
+    });
+    if (removedImage) syncImagesToState();
+
+    // 枚数だけでなく文面も署名に含め、商品名・被写体・トーンを変えたときに
+    // 古い画像プロンプトが画面へ残らないようにする。
+    const sig = template.id + '|' + JSON.stringify(slots.map(function (slot) {
+      return [slot.id, slot.label, slot.ratio, slot.prompt];
+    }));
     if (sig === imageSlotSig) { updateImageMeta(slots); return; }
     imageSlotSig = sig;
 
@@ -847,7 +1078,7 @@
         sticky[field.key] = state[field.key];
       }
     });
-    state = Object.assign({}, template.defaults, preset.values, sticky);
+    state = createState(template.defaults, preset.values, sticky);
     activePreset = preset;
     syncAllFields();
     updatePrompt();
@@ -856,7 +1087,7 @@
 
   /** 初期状態に戻す */
   function reset() {
-    state = Object.assign({}, template.defaults);
+    state = createState(template.defaults);
     activePreset = null;
     syncAllFields();
     updatePrompt();
@@ -898,272 +1129,4 @@
    * 失敗したら execCommand にフォールバックする。
    */
   function writeClipboard(text, done) {
-    if (global.navigator.clipboard && global.isSecureContext) {
-      global.navigator.clipboard.writeText(text).then(
-        function () {
-          done(true);
-        },
-        function () {
-          done(legacyCopy(text));
-        }
-      );
-    } else {
-      done(legacyCopy(text));
-    }
-  }
-
-  /** 旧APIによるコピー（file:// 対策）。成否を返す */
-  function legacyCopy(text) {
-    const area = document.createElement('textarea');
-    area.value = text;
-    area.style.position = 'fixed';
-    area.style.opacity = '0';
-    document.body.appendChild(area);
-    area.select();
-
-    let ok = false;
-    try {
-      ok = document.execCommand('copy');
-    } catch (e) {
-      ok = false;
-    }
-    document.body.removeChild(area);
-    return ok;
-  }
-
-  /** 「コピーする」ボタン：現在の完成プロンプトをコピーする */
-  function copyPrompt() {
-    writeClipboard(dom.output.textContent, function (ok) {
-      toast(ok ? 'コピーしました' : 'コピーに失敗しました');
-    });
-  }
-
-  /**
-   * プリセットを適用し、そのまま完成プロンプトをコピーする。
-   * 「プリセットを押す＝1操作で完成＆コピー」を実現し、コピー忘れを無くす。
-   */
-  function applyPresetAndCopy(preset) {
-    applyPreset(preset);
-    writeClipboard(dom.output.textContent, function (ok) {
-      toast(
-        ok
-          ? '「' + preset.name + '」を適用してコピーしました📋'
-          : '「' + preset.name + '」を適用しました（コピーは失敗）'
-      );
-    });
-  }
-
-  /* ------------------------------------------------------------------
-   * ユーザープリセット（localStorage）
-   * ------------------------------------------------------------------ */
-
-  /** 今の入力内容に名前を付けて保存する */
-  function savePreset() {
-    const name = global.prompt('保存する名前を入力してください', state.theme || '無題');
-    if (!name) return;
-
-    const saved = storage.load(template.id);
-
-    // 同名があれば上書きする（増殖を防ぐ）
-    const index = saved.findIndex(function (item) {
-      return item.name === name;
-    });
-    const values = Object.assign({}, state);
-    delete values._images; // 画像はブラウザ内メモリ管理。保存プリセットには含めない
-    const entry = { name: name, icon: '⭐', values: values };
-
-    if (index >= 0) saved[index] = entry;
-    else saved.push(entry);
-
-    if (storage.save(template.id, saved)) {
-      renderUserPresets();
-      toast('「' + name + '」を保存しました');
-    } else {
-      toast('保存できませんでした（ブラウザの設定を確認してください）');
-    }
-  }
-
-  /** 保存済みプリセットを一覧描画する。0 件なら見出しごと隠す */
-  function renderUserPresets() {
-    const saved = storage.load(template.id);
-    dom.userPresets.innerHTML = '';
-    dom.userPresetSection.hidden = saved.length === 0;
-
-    saved.forEach(function (preset, index) {
-      const chip = el('div', 'preset preset--user');
-
-      const load = el('button', 'preset-load');
-      load.type = 'button';
-      load.appendChild(el('span', 'preset-icon', preset.icon || '⭐'));
-      load.appendChild(el('span', null, preset.name));
-      load.addEventListener('click', function () {
-        applyPresetAndCopy(preset);
-      });
-
-      const remove = el('button', 'preset-delete', '×');
-      remove.type = 'button';
-      remove.title = '削除';
-      remove.addEventListener('click', function () {
-        const list = storage.load(template.id);
-        list.splice(index, 1);
-        storage.save(template.id, list);
-        renderUserPresets();
-        toast('削除しました');
-      });
-
-      chip.appendChild(load);
-      chip.appendChild(remove);
-      dom.userPresets.appendChild(chip);
-    });
-  }
-
-  /** 「プリセット読込」ボタン：保存欄までスクロールして注意を引く */
-  function loadPresetSection() {
-    const saved = storage.load(template.id);
-    if (saved.length === 0) {
-      toast('保存されたプリセットがありません');
-      return;
-    }
-    renderUserPresets();
-    dom.userPresetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    dom.userPresetSection.classList.remove('is-flash');
-    // リフローを挟まないとアニメーションが再生されない
-    void dom.userPresetSection.offsetWidth;
-    dom.userPresetSection.classList.add('is-flash');
-  }
-
-  /* ------------------------------------------------------------------
-   * トースト通知
-   * ------------------------------------------------------------------ */
-
-  let toastTimer = null;
-
-  function toast(message) {
-    dom.toast.textContent = message;
-    dom.toast.classList.add('is-visible');
-
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () {
-      dom.toast.classList.remove('is-visible');
-    }, 1800);
-  }
-
-  /* ------------------------------------------------------------------
-   * 起動
-   * ------------------------------------------------------------------ */
-
-  function cacheDom() {
-    dom.tabs = document.getElementById('tabs');
-    dom.form = document.getElementById('form');
-    dom.presets = document.getElementById('presets');
-    dom.userPresets = document.getElementById('userPresets');
-    dom.userPresetSection = document.getElementById('userPresetSection');
-    dom.basicFields = document.getElementById('basicFields');
-    dom.copyFields = document.getElementById('copyFields');
-    dom.infoFields = document.getElementById('infoFields');
-    dom.advancedFields = document.getElementById('advancedFields');
-    dom.output = document.getElementById('output');
-    dom.charCount = document.getElementById('charCount');
-    dom.wireframe = document.getElementById('wireframe');
-    dom.imageCard = document.getElementById('imageCard');
-    dom.imageSlots = document.getElementById('imageSlots');
-    dom.imageZip = document.getElementById('imageZip');
-    dom.imageCount = document.getElementById('imageCount');
-    dom.toast = document.getElementById('toast');
-
-    dom.sample = document.getElementById('sample');
-    dom.sampleImage = document.getElementById('sampleImage');
-    dom.sampleCaption = document.getElementById('sampleCaption');
-
-    dom.detail = document.getElementById('detail');
-    dom.detailImage = document.getElementById('detailImage');
-    dom.detailTitle = document.getElementById('detailTitle');
-    dom.detailDesc = document.getElementById('detailDesc');
-    dom.detailUses = document.getElementById('detailUses');
-    dom.detailUsesBlock = document.getElementById('detailUsesBlock');
-    dom.detailSpecs = document.getElementById('detailSpecs');
-    dom.detailApplyCopy = document.getElementById('detailApplyCopy');
-    dom.detailApply = document.getElementById('detailApply');
-    dom.detailClose = document.getElementById('detailClose');
-  }
-
-  function bindActions() {
-    document.getElementById('btnCopy').addEventListener('click', copyPrompt);
-    document.getElementById('btnReset').addEventListener('click', reset);
-    document.getElementById('btnOmakase').addEventListener('click', omakase);
-    document.getElementById('btnRandom').addEventListener('click', randomize);
-    document.getElementById('btnSave').addEventListener('click', savePreset);
-    document.getElementById('btnLoad').addEventListener('click', loadPresetSection);
-    if (dom.imageZip) dom.imageZip.addEventListener('click', exportImagesZip);
-
-    // 右カラムの仕上がり例からも詳細モーダルを開ける
-    dom.sampleImage.addEventListener('click', function () {
-      if (activePreset) openDetail(activePreset, dom.sampleImage.src);
-    });
-
-    // 詳細モーダルの CTA
-    dom.detailApplyCopy.addEventListener('click', function () {
-      if (detailPreset) {
-        applyPresetAndCopy(detailPreset);
-        closeDetail();
-      }
-    });
-    dom.detailApply.addEventListener('click', function () {
-      if (detailPreset) {
-        applyPreset(detailPreset);
-        toast('「' + detailPreset.name + '」を適用しました');
-        closeDetail();
-      }
-    });
-
-    // 詳細モーダル：閉じるボタン・背景クリック・Esc の3経路で閉じる
-    dom.detailClose.addEventListener('click', closeDetail);
-    dom.detail.addEventListener('click', function (event) {
-      if (event.target === dom.detail) closeDetail();
-    });
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && !dom.detail.hidden) closeDetail();
-    });
-  }
-
-  /**
-   * 描画後に .field へ data-key を張る。
-   * renderField の中で張ってもよいが、
-   * 「fields の定義順 = DOM の順」であることを利用して一括で付けたほうが単純。
-   */
-  function tagFieldKeys() {
-    const groups = ['basic', 'copy', 'info', 'advanced'];
-    groups.forEach(function (group) {
-      const container = dom[group + 'Fields'];
-      if (!container) return;
-      const fields = template.fields.filter(function (field) {
-        return field.group === group;
-      });
-      container.querySelectorAll(':scope > .field').forEach(function (node, index) {
-        node.dataset.key = fields[index].key;
-      });
-    });
-  }
-
-  function init() {
-    cacheDom();
-
-    // 有効なテンプレートの先頭を初期表示にする
-    template = global.PromptMaker.getTemplates().filter(function (item) {
-      return item.enabled;
-    })[0];
-
-    state = Object.assign({}, template.defaults);
-
-    renderTabs();
-    renderPresets();
-    renderFields();
-    tagFieldKeys();
-    renderUserPresets();
-    syncAllFields();
-    updatePrompt();
-    bindActions();
-  }
-
-  document.addEventListener('DOMContentLoaded', init);
-})(window);
+    if (global.navigator.clipboard && global.i

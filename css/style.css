@@ -249,6 +249,10 @@ button {
   transition: transform var(--slow) var(--ease);
 }
 
+.tab:not(.is-disabled) {
+  cursor: pointer;
+}
+
 .tab:hover:not(.is-disabled) {
   color: var(--ink);
 }
@@ -614,6 +618,81 @@ button {
 .custom-input::placeholder,
 .textarea::placeholder {
   color: var(--ink-faint);
+}
+
+/* --- くり返し入力(商品・メニューなど、行を増減できる欄) --- */
+
+.repeater__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.repeater__row {
+  display: flex;
+  gap: 8px;
+}
+
+.repeater__input {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-tint);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-family: var(--font-sans);
+  transition: all var(--fast) var(--ease);
+}
+
+.repeater__input::placeholder {
+  color: var(--ink-faint);
+}
+
+.repeater__input:focus {
+  outline: none;
+  border-color: var(--rose);
+  background: var(--surface);
+}
+
+.repeater__remove {
+  flex: 0 0 auto;
+  width: 34px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-faint);
+  font-size: 14px;
+  transition: all var(--fast) var(--ease);
+}
+
+.repeater__remove:hover:not(.is-disabled) {
+  border-color: var(--rose);
+  color: var(--rose-deep);
+}
+
+.repeater__remove.is-disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.repeater__add {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transition: all var(--fast) var(--ease);
+}
+
+.repeater__add:hover {
+  border-color: var(--rose);
+  color: var(--rose-deep);
+  border-style: solid;
 }
 
 .custom-input:focus,
@@ -1405,6 +1484,33 @@ button {
   font-size: 11.5px;
 }
 
+/* コピペ用プロンプト・コマンドのブロック（使い方ガイド「はじめに」など） */
+.guide-code {
+  margin: 10px 0 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--paper-deep);
+  color: var(--ink);
+  font-family: "Consolas", "Menlo", monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.guide-code__label {
+  margin: 16px 0 0;
+  color: var(--ink-faint);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.guide-code__label:first-child {
+  margin-top: 0;
+}
+
 /* 下部の戻る */
 .guide-foot {
   margin-top: 12px;
@@ -1600,131 +1706,4 @@ button {
 }
 
 .imgslot__ratio {
-  display: inline-block;
-  margin-top: 3px;
-  color: var(--rose-deep);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  border: 1px solid var(--rose-mist);
-  border-radius: var(--radius-pill);
-  padding: 1px 9px;
-}
-
-.imgslot__reflock {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 6px;
-  color: var(--ink-soft);
-  font-size: 10.5px;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-}
-
-.imgslot__reflock input {
-  margin: 0;
-  cursor: pointer;
-}
-
-.imgslot__acts {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.imgslot__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 8px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  color: var(--ink-soft);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: all var(--fast) var(--ease);
-  white-space: nowrap;
-}
-
-.imgslot__btn:hover {
-  border-color: var(--rose);
-  color: var(--rose-deep);
-  background: var(--rose-veil);
-}
-
-.imgslot__btn.is-copied {
-  border-color: #8fae86;
-  color: #4b6b46;
-  background: #e8efe4;
-}
-
-.imgslot__btn.is-copied:hover {
-  border-color: #6e9364;
-  color: #3c5638;
-  background: #dfe9d9;
-}
-
-.imgslot__thumb {
-  position: relative;
-  width: 74px;
-  height: 54px;
-  border: 1.5px dashed var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--surface-tint);
-  overflow: hidden;
-}
-
-.imgslot__thumb.has {
-  border-style: solid;
-  border-color: var(--rose);
-}
-
-.imgslot__thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.imgslot__rm {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(255, 253, 252, 0.92);
-  color: var(--rose-deep);
-  font-size: 12px;
-  line-height: 1;
-  box-shadow: var(--shadow-lift);
-}
-
-.imgcard-foot {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 18px;
-}
-
-@media (max-width: 560px) {
-  .imgslot {
-    grid-template-columns: 1fr 74px;
-  }
-  .imgslot__acts {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
-  }
-}
-
-/* 見取り図クリックで、設計図側の該当箇所に差すしるし */
-.output-mark {
-  padding: 0 3px;
-  border-radius: 3px;
-  background: var(--rose-mist);
-  color: var(--ink);
-  animation: flash var(--slow) var(--ease) 2;
-}
+  

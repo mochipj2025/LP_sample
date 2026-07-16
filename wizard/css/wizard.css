@@ -1,0 +1,141 @@
+/* =========================================================================
+ * wizard.css
+ * ステップ版 追加スタイル
+ * -------------------------------------------------------------------------
+ * ベースの css/style.css はそのまま流用し、ここでは
+ *   ・1カラム幅にする
+ *   ・進捗バー（wizard-progress）
+ *   ・戻る／次へ バー（wizard-nav）
+ * だけを足す。トークン（色・角丸・余白）は style.css の :root をそのまま使う。
+ * ========================================================================= */
+
+.shell--wizard {
+  max-width: 820px;
+}
+
+/* ステップ本体：非表示は [hidden] 属性で切り替える（他の display 指定に負けないよう明示） */
+.wizard-step[hidden] {
+  display: none !important;
+}
+
+.wizard-step {
+  animation: wizard-step-in 0.28s var(--ease);
+}
+
+@keyframes wizard-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * 進捗バー
+ * ------------------------------------------------------------------- */
+
+.wizard-progress {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 0 0 28px;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wizard-progress::-webkit-scrollbar {
+  height: 4px;
+}
+
+.wizard-progress__item {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px 9px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink-faint);
+  font-size: 13.5px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color var(--fast) var(--ease), color var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+
+.wizard-progress__item:hover {
+  border-color: var(--line-strong);
+  color: var(--ink-soft);
+}
+
+.wizard-progress__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: var(--paper-deep);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.wizard-progress__item.is-current {
+  border-color: var(--rose);
+  background: var(--rose-veil);
+  color: var(--ink);
+}
+
+.wizard-progress__item.is-current .wizard-progress__num {
+  background: var(--wash-ink);
+  color: #fff;
+}
+
+.wizard-progress__item.is-done .wizard-progress__num {
+  background: var(--rose-mist);
+  color: var(--rose-deep);
+}
+
+.wizard-progress__item.is-done {
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------------------
+ * 今のステップの一言説明
+ * ------------------------------------------------------------------- */
+
+.wizard-intro {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--rose);
+  border-radius: var(--radius-md);
+  background: var(--rose-veil);
+}
+
+.wizard-intro__icon {
+  flex: 0 0 auto;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.wizard-intro__text {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+
+.wizard-intro__text strong {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spa
