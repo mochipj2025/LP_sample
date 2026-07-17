@@ -390,6 +390,30 @@
     ]);
   }
 
+  /** SEO・メタ情報（検索とSNSシェア対策）の指示文。制作プロンプト用。 */
+  function seoMetaBody(state) {
+    const name = state.infoName || '【店名・サービス名】';
+    return joinLines([
+      'HTMLの <head> に、検索・SNS向けのメタ情報を必ず入れてください（未確定値は【 】の仮表記で後から差し替え可能に）。',
+      '・<title>：「' + name + '」＋業種＋地域＋主要ベネフィットを含む、全角30文字前後の具体的なタイトル。',
+      '・<meta name="description">：このLPの要点を120字前後で。誇張や虚偽の実績は書かない。',
+      '・OGP（SNSシェア用）：og:title / og:description / og:image / og:url / og:type="website" / og:site_name を設定。',
+      '・Twitter Card：<meta name="twitter:card" content="summary_large_image"> と画像を設定。',
+      '・<link rel="canonical" href="【このページの正規URL】">（重複URL対策）。',
+      '・<html lang="ja">、<meta name="viewport" content="width=device-width, initial-scale=1">、文字コードは UTF-8。',
+      '・見出しは h1 を1つだけ置き、以降は h2 → h3 の階層を崩さない。画像には内容の伝わる alt を付ける。',
+      '・favicon（<link rel="icon">）も用意する。'
+    ]);
+  }
+
+  /** SEO の要点だけ（設計図用の短い版）。 */
+  function seoMetaBrief(state) {
+    return joinLines([
+      '・<title>／meta description／OGP／canonical／lang="ja" をHTMLに必ず入れる前提で作る。',
+      '・見出しは h1 を1つ＋h2/h3 の階層を守り、画像に alt を付ける。'
+    ]);
+  }
+
   function infoBody(state) {
     const pairs = [
       ['店名・ブランド名', state.infoName],
@@ -484,6 +508,7 @@
       { title: '補足・調整したいこと', body: state.extra },
       { title: '画像づくり（Visual PromptMaker 連携）', body: imageNote(state) },
       { title: 'GEO/AEO（AI・検索に拾われる工夫）', body: geoAeoBrief(state) },
+      { title: 'SEO・メタ情報', body: seoMetaBrief(state) },
       {
         title: 'このあと',
         body:
@@ -584,6 +609,7 @@
         ])
       },
       { title: 'GEO/AEO・構造化データ（AIと検索に拾われる作り）', body: geoAeoBody(state) },
+      { title: 'SEO・メタ情報（検索とSNSシェア対策）', body: seoMetaBody(state) },
       { title: '補足', body: state.extra }
     ]);
 
