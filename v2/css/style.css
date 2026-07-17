@@ -1,0 +1,317 @@
+/* =========================================================================
+ * v2/css/style.css
+ * ../css/style.css の上に重ねる、v2 専用の上書き分だけを書く。
+ * 色・角丸・余白などのトークンは ../css/style.css の :root をそのまま使う。
+ * ここではまだ「入口の分岐画面」だけを最低限見られる形にしている。
+ * ========================================================================= */
+
+.shell--v2 {
+  max-width: 720px;
+}
+
+.v2-entry__title {
+  margin: 0 0 20px;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 26px;
+}
+
+/* ---------------------------------------------------------------------
+ * 各ステップの小さな線画イラスト（v2）
+ * 「殺風景」対策。写真ではなく、既存の rose トーンに合わせた
+ * シンプルな線画だけにして、読み込み負荷やテイストのブレを避ける。
+ * ------------------------------------------------------------------- */
+
+.v2-illust {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.v2-illust svg {
+  width: 72px;
+  height: 72px;
+  fill: none;
+  stroke: var(--rose);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.v2-entry__choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.v2-entry__choice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-align: left;
+  transition: border-color var(--fast) var(--ease), transform var(--fast) var(--ease);
+}
+
+.v2-entry__choice:hover {
+  border-color: var(--rose);
+  transform: translateY(-2px);
+}
+
+.v2-entry__choice-title {
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.v2-entry__choice-desc {
+  font-size: 13px;
+  color: var(--ink-faint);
+  line-height: 1.6;
+}
+
+.v2-step {
+  padding: 24px 0;
+}
+
+.v2-step__lead {
+  margin: 0 0 20px;
+  color: var(--ink-soft);
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+
+.v2-folder__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.v2-folder__detail {
+  margin-top: 22px;
+}
+
+.v2-folder__detail summary {
+  color: var(--ink-faint);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.v2-folder__detail[open] summary {
+  margin-bottom: 10px;
+}
+
+.v2-step__note {
+  padding: 14px 18px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--ink-faint);
+  font-size: 13.5px;
+}
+
+/* ---------------------------------------------------------------------
+ * プリセット一覧（v2）
+ * どのカードも「アイコン＋名前＋説明文」だけで判断できるようにする。
+ * サムネイル画像の有無で見た目や操作が変わらないようにする。
+ * ------------------------------------------------------------------- */
+
+.v2-preset-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.v2-preset-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-align: left;
+  transition: border-color var(--fast) var(--ease), transform var(--fast) var(--ease);
+}
+
+.v2-preset-card:hover {
+  border-color: var(--rose);
+  transform: translateY(-2px);
+}
+
+.v2-preset-card__thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--wash-rose);
+}
+
+.v2-preset-card__thumb-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  opacity: 0.75;
+}
+
+.v2-preset-card__thumb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--slow) var(--ease);
+}
+
+.v2-preset-card__thumb.has-image .v2-preset-card__thumb-img {
+  opacity: 1;
+}
+
+.v2-preset-card__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.v2-preset-card__name {
+  font-size: 15.5px;
+  color: var(--ink);
+}
+
+.v2-preset-card__desc {
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* ---------------------------------------------------------------------
+ * 内容確認・コピー画面（v2）
+ * ------------------------------------------------------------------- */
+
+.v2-confirm {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  margin-bottom: 18px;
+}
+
+.v2-confirm__thumb {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--wash-rose);
+  margin-bottom: 14px;
+}
+
+.v2-confirm__thumb-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  opacity: 0.75;
+}
+
+.v2-confirm__thumb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--slow) var(--ease);
+}
+
+.v2-confirm__thumb.has-image .v2-confirm__thumb-img {
+  opacity: 1;
+}
+
+.v2-confirm__name {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.v2-confirm__desc {
+  margin: 0 0 14px;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.v2-confirm__specs {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  margin: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.v2-confirm__specs dt {
+  color: var(--ink-faint);
+  font-size: 12.5px;
+}
+
+.v2-confirm__specs dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+/* ---------------------------------------------------------------------
+ * 自分で決めるルート：基本設定（v2）
+ * chip / chip.is-active / chips は ../css/style.css の既存クラスをそのまま使う。
+ * ------------------------------------------------------------------- */
+
+.v2-basic-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.v2-field__label {
+  margin: 0 0 8px;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+}
+
+/* ---------------------------------------------------------------------
+ * 自分で決めるルート：画像（v2）
+ * .imgslot / .imgslot__* / .imgcard-foot / .note は ../css/style.css の
+ * 既存クラスをそのまま使う（v1 の画像カードと同じ見た目にするため）。
+ * ------------------------------------------------------------------- */
+
+.v2-image-slots {
+  margin-bottom: 8px;
+}
+
+/* ---------------------------------------------------------------------
+ * 自分で決めるルート：掲載情報（v2）
+ * .field / .field-header / .textarea / .repeater__* は ../css/style.css の
+ * 既存クラスをそのまま使う（v1 の掲載情報フォームと同じ見た目にするため）。
+ * ------------------------------------------------------------------- */
+
+.v2-info-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+/* --------------------------------------------------------------

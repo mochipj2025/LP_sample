@@ -80,6 +80,29 @@
     return id === 'menu' ? menuLabel(genreOf(state.type)) : LABELS[id];
   }
 
+  /**
+   * 入力欄（FIELDS）のラベルを業種で少し変える。
+   * labelOf() は「設計図の見出し」用、こちらは「入力フォームのラベル」用。
+   * 該当なし（null）を返したときは、呼び出し側が FIELDS 側の既定ラベルを使う。
+   * v2（作り直し中の情報設計）が「掲載情報のラベルも業種で変わってほしい」
+   * という要望から追加。app.js 側は業種の知識を一切持たないので、
+   * ここに書くだけで v1 / v2 どちらからも呼べるようにしておく。
+   */
+  function inputLabelOf(key, state) {
+    if (key === 'menuItems') return menuLabel(genreOf(state.type));
+    if (key === 'infoFeature') {
+      if (state.type === '個人・作家') return 'こだわり・制作スタイル';
+      if (state.type === 'サロン・整体') return '選ばれる理由・こだわり';
+      if (state.type === '美容室') return '選ばれる理由・サロンの特徴';
+      if (state.type === 'クリニック・歯科') return '選ばれる理由・こだわり';
+      if (state.type === 'ジム・教室') return '選ばれる理由・こだわり';
+      if (state.type === 'セミナー・講座') return '講座の特徴・こだわり';
+      if (state.type === 'SaaS・アプリ') return '機能・こだわり';
+      if (state.type === 'EC・物販') return '比較・選ばれるこだわり';
+    }
+    return null;
+  }
+
   /** そのセクションに「何を書くか」のガイド（業種で少し変える） */
   function guideOf(id, state) {
     const g = genreOf(state.type);
@@ -1177,7 +1200,8 @@
     defaults: DEFAULT_STATE,
     build: build,
     wireframe: wireframe,
-    imageSlots: imageSlots
+    imageSlots: imageSlots,
+    inputLabelOf: inputLabelOf
   });
 
   /* Node（将来の自動化スクリプト）からは、この template.lp.js を require するだけで
