@@ -188,4 +188,54 @@
               <button class="btn" id="btnSave" type="button">
                 <span>💾</span><span>設定を保存</span>
               </button>
-  
+              <button class="btn" id="btnLoad" type="button">
+                <span>📂</span><span>設定を読込</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- プリセット詳細モーダル -->
+    <div class="modal" id="detail" role="dialog" aria-modal="true" aria-labelledby="detailTitle" hidden>
+      <div class="modal__panel">
+        <button class="modal__close" id="detailClose" type="button" aria-label="閉じる">✕</button>
+        <figure class="modal__media">
+          <img class="modal__img" id="detailImage" alt="" />
+          <figcaption class="modal__caption">仕上がり例</figcaption>
+        </figure>
+        <div class="modal__body">
+          <h3 class="modal__title" id="detailTitle"></h3>
+          <p class="modal__desc" id="detailDesc"></p>
+          <div class="modal__block" id="detailUsesBlock">
+            <h4 class="modal__h4">こんなときに</h4>
+            <ul class="modal__uses" id="detailUses"></ul>
+          </div>
+          <div class="modal__block">
+            <h4 class="modal__h4">埋まる主な設定</h4>
+            <dl class="modal__specs" id="detailSpecs"></dl>
+          </div>
+          <div class="modal__actions">
+            <button class="btn btn--primary" id="detailApplyCopy" type="button">
+              <span>📋</span><span>この設定でコピー</span>
+            </button>
+            <button class="btn" id="detailApply" type="button">
+              <span>✎</span><span>適用だけ（編集する）</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- スクリプト（file:// で直接開けるよう module は使わない） -->
+    <script src="js/core.js"></script>
+    <script src="js/template.lp.js"></script>
+    <script src="js/template.visual.js"></script>
+    <script src="js/template.icon.js"></script>
+    <script src="js/imageWorkflow.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
