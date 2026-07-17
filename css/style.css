@@ -1939,3 +1939,84 @@ body {
     font-size: 16.5px;
   }
 }
+
+/* =========================================================================
+ * 20. マスコット（相棒）による説明
+ * -------------------------------------------------------------------------
+ * 余白に小さく居させて、そのページで「今なにをする場所か」を一言で伝える。
+ * 画像は assets/mascot/*.webp（各20〜30KB）。主張しすぎないよう小さめに。
+ * ========================================================================= */
+
+.header__note {
+  margin-top: 10px;
+  color: var(--ink-faint);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+/* カード内：マスコット＋説明文を横並び */
+.mascot-note {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mascot-note__img {
+  flex: 0 0 auto;
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(44, 39, 36, 0.1));
+}
+.mascot-note__body {
+  min-width: 0;
+}
+.mascot-note__body .card__desc {
+  margin-bottom: 0;
+}
+
+/* 「これは何？」イントロは地色を一段変えて常設感を出す */
+.card--intro {
+  background: var(--surface-tint);
+}
+
+/* 右カラム・出力が空のときのヒント（点線で仮置き感を出す） */
+.mascot-hint {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 2px 0 18px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--rose-veil);
+}
+.mascot-hint__img {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+.mascot-hint__text {
+  color: var(--ink-soft);
+  font-size: 11.5px;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+}
+
+/* v2：各ステップの挿絵をマスコット画像に差し替えたとき用 */
+.v2-illust img {
+  width: 118px;
+  height: 118px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(44, 39, 36, 0.1));
+}
+
+@media (max-width: 680px) {
+  .mascot-note {
+    gap: 12px;
+  }
+  .mascot-note__img {
+    width: 66px;
+    height: 66px;
+  }
+}

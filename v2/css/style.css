@@ -336,3 +336,12 @@
   transition: color var(--fast) var(--ease);
 }
 .v2-exit a:hover { color: var(--ink); }
+) {
+  .v2-entry__choices {
+    grid-template-columns: 1fr;
+  }
+
+  .v2-preset-list {
+    grid-template-columns: 1fr;
+  }
+}
