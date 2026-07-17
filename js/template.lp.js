@@ -442,6 +442,16 @@
     return joinLines(['以下は必ずLPに正確に入れる情報です（空欄は無視）。', joinLines(lines)]);
   }
 
+  /** マスコット・相棒キャラの登場指示（未入力なら空＝セクションごと省かれる）。 */
+  function mascotBody(state) {
+    if (!state.mascot || !state.mascot.trim()) return '';
+    return joinLines([
+      'このブランドには相棒マスコットがいます：' + state.mascot.trim(),
+      'ファーストビュー・セクションの区切り・CTA付近などにさりげなく登場させ、世界観を統一してください。',
+      '画像ファイルが指定されている場合（例 images/mascot-front.webp）は、その相対パスをそのまま使い、別のURLに変えないでください。'
+    ]);
+  }
+
   function tasteOf(state) {
     const byType = {
       '飲食店': 'シズル感のある料理写真／温かく落ち着いた照明',
@@ -504,6 +514,7 @@
       { title: '構成（この順で並べます）', body: listBody },
       { title: '各セクションに書くこと', body: guideBody },
       { title: '掲載する情報（必ず入れる）', body: infoBody(state) },
+      { title: 'マスコット・相棒キャラ', body: mascotBody(state) },
       { title: '参考トーン・サイト', body: state.ref },
       { title: '補足・調整したいこと', body: state.extra },
       { title: '画像づくり（Visual PromptMaker 連携）', body: imageNote(state) },
@@ -587,6 +598,7 @@
           '架空の実績・数字・お客様の声を「事実」として作らないでください（例文である旨がわかる形に）。'
         ])
       },
+      { title: 'マスコット・相棒キャラ', body: mascotBody(state) },
       {
         title: 'デザイン方向性',
         body: joinLines([
@@ -1186,6 +1198,7 @@
     { key: 'infoPlace', label: '場所・アクセス', icon: '📍', group: 'info', type: 'textarea', rows: 1, random: false, placeholder: '例）〇〇駅 徒歩5分' },
     { key: 'infoMapUrl', label: 'Googleマップのリンク', icon: '🗺️', group: 'info', type: 'textarea', rows: 1, random: false, hint: 'GEO/AEO対策。地図の共有URLを貼ると、AIや検索に拾われやすくなります。', placeholder: '例）https://maps.app.goo.gl/xxxx' },
     { key: 'infoFeature', label: '特徴・こだわり', icon: '✨', group: 'info', type: 'textarea', rows: 2, random: false, placeholder: '例）国家資格保有・完全個室' },
+    { key: 'mascot', label: 'マスコット・相棒キャラ', icon: '🧸', group: 'info', type: 'textarea', rows: 2, random: false, hint: '「マスコット作成」タブで作れます。特徴やファイル名を書くとLPに登場させます。', placeholder: '例）まめ大福モチーフの相棒「もちすけ」。images/mascot-front.webp' },
     {
       key: 'links',
       label: 'リンク（SNS・予約・地図など）',
@@ -1212,7 +1225,7 @@
     tone: '高級感',
     volume: '標準',
     output: '構成の設計図',
-    infoName: '', menuItems: [], infoDate: '', infoPlace: '', infoMapUrl: '', infoFeature: '', links: [],
+    infoName: '', menuItems: [], infoDate: '', infoPlace: '', infoMapUrl: '', infoFeature: '', mascot: '', links: [],
     ref: '', extra: ''
   };
 
