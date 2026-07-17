@@ -1075,7 +1075,7 @@
     },
     {
       key: 'output',
-      label: '出力タイプ',
+      label: '出力タイプ（作りたいものを選ぶ）',
       icon: '📤',
       group: 'basic',
       type: 'chips',

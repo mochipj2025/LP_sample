@@ -87,7 +87,7 @@
           <!-- ステップ①：基本設定 -->
           <div class="card">
             <h2 class="card__title"><span>①</span><span>基本設定</span></h2>
-            <p class="card__desc">3つ選ぶだけ。右の見取り図と出力がリアルタイムで変わります。</p>
+            <p class="card__desc">3つ選ぶだけ。右の見取り図（＝LPの形のプレビュー）と出力がリアルタイムで変わります。</p>
             <div id="basicFields"></div>
           </div>
 
@@ -97,14 +97,14 @@
               <img class="mascot-note__img" src="assets/mascot/mascot-image.webp" alt="画像を持つマスコット" />
               <div class="mascot-note__body">
                 <h2 class="card__title"><span>②</span><span>画像を用意する（任意）</span></h2>
-                <p class="card__desc" style="margin-bottom:0">画像も使うなら、プロンプトをコピーして画像生成AIで作り、ここに戻すだけ。使わなくてもOK。</p>
+                <p class="card__desc" style="margin-bottom:0">画像も使うなら、プロンプト（＝AIへの指示文）をコピーして画像生成AIで作り、ここに戻すだけ。使わなくてもOK。</p>
               </div>
             </div>
             <p class="card__desc">
               <b>①</b>各スロットの「📋 プロンプト」をコピー →
               <b>②</b>画像生成AI（Image 2.0 / Midjourney など）で作成 →
-              <b>③</b>できた画像を「🖼 画像を選ぶ」でここにセット（自動的に<b>WebP</b>へ変換され軽量化されます。アニメーションGIFはそのまま）→
-              <b>④</b>下の「画像を書き出す」でまとめて<b>ZIP</b>に。
+              <b>③</b>できた画像を「🖼 画像を選ぶ」でここにセット（自動的に<b>軽い画像（WebP）</b>に変換されます。アニメーションGIFはそのまま）→
+              <b>④</b>下の「画像を書き出す」で、まとめて<b>1つのファイル（ZIP）</b>に。
               LP作成のときは、③のコード指示書にファイル名が自動で組み込まれます。
             </p>
             <div id="imageSlots"></div>
