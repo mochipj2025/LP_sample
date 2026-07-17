@@ -2,22 +2,21 @@
  * template.mascot.js
  * マスコット作成 PromptMaker ― このLP/ブランドの「相棒キャラクター」1体を作る。
  * -------------------------------------------------------------------------
- * アイコン作成（template.icon.js）が favicon やボタンのような「機能的な印」を
- * 作るのに対し、こちらは主役級の「ブランドの相棒マスコット」を三面図の設定資料
- * として作る位置づけ（DESIGN.md §7 / JOURNEY.md 参照）。
- *
- * 別リポ Promptmaker002 のキャラ系ツール群（simple-character-promptmaker 等）と
- * 役割がかぶらないよう、このテンプレートは「LP専用・トーン継承・三面図を
- * imageSlots に流し込む」ことに絞る。多様なキャラの作り分け自体は別リポに任せる。
- *
+ * かわいい素材を「ボタン（chips）」で選び、その組み合わせで個性的なキャラを
+ * 作る仕組み。かたち・モチーフ・色・目・ほっぺ・口・アイテム・アクセント・性格を
+ * 1つずつ選ぶ（🎲ランダムで一気にシャッフル／🎁おまかせで相性のいいプリセット）。
  * 世界観（かわいい／サイバーパンク／スチームパンク）で固定プロンプトの文面を
- * 差し替え、見た目のトーンをまるごと変える。テイスト（tone）や brandName /
- * brandColor は LP作成・アイコン作成と同じ語彙で、タブ切替時に引き継がれる。
+ * 差し替え、見た目のトーンをまるごと変える。
  *
- * build() で作ったプロンプトで画像を作った後、できた画像を imageSlots に
- * 戻してセットすると、LP作成・画像作成と同じ共通の仕組み（app.js 側）で
- * 自動リネーム→WebP変換→まとめてZIP書き出し、まで面倒を見てくれる。
- * LP のような「見取り図（wireframe）」の概念は無いので登録しない。
+ * アイコン作成（template.icon.js）が favicon のような「機能的な印」なのに対し、
+ * こちらは主役級の「ブランドの相棒マスコット」を三面図の設定資料として作る
+ * 位置づけ（DESIGN.md §7 / JOURNEY.md 参照）。別リポ Promptmaker002 のキャラ系
+ * ツール群とは「LP専用・トーン継承・三面図を imageSlots に流し込む」で住み分ける。
+ *
+ * テイスト（tone）・brandName・brandColor は LP作成・アイコン作成と同じ語彙で、
+ * タブ切替時に引き継がれる。build() で作ったプロンプトで画像を作った後、
+ * できた画像を imageSlots（正面・横・背面）に戻すと、LP作成・画像作成と同じ
+ * 共通の仕組み（app.js 側）で 自動リネーム→WebP変換→ZIP書き出し、まで面倒を見る。
  * ========================================================================= */
 
 (function (global) {
@@ -48,23 +47,45 @@
   ];
 
   /* ======================================================================
-   * 3. build() ― 完成した画像生成プロンプト
+   * 3. 素材ボタンの組み合わせ → キャラクター説明文
+   * ====================================================================== */
+  function charaDesc(state) {
+    const shape = state.base || 'まんまる';
+    const color = state.color || 'ミルクホワイト';
+    const motif = (state.motif || '').trim() || 'くま';
+    const parts = [shape + 'のかたちで、' + color + 'の' + motif];
+
+    const face = [];
+    if (state.eyes) face.push('目は' + state.eyes);
+    if (state.cheek && state.cheek !== 'なし') face.push('ほっぺは' + state.cheek);
+    if (state.mouth) face.push('口は' + state.mouth);
+    if (face.length) parts.push(face.join('、'));
+
+    if (state.item && state.item !== 'なし') parts.push(state.item + 'を身につけている');
+    if (state.accent && state.accent !== 'なし') parts.push(state.accent + 'を差し色に');
+    if (state.personality) parts.push('せいかくは' + state.personality);
+
+    return parts.join('。') + '。';
+  }
+
+  /* ======================================================================
+   * 4. build() ― 完成した画像生成プロンプト
    * ====================================================================== */
 
   function aim(state) {
-    const motif = (state.motif || '').trim() || '（モチーフ未入力）';
-    const tone = state.tone ? '「' + state.tone + '」を基調にした' : '';
-    return 'ブランドの相棒マスコット。' + tone + motif + 'をベースに、' + (state.world || 'かわいい') + 'の世界観で三面図の設定資料をつくる。';
+    const motif = (state.motif || '').trim() || 'くま';
+    return 'ボタンを組み合わせて作る、あなたのブランドの相棒マスコット（' +
+      (state.world || 'かわいい') + 'の世界観／モチーフ：' + motif + '）。三面図の設定資料として書き出します。';
   }
 
   /** 1ビューぶんの完成プロンプト（build と imageSlots で共有＝二重管理しない） */
   function buildOnePrompt(state, view) {
     const brand = state.brandName ? '「' + state.brandName + '」の' : '';
-    const motif = (state.motif || '').trim() || '小さな相棒キャラクター';
     const toneWord = state.tone || '親しみやすい';
-    const colorNote = state.brandColor ? '配色は' + state.brandColor + 'を基調に。' : '';
+    const colorNote = state.brandColor ? '全体の配色は' + state.brandColor + 'に寄せる。' : '';
 
-    const text = brand + 'ブランドマスコット。' + motif + 'をベースにした、' + toneWord + 'な小さな相棒キャラクター。' +
+    const text = brand + 'ブランドマスコット、小さな相棒キャラクター。' + charaDesc(state) +
+      '雰囲気は' + toneWord + '。' +
       'この設定資料の' + view.view + 'を1枚。' + worldFixed(state) + colorNote +
       '同じキャラクターだと分かるよう、体型・色・特徴を三面図で完全に統一する。' +
       '文字・ロゴ・余計な小物の描き込みは最小限にし、背景はシンプルに。';
@@ -75,7 +96,7 @@
   function build(state) {
     const prompts = VIEWS.map(function (v) { return buildOnePrompt(state, v); });
 
-    const usage = '【使い方】① 下のプロンプトをコピー → ② 画像生成AI（Midjourney / Image 2.0 / DALL·E など）に貼る → ③ 三面図として一貫した見た目で3枚つくる → ④「画像を用意する」で正面・横・背面をセット';
+    const usage = '【使い方】① ボタンを選ぶ（🎲ランダムで組み合わせ変更）→ ② 下のプロンプトをコピー → ③ 画像生成AI（Midjourney / Image 2.0 / DALL·E など）で三面図を一貫した見た目で作る → ④「画像を用意する」で正面・横・背面をセット';
 
     const head = renderSections([{ title: 'このマスコットの狙い', body: aim(state) }]);
 
@@ -102,7 +123,7 @@
   }
 
   /* ======================================================================
-   * 3b. imageSlots() ― 「画像を用意する」ステップ用のスロット（三面図）
+   * 4b. imageSlots() ― 「画像を用意する」ステップ用のスロット（三面図）
    * ====================================================================== */
   function imageSlots(state) {
     return VIEWS.map(function (v) {
@@ -116,35 +137,57 @@
   }
 
   /* ======================================================================
-   * 4. 入力項目（fields）
+   * 5. 入力項目（fields）― かわいい素材のボタン。random:false 以外は
+   *    🎲ランダムでシャッフルされ、組み合わせで個性が出る。
    * ====================================================================== */
   const FIELDS = [
     {
-      key: 'world',
-      label: '世界観',
-      icon: '🌏',
-      group: 'basic',
-      type: 'chips',
+      key: 'world', label: '世界観', icon: '🌏', group: 'basic', type: 'chips', random: false,
       hint: '固定の設定資料風トーンがまるごと切り替わります。',
       options: ['かわいい', 'サイバーパンク', 'スチームパンク']
     },
     {
-      key: 'motif',
-      label: '何をベースにする？',
-      icon: '🎯',
-      group: 'basic',
-      type: 'textarea',
-      rows: 2,
-      random: false,
-      placeholder: '例）まめ大福／小さなロボ／柴犬'
+      key: 'base', label: 'かたち', icon: '⬤', group: 'basic', type: 'chips',
+      hint: 'シルエットの基本の形。',
+      options: ['まんまる', 'たまご型', 'ぷにぷに', 'ずんぐり', 'ふわふわ']
     },
     {
-      key: 'tone',
-      label: 'テイスト',
-      icon: '✨',
-      group: 'basic',
-      type: 'chips',
-      allowCustom: true,
+      key: 'motif', label: 'モチーフ', icon: '🐻', group: 'basic', type: 'chips', allowCustom: true,
+      hint: '何をベースにするか（自由入力も可）。',
+      options: ['くま', 'うさぎ', 'ねこ', 'いぬ', 'とり', 'ひよこ', 'おばけ', 'まめ', 'おだんご', 'ロボ', 'しずく']
+    },
+    {
+      key: 'color', label: 'いろ', icon: '🎨', group: 'basic', type: 'chips', allowCustom: true,
+      hint: 'メインカラー。',
+      options: ['ミルクホワイト', 'ベビーピンク', 'ミントグリーン', 'レモンイエロー', 'ラベンダー', 'スカイブルー', 'くすみベージュ', 'コーラル']
+    },
+    {
+      key: 'eyes', label: 'め', icon: '👀', group: 'basic', type: 'chips',
+      options: ['つぶら', 'まんまる', 'たれ目', 'きらきら', 'てんてん', 'ジト目']
+    },
+    {
+      key: 'cheek', label: 'ほっぺ', icon: '🌸', group: 'basic', type: 'chips',
+      options: ['ぽっと赤い', 'そばかす', 'うずまき', 'なし']
+    },
+    {
+      key: 'mouth', label: 'くち', icon: '👄', group: 'basic', type: 'chips',
+      options: ['にこにこ', 'むふ', 'ちいさめ', 'への字', 'あーん']
+    },
+    {
+      key: 'item', label: 'アイテム', icon: '🎀', group: 'basic', type: 'chips',
+      options: ['リボン', 'ぼうし', 'マフラー', 'はっぱ', 'ちいさなカバン', '王冠', 'めがね', 'なし']
+    },
+    {
+      key: 'accent', label: 'アクセント', icon: '✨', group: 'basic', type: 'chips',
+      hint: '差し色・模様。',
+      options: ['ほし', 'みずたま', 'しましま', 'チェック', 'ハート', 'なし']
+    },
+    {
+      key: 'personality', label: 'せいかく', icon: '💭', group: 'basic', type: 'chips',
+      options: ['人懐っこい', 'のんびりや', '元気いっぱい', 'はずかしがり', 'まじめ', 'いたずらっ子']
+    },
+    {
+      key: 'tone', label: 'テイスト', icon: '🎭', group: 'basic', type: 'chips', random: false, allowCustom: true,
       hint: '雰囲気（任意）。LP作成・アイコン作成と同じ語彙です。',
       options: ['高級感', '親しみやすい', 'ポップ・元気', '信頼・誠実', 'おしゃれ・洗練', 'エモい']
     },
@@ -155,12 +198,20 @@
 
     /* --- 詳細設定（折りたたみ / group:advanced） --- */
     { key: 'ref', label: '参考にしたいトーン・作風', icon: '🔎', group: 'advanced', type: 'textarea', rows: 2, random: false, placeholder: '例）〇〇のマスコットのような親しみやすさ／設定資料集の雰囲気' },
-    { key: 'extra', label: '補足・調整したいこと', icon: '📝', group: 'advanced', type: 'textarea', rows: 2, random: false, placeholder: '例）目を大きめに／アイテムを持たせたい など' }
+    { key: 'extra', label: '補足・調整したいこと', icon: '📝', group: 'advanced', type: 'textarea', rows: 2, random: false, placeholder: '例）目を大きめに／手足は短めに など' }
   ];
 
   const DEFAULT_STATE = {
     world: 'かわいい',
-    motif: '',
+    base: 'まんまる',
+    motif: 'くま',
+    color: 'ミルクホワイト',
+    eyes: 'つぶら',
+    cheek: 'ぽっと赤い',
+    mouth: 'にこにこ',
+    item: 'リボン',
+    accent: 'ほし',
+    personality: '人懐っこい',
     tone: '親しみやすい',
     brandName: '',
     brandColor: '',
@@ -169,31 +220,37 @@
   };
 
   /* ======================================================================
-   * 5. プリセット
+   * 6. プリセット（🎁おまかせで相性のいい組み合わせが1つ出る）
    * ====================================================================== */
   const PRESETS = [
     {
-      id: 'kawaii', name: 'かわいい相棒', icon: '🧸',
-      description: '生成りの背景に、やさしく親しみやすい小さな相棒。',
-      useCases: ['お店やブランドのゆるいマスコットが欲しい'],
-      values: { world: 'かわいい', tone: '親しみやすい' }
+      id: 'kuma', name: 'まんまるクマの相棒', icon: '🧸',
+      description: '生成り背景に映える、王道でやさしいゆるキャラ。',
+      useCases: ['お店やブランドの親しみやすいマスコットが欲しい'],
+      values: { world: 'かわいい', base: 'まんまる', motif: 'くま', color: 'ミルクホワイト', eyes: 'つぶら', cheek: 'ぽっと赤い', mouth: 'にこにこ', item: 'リボン', accent: 'ほし', personality: '人懐っこい', tone: '親しみやすい' }
     },
     {
-      id: 'cyber', name: 'サイバーパンクな相棒', icon: '🤖',
-      description: 'ネオンと金属パーツを効かせた、無機質さも同居する近未来の相棒。',
+      id: 'mochi', name: 'ぷにぷにおだんご', icon: '🍡',
+      description: 'まるっと柔らかい、ポップで元気なおだんごキャラ。',
+      useCases: ['スイーツ・カフェ系のゆるいマスコットが欲しい'],
+      values: { world: 'かわいい', base: 'ぷにぷに', motif: 'おだんご', color: 'ベビーピンク', eyes: 'てんてん', cheek: 'うずまき', mouth: 'むふ', item: 'なし', accent: 'みずたま', personality: 'のんびりや', tone: 'ポップ・元気' }
+    },
+    {
+      id: 'cyber', name: 'サイバーな相棒ロボ', icon: '🤖',
+      description: 'ネオンを効かせた、無機質さも同居する近未来の相棒。',
       useCases: ['テック系・ゲーム系の世界観に合うマスコットが欲しい'],
-      values: { world: 'サイバーパンク', tone: 'おしゃれ・洗練' }
+      values: { world: 'サイバーパンク', base: 'ずんぐり', motif: 'ロボ', color: 'スカイブルー', eyes: 'きらきら', cheek: 'なし', mouth: 'ちいさめ', item: 'めがね', accent: 'しましま', personality: 'まじめ', tone: 'おしゃれ・洗練' }
     },
     {
-      id: 'steam', name: 'スチームパンクな相棒', icon: '⚙️',
-      description: '真鍮と歯車の、骨董図鑑のように落ち着いた設定資料風の相棒。',
+      id: 'steam', name: 'スチームパンクなとり', icon: '⚙️',
+      description: '真鍮と歯車の、骨董図鑑のように落ち着いた設定資料風。',
       useCases: ['クラシックで重厚な世界観のマスコットが欲しい'],
-      values: { world: 'スチームパンク', tone: '高級感' }
+      values: { world: 'スチームパンク', base: 'たまご型', motif: 'とり', color: 'くすみベージュ', eyes: 'ジト目', cheek: 'そばかす', mouth: 'への字', item: 'ぼうし', accent: 'チェック', personality: 'いたずらっ子', tone: '高級感' }
     }
   ];
 
   /* ======================================================================
-   * 6. 登録
+   * 7. 登録
    * ====================================================================== */
   global.PromptMaker.registerTemplate({
     id: 'mascot',
