@@ -15,4 +15,5 @@
 | 個人サービスの問い合わせLP | personal.png |
 
 拡張子は **png → webp → jpg → jpeg** の順で最初に見つかったものを使用
-（`js/app.js` および `v2/js/a
+（`js/app.js` および `v2/js/app.js` の `IMAGE_EXTS` と同じ順。変更時は両方を揃えること）。
+png以外の形式でもこの順で自動検出されるので動作はする。長辺720px・150KB以下推奨。
