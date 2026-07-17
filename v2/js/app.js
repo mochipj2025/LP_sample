@@ -334,7 +334,7 @@
    * renderRepeaterField と同じ考え方だが、state は manualState を直接使う。
    * ------------------------------------------------------------------ */
 
-  var INFO_FIELD_KEYS = ['infoName', 'menuItems', 'infoDate', 'infoPlace', 'infoFeature', 'links'];
+  var INFO_FIELD_KEYS = ['infoName', 'menuItems', 'infoDate', 'infoPlace', 'infoMapUrl', 'infoFeature', 'links'];
 
   function resolveFieldLabel(field) {
     var dynamicLabel = typeof template.inputLabelOf === 'function'

@@ -337,11 +337,65 @@
       });
   }
 
+  /** links の URL だけを配列で返す（構造化データの sameAs 用）。 */
+  function linkUrls(state) {
+    return (state.links || [])
+      .filter(function (item) { return item && item.url; })
+      .map(function (item) { return item.url; });
+  }
+
+  /** 業種に近い schema.org の型を1つ返す（実店舗系は LocalBusiness を継承した型）。 */
+  function schemaTypeOf(state) {
+    const byType = {
+      '飲食店': 'Restaurant',
+      'カフェ・ベーカリー': 'CafeOrCoffeeShop',
+      'バー・居酒屋': 'BarOrPub',
+      '美容室': 'HairSalon',
+      'ネイルサロン': 'NailSalon',
+      'サロン・整体': 'HealthAndBeautyBusiness',
+      'セミナー・講座': 'EducationalOrganization',
+      'SaaS・アプリ': 'Organization',
+      'EC・物販': 'Store',
+      '個人・作家': 'ProfessionalService'
+    };
+    return byType[state.type] || 'LocalBusiness';
+  }
+
+  /** GEO/AEO（AIや検索に拾われる作り）の指示文。制作プロンプト用。 */
+  function geoAeoBody(state) {
+    const stype = schemaTypeOf(state);
+    const urls = linkUrls(state);
+    const lines = [
+      'このLPは「AIや検索エンジン（Google・生成AI）に正しく拾われる」ことを重視します。次を必ず盛り込んでください。',
+      '■ 構造化データ（JSON-LD）を <head> に埋め込む',
+      '・schema.org の「' + stype + '」型（実店舗なら LocalBusiness を継承した最も具体的な型）で name / address / telephone / openingHours / url / image を記載。',
+      state.infoMapUrl ? '・hasMap に ' + state.infoMapUrl + ' を設定。可能なら geo（緯度・経度）も入れる。' : '・地図の共有URLがあれば hasMap に設定し、可能なら geo（緯度・経度）も入れる。',
+      urls.length ? '・sameAs に外部リンクのURLを配列で入れる：\n  ' + urls.join('\n  ') : '・SNS等のURLがあれば sameAs に配列で入れる。',
+      '・FAQPage 型も併記し、この業種で実際に聞かれやすい質問を3〜5件、簡潔で事実ベースのQ&Aにする（AEO対策）。推測の数値・実績は書かない。',
+      '■ 画面上（可視）にも反映',
+      '・NAP（店名・住所・電話）を、構造化データと完全に一致する表記でフッター等に明記する。',
+      state.infoMapUrl ? '・Googleマップを <iframe> で埋め込むか、「地図を見る」リンク（' + state.infoMapUrl + '）を必ず設置する。' : '・地図の共有URLがあれば <iframe> 埋め込みか「地図を見る」リンクを設置する。',
+      '・各セクションは意味の通る見出し（h1/h2）と、質問に短く答える書き方にして、生成AIが引用しやすくする。',
+      '・未入力の情報は創作せず、【住所】【電話】のような仮の表記にして後で差し替えられるようにする。'
+    ];
+    return joinLines(lines.filter(Boolean));
+  }
+
+  /** GEO/AEO の要点だけ（設計図用の短い版）。 */
+  function geoAeoBrief(state) {
+    return joinLines([
+      '・原稿・構成は、schema.org 構造化データ（' + schemaTypeOf(state) + ' ／ 実店舗なら LocalBusiness）と FAQPage をHTMLに入れる前提で作る。',
+      state.infoMapUrl ? '・店名・住所・電話（NAP）の表記を統一し、Googleマップ（' + state.infoMapUrl + '）へのリンク/埋め込みを入れる。' : '・店名・住所・電話（NAP）の表記を統一し、Googleマップの共有URLを用意してリンク/埋め込みを入れる。',
+      '・各セクションは見出し＋短い一問一答を意識し、生成AIが引用しやすい形にする。'
+    ]);
+  }
+
   function infoBody(state) {
     const pairs = [
       ['店名・ブランド名', state.infoName],
       ['日時・期間', state.infoDate],
       ['場所・アクセス', state.infoPlace],
+      ['Googleマップのリンク', state.infoMapUrl],
       ['特徴・こだわり', state.infoFeature]
     ];
     const lines = pairs
@@ -429,6 +483,7 @@
       { title: '参考トーン・サイト', body: state.ref },
       { title: '補足・調整したいこと', body: state.extra },
       { title: '画像づくり（Visual PromptMaker 連携）', body: imageNote(state) },
+      { title: 'GEO/AEO（AI・検索に拾われる工夫）', body: geoAeoBrief(state) },
       {
         title: 'このあと',
         body:
@@ -528,6 +583,7 @@
           '・まず完成した1ファイルを提示し、説明は最小限に。'
         ])
       },
+      { title: 'GEO/AEO・構造化データ（AIと検索に拾われる作り）', body: geoAeoBody(state) },
       { title: '補足', body: state.extra }
     ]);
 
@@ -1102,6 +1158,7 @@
     },
     { key: 'infoDate', label: '日時・期間', icon: '🗓️', group: 'info', type: 'textarea', rows: 1, random: false, placeholder: '例）平日10-20時 / 水曜定休' },
     { key: 'infoPlace', label: '場所・アクセス', icon: '📍', group: 'info', type: 'textarea', rows: 1, random: false, placeholder: '例）〇〇駅 徒歩5分' },
+    { key: 'infoMapUrl', label: 'Googleマップのリンク', icon: '🗺️', group: 'info', type: 'textarea', rows: 1, random: false, hint: 'GEO/AEO対策。地図の共有URLを貼ると、AIや検索に拾われやすくなります。', placeholder: '例）https://maps.app.goo.gl/xxxx' },
     { key: 'infoFeature', label: '特徴・こだわり', icon: '✨', group: 'info', type: 'textarea', rows: 2, random: false, placeholder: '例）国家資格保有・完全個室' },
     {
       key: 'links',
@@ -1129,7 +1186,7 @@
     tone: '高級感',
     volume: '標準',
     output: '構成の設計図',
-    infoName: '', menuItems: [], infoDate: '', infoPlace: '', infoFeature: '', links: [],
+    infoName: '', menuItems: [], infoDate: '', infoPlace: '', infoMapUrl: '', infoFeature: '', links: [],
     ref: '', extra: ''
   };
 
