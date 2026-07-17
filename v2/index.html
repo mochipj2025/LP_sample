@@ -13,19 +13,19 @@
     <!-- ステップ0：フォルダを準備する（初回だけ／スキップ可）
          tutorial.html の「はじめに：フォルダとリポジトリを用意する」を
          ツール自体の最初のステップとして組み込んだもの。 -->
-    <section id="folderStep" class="v2-step v2-folder">
+    <section id="folderStep" class="v2-step v2-folder" hidden>
       <div class="v2-illust">
         <img src="../assets/mascot/mascot-setup.webp" alt="準備するマスコット" />
       </div>
-      <h1 class="v2-entry__title">まず、保存フォルダを作ろう</h1>
+      <h1 class="v2-entry__title">サイトとして公開する準備（あとでOK）</h1>
       <p class="v2-step__lead">
-        下のボタンでコピーして、Claude Code や ChatGPT などに貼るだけです。<br>
-        書いてある中身は読まなくて大丈夫。もうフォルダがある人はスキップでOK。
+        これは<b>あとで自分のサイトとして公開したくなったとき</b>だけの準備です。設計図やAIへの指示文を作るだけなら要りません。<br>
+        やるなら、下のボタンでコピーして Claude Code や ChatGPT に貼るだけ（中身は読まなくてOK）。
       </p>
 
       <div class="v2-folder__actions">
-        <button type="button" class="btn btn--primary" id="folderCopy">① コピーする</button>
-        <button type="button" class="btn" id="folderDone">② 貼り終わった／スキップ →</button>
+        <button type="button" class="btn btn--primary" id="folderCopy">コピーする</button>
+        <button type="button" class="btn" id="folderDone">← 戻る</button>
       </div>
 
       <details class="v2-folder__detail">
@@ -40,7 +40,7 @@
     </section>
 
     <!-- v2 の入口：プリセットを使うか、自分で決めるかの分岐 -->
-    <section id="entryStep" class="v2-entry" hidden>
+    <section id="entryStep" class="v2-entry">
       <div class="v2-illust">
         <img src="../assets/mascot/mascot-plain.webp" alt="マスコット" />
       </div>
@@ -163,6 +163,7 @@
     <footer class="v2-exit">
       <a href="../samples/index.html"><span>✨</span>完成サンプルを見る</a>
       <a href="../index.html"><span>⚙</span>フル機能版で細かく作る</a>
+      <a href="#" id="openFolderStep"><span>🌐</span>公開用の準備（任意）</a>
     </footer>
 
   </main>

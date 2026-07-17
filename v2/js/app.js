@@ -28,6 +28,9 @@
   var confirmState = null;
   var confirmReturnTo = 'presetStep';
 
+  // フォルダ準備（旧ステップ0）を任意画面にしたので、開いた元の画面へ戻れるよう覚えておく。
+  var folderReturnTo = 'entryStep';
+
   // v2/ から見た assets の相対パス（../js/app.js の ASSET_DIR と同じ考え方）。
   var ASSET_DIR = '../assets/presets';
   var IMAGE_EXTS = ['png', 'webp', 'jpg', 'jpeg'];
@@ -86,6 +89,16 @@
         var section = document.getElementById(sectionId);
         if (section) section.hidden = sectionId !== id;
       });
+  }
+
+  /** いま表示中のステップIDを返す（フォルダ準備から元の画面へ戻るため）。 */
+  function currentStep() {
+    var ids = ['folderStep', 'entryStep', 'presetStep', 'confirmStep', 'basicStep', 'imageStep', 'infoStep', 'advancedStep'];
+    for (var i = 0; i < ids.length; i++) {
+      var s = document.getElementById(ids[i]);
+      if (s && !s.hidden) return ids[i];
+    }
+    return 'entryStep';
   }
 
   /* ------------------------------------------------------------------
@@ -703,7 +716,7 @@
           navigator.clipboard.writeText(text).then(function () {
             folderCopyBtn.textContent = 'コピーしました';
             setTimeout(function () {
-              folderCopyBtn.textContent = 'プロンプトをコピー';
+              folderCopyBtn.textContent = 'コピーする';
             }, 1500);
           });
         }
@@ -711,7 +724,17 @@
     }
     if (folderDoneBtn) {
       folderDoneBtn.addEventListener('click', function () {
-        show('entryStep');
+        show(folderReturnTo);
+      });
+    }
+
+    // フッターの「公開用の準備（任意）」から、いつでもフォルダ準備画面を開ける。
+    var openFolderBtn = document.getElementById('openFolderStep');
+    if (openFolderBtn) {
+      openFolderBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        folderReturnTo = currentStep();
+        show('folderStep');
       });
     }
   }
