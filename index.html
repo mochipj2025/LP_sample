@@ -71,7 +71,8 @@
           <div class="card">
             <h2 class="card__title"><span>⚡</span><span>プリセット</span></h2>
             <p class="card__desc">
-              迷ったらここから。1クリックで全項目が埋まり、設計図がコピーされます。
+              業種に合った組み合わせを<b>自分で選ぶ</b>入口。1クリックで全項目が埋まり、設計図がコピーされます。<br>
+              選ぶのも迷うなら、右下の<b>🎁 おまかせ</b>にお任せ。
             </p>
             <div class="presets" id="presets"></div>
           </div>
@@ -176,10 +177,10 @@
               <button class="btn btn--primary" id="btnCopy" type="button">
                 <span>📋</span><span>コピーする</span>
               </button>
-              <button class="btn btn--accent" id="btnOmakase" type="button">
+              <button class="btn btn--accent" id="btnOmakase" type="button" title="相性のいいプリセットを1つ自動で選びます。必ずまとまった組み合わせになり、失敗しません。">
                 <span>🎁</span><span>おまかせ</span>
               </button>
-              <button class="btn btn--accent" id="btnRandom" type="button">
+              <button class="btn btn--accent" id="btnRandom" type="button" title="各項目をバラバラにシャッフルします。意外な組み合わせが出ますが当たり外れがあります（発想を広げたいとき用）。">
                 <span>🎲</span><span>ランダム</span>
               </button>
               <button class="btn" id="btnReset" type="button">
@@ -192,6 +193,9 @@
                 <span>📂</span><span>設定を読込</span>
               </button>
             </div>
+            <p class="note" style="margin-top:10px">
+              <b>🎁 おまかせ</b>＝相性のいい組み合わせを1つ（迷ったらこれ・失敗なし）。<b>🎲 ランダム</b>＝全項目をバラバラに（意外な発見用・当たり外れあり）。
+            </p>
           </div>
         </section>
       </main>
