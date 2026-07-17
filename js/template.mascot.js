@@ -37,6 +37,18 @@
     return WORLD_FIXED[state.world] || WORLD_FIXED['かわいい'];
   }
 
+  /* 世界観ごとの画風（レンダリング）。ChatGPT Image 2.0 など自然文で
+   * 画風を具体的に指定できるモデル向けに、線・塗り・質感を言語化する。 */
+  const RENDER_STYLE = {
+    'かわいい': 'フラットでやわらかいベクターイラスト、均一な太さの線、軽い陰影、明るくクリーンな塗り。',
+    'サイバーパンク': '半光沢のセル調イラスト、ネオンの発光、金属やケーブルの反射、暗い背景に映えるハイライト。',
+    'スチームパンク': '質感のある線画に淡い水彩、真鍮の光沢と歯車のディテール、セピア寄りの落ち着いた発色。'
+  };
+
+  function renderStyle(state) {
+    return RENDER_STYLE[state.world] || RENDER_STYLE['かわいい'];
+  }
+
   /* ======================================================================
    * 2. 三面図のビュー定義（正面・横・背面）
    * ====================================================================== */
@@ -84,11 +96,13 @@
     const toneWord = state.tone || '親しみやすい';
     const colorNote = state.brandColor ? '全体の配色は' + state.brandColor + 'に寄せる。' : '';
 
-    const text = brand + 'ブランドマスコット、小さな相棒キャラクター。' + charaDesc(state) +
-      '雰囲気は' + toneWord + '。' +
-      'この設定資料の' + view.view + 'を1枚。' + worldFixed(state) + colorNote +
-      '同じキャラクターだと分かるよう、体型・色・特徴を三面図で完全に統一する。' +
-      '文字・ロゴ・余計な小物の描き込みは最小限にし、背景はシンプルに。';
+    const text = brand + 'ブランドマスコットの設定資料。小さな相棒キャラクター。' +
+      charaDesc(state) + '雰囲気は' + toneWord + '。' +
+      '【構図】この1枚は' + view.view + '。キャラクターを中央に大きく、全身が収まるように配置。' +
+      '【画風】' + renderStyle(state) + worldFixed(state) + colorNote +
+      '【一貫性】三面図として体型・色・パーツ・比率を他のビューと完全に統一する。' +
+      '【背景】無地に近いシンプルな背景で、キャラクターを引き立てる。' +
+      '【注意】ビュー名・キャプションなどの文字ラベル、ロゴ、透かしは一切入れない。';
 
     return text.replace(/。+/g, '。');
   }
@@ -96,7 +110,7 @@
   function build(state) {
     const prompts = VIEWS.map(function (v) { return buildOnePrompt(state, v); });
 
-    const usage = '【使い方】① ボタンを選ぶ（🎲ランダムで組み合わせ変更）→ ② 下のプロンプトをコピー → ③ 画像生成AI（Midjourney / Image 2.0 / DALL·E など）で三面図を一貫した見た目で作る → ④「画像を用意する」で正面・横・背面をセット';
+    const usage = '【使い方】① ボタンを選ぶ（🎲ランダムで組み合わせ変更）→ ② 下のプロンプトをコピー → ③ 画像生成AI（ChatGPT Image 2.0 / Midjourney / DALL·E など）に貼る。Image 2.0 なら三面図を1枚にまとめて出すと統一しやすい → ④「画像を用意する」で正面・横・背面をセット';
 
     const head = renderSections([{ title: 'このマスコットの狙い', body: aim(state) }]);
 
@@ -105,7 +119,7 @@
       .join('\n\n');
 
     const promptSection = joinLines([
-      '同じキャラクターの三面図として、次の3枚を一貫した見た目で作ってください。',
+      '同じキャラクターの三面図として、次の3枚を一貫した見た目で作ってください（ChatGPT Image 2.0 なら、正面・横・背面を1枚に横並びで出すと統一しやすいです）。',
       '',
       '■ プロンプト（三面図・正面／横／背面）',
       promptBody
