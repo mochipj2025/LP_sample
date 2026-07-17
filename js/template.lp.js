@@ -844,8 +844,11 @@
   /** スロット1枚ぶんの完成プロンプトに仕上げる（句読点の重複も整える） */
   function finishPrompt(state, subject, ratio) {
     const medium = state.type === 'SaaS・アプリ' ? '洗練されたWeb用ビジュアル' : 'LP用の自然な広告写真';
-    return subject.replace(/。+$/, '') + '。' + medium + '。' + visualTone(state) +
-      '。文字、ロゴ、透かしなし。比率 ' + ratio + '。';
+    const style = medium + '、' + visualTone(state) + '、写真として自然でリアルに（不自然な合成感やAI特有の破綻を避ける）、高解像度';
+    return subject.replace(/。+$/, '') + '。\n' +
+      'スタイル：' + style + '。\n' +
+      '構図：被写体を主役に、LPで使いやすい余白を残す。比率 ' + ratio + '。\n' +
+      '禁止：画像内の文字・キャプション・ロゴ・透かし（テキストはLP側のHTMLで入れるため）。';
   }
 
   /**
@@ -1086,7 +1089,8 @@
       .map(function (s, i) { return '■ ' + (i + 1) + '. ' + s.label + '（' + s.ratio + '）\n' + s.prompt; })
       .join('\n\n');
 
-    return '【使い方】① 下の各プロンプトをコピー → ② 画像生成AI（Image 2.0 / Midjourney / DALL·E など）に貼る → ③ できた画像を「② 画像を用意する」の同じスロットへセット\n\n' +
+    return '【使い方】① 下の各プロンプトをコピー → ② 画像生成AI（ChatGPT Image 2.0 / Midjourney / DALL·E など）に貼る → ③ できた画像を「② 画像を用意する」の同じスロットへセット\n' +
+      '※ Image 2.0 は写真も日本語文字も得意なぶん、指示しないと文字を描き込みがちです。各プロンプトの「禁止：」で文字を止めています。\n\n' +
       '■ このLPに必要な画像（全' + slots.length + '枚・1枚ずつ内容が違います）\n' + list + '\n\n' +
       prompts + '\n\n' +
       '■ 世界観を揃えるコツ\n' +
