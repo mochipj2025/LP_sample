@@ -15,7 +15,7 @@
          ツール自体の最初のステップとして組み込んだもの。 -->
     <section id="folderStep" class="v2-step v2-folder" hidden>
       <div class="v2-illust">
-        <img src="../assets/mascot/mascot-setup.webp" alt="準備するマスコット" />
+        <img src="../assets/mascot/mascot-setup.webp" alt="準備するマスコット" decoding="async" />
       </div>
       <h1 class="v2-entry__title">サイトとして公開する準備（あとでOK）</h1>
       <p class="v2-step__lead">
@@ -42,7 +42,7 @@
     <!-- v2 の入口：プリセットを使うか、自分で決めるかの分岐 -->
     <section id="entryStep" class="v2-entry">
       <div class="v2-illust">
-        <img src="../assets/mascot/mascot-plain.webp" alt="マスコット" />
+        <img src="../assets/mascot/mascot-plain.webp" alt="マスコット" loading="lazy" decoding="async" />
       </div>
       <h1 class="v2-entry__title">どちらで進めますか？</h1>
       <div class="v2-entry__choices">
@@ -67,13 +67,13 @@
     <!-- プリセット選択 or 手動入力の内容確認・コピー画面 -->
     <section id="confirmStep" class="v2-step" hidden>
       <div class="v2-illust">
-        <img src="../assets/mascot/mascot-launch.webp" alt="発進するマスコット" />
+        <img src="../assets/mascot/mascot-launch.webp" alt="発進するマスコット" loading="lazy" decoding="async" />
       </div>
       <h1 class="v2-entry__title">この内容でよければコピー</h1>
       <div class="v2-confirm">
         <div class="v2-confirm__thumb" id="confirmThumb">
           <span class="v2-confirm__thumb-icon" id="confirmThumbIcon"></span>
-          <img class="v2-confirm__thumb-img" id="confirmThumbImg" alt="">
+          <img class="v2-confirm__thumb-img" id="confirmThumbImg" alt="" decoding="async">
         </div>
         <p class="v2-confirm__name" id="confirmName"></p>
         <p class="v2-confirm__desc" id="confirmDesc"></p>
@@ -90,7 +90,7 @@
          あえてここには出さない。詳細を詰めたい人向けの場所は別途用意する） -->
     <section id="basicStep" class="v2-step" hidden>
       <div class="v2-illust">
-        <img src="../assets/mascot/mascot-think.webp" alt="考えるマスコット" />
+        <img src="../assets/mascot/mascot-think.webp" alt="考えるマスコット" loading="lazy" decoding="async" />
       </div>
       <h1 class="v2-entry__title">3つだけ選んでください</h1>
       <p class="v2-step__lead">迷ったら、後からいつでも選び直せます。</p>
@@ -104,7 +104,7 @@
     <!-- 手動ルート：②画像（任意。template が imageSlots を持つときだけ表示） -->
     <section id="imageStep" class="v2-step" hidden>
       <div class="v2-illust">
-        <img src="../assets/mascot/mascot-image.webp" alt="画像を持つマスコット" />
+        <img src="../assets/mascot/mascot-image.webp" alt="画像を持つマスコット" loading="lazy" decoding="async" />
       </div>
       <h1 class="v2-entry__title">画像を用意する（任意）</h1>
       <p class="v2-step__lead">
@@ -127,7 +127,7 @@
          動的に差し替わる（template.inputLabelOf 経由。template.lp.js 参照） -->
     <section id="infoStep" class="v2-step" hidden>
       <div class="v2-illust">
-        <img src="../assets/mascot/mascot-setup.webp" alt="情報を整えるマスコット" />
+        <img src="../assets/mascot/mascot-setup.webp" alt="情報を整えるマスコット" loading="lazy" decoding="async" />
       </div>
       <h1 class="v2-entry__title">掲載情報を入れる（任意）</h1>
       <p class="v2-step__lead">
@@ -146,7 +146,7 @@
          絞った分、こだわりたい人向けの調整はここにまとめて置く。 -->
     <section id="advancedStep" class="v2-step" hidden>
       <div class="v2-illust">
-        <img src="../assets/mascot/mascot-think.webp" alt="こだわるマスコット" />
+        <img src="../assets/mascot/mascot-think.webp" alt="こだわるマスコット" loading="lazy" decoding="async" />
       </div>
       <h1 class="v2-entry__title">詳細設定（任意）</h1>
       <p class="v2-step__lead">

@@ -314,8 +314,9 @@
   margin-bottom: 22px;
 }
 
-/* --------------------------------------------------------------
-/* 出口リンク（袋小路解消）：他の入口へ戻れる導線を常設 */
+/* ---------------------------------------------------------------------
+ * 出口リンク（袋小路解消）：他の入口へ戻れる導線を常設
+ * ------------------------------------------------------------------- */
 .v2-exit {
   display: flex;
   flex-wrap: wrap;
@@ -336,12 +337,23 @@
   transition: color var(--fast) var(--ease);
 }
 .v2-exit a:hover { color: var(--ink); }
-) {
+@media (max-width: 560px) {
   .v2-entry__choices {
     grid-template-columns: 1fr;
   }
 
   .v2-preset-list {
     grid-template-columns: 1fr;
+  }
+
+  .v2-entry__choice,
+  .v2-preset-card {
+    padding: 16px;
+  }
+
+  .v2-entry__choice-desc,
+  .v2-preset-card__desc,
+  .v2-step__lead {
+    line-height: 1.65;
   }
 }

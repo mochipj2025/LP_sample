@@ -22,7 +22,7 @@
    * サンプル画像の設定
    * ------------------------------------------------------------------
    * 画像の置き場所は  assets/presets/<templateId>/<presetId>.<ext>
-   *   例) assets/presets/lp/cafe.png
+   *   例) assets/presets/lp/cafe.webp
    *
    * テンプレートごとにフォルダを分けているので、
    * 別テンプレートを追加しても同名プリセットが衝突しない。
@@ -33,9 +33,9 @@
    * ------------------------------------------------------------------ */
 
   const ASSET_DIR = 'assets/presets';
-  // 現在同梱しているLPプリセットは png。実在する形式から試して
+  // 現在同梱しているプリセットは webp。実在する形式から試して
   // ページを開くたびに不要な404を発生させない。
-  const IMAGE_EXTS = ['png', 'webp', 'jpg', 'jpeg'];
+  const IMAGE_EXTS = ['webp', 'png', 'jpg', 'jpeg'];
 
   /** プリセットのサンプル画像のベースパス（拡張子なし）を返す */
   function imageBasePath(preset) {
@@ -467,8 +467,10 @@
 
     const img = el('img', 'preset-card__img');
     img.alt = preset.name + ' の仕上がり例';
-    // lazy にはしない。画面外だと読み込みが起きず、
-    // 「画像あり/なし」の判定（拡大ボタンの表示）がスクロールするまで確定しないため。
+    // 初期表示で全プリセット画像を一括取得しない。カードが近づいた時点で
+    // 読み込み、成功後に拡大ボタンを有効にする。
+    img.loading = 'lazy';
+    img.decoding = 'async';
     thumb.appendChild(img);
 
     // 拡大ボタン。画像が読めるまでは出さない

@@ -33,7 +33,7 @@
 
   // v2/ から見た assets の相対パス（../js/app.js の ASSET_DIR と同じ考え方）。
   var ASSET_DIR = '../assets/presets';
-  var IMAGE_EXTS = ['png', 'webp', 'jpg', 'jpeg'];
+  var IMAGE_EXTS = ['webp', 'png', 'jpg', 'jpeg'];
 
   /**
    * プリセットの見本画像を読み込む。拡張子を順に試すフォールバック付き。
@@ -120,6 +120,8 @@
     thumb.appendChild(el('span', 'v2-preset-card__thumb-icon', preset.icon || ''));
     var img = el('img', 'v2-preset-card__thumb-img');
     img.alt = preset.name + ' の仕上がり例';
+    img.loading = 'lazy';
+    img.decoding = 'async';
     thumb.appendChild(img);
     card.appendChild(thumb);
 
