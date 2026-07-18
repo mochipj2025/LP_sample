@@ -11,7 +11,7 @@
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧱</text></svg>"
     />
 
-    <link rel="stylesheet" href="css/style.css?v=20260718-4" />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
 
   <body>
@@ -47,21 +47,17 @@
 
       <!-- これは何？：直接来た人向けの常設イントロ（マスコットが案内） -->
       <div class="card card--intro">
-        <div class="mascot-note mascot-note--intro">
-          <img class="mascot-note__img" src="assets/mascot/mascot-think.webp" alt="考えるマスコット" decoding="async" />
+        <div class="mascot-note">
+          <img class="mascot-note__img" src="assets/mascot/mascot-think.webp" alt="考えるマスコット" />
           <div class="mascot-note__body">
             <h2 class="card__title"><span>✨</span><span>これは何のツール？</span></h2>
+            <p class="card__desc">
+              <b>LP（ランディングページ）</b>＝商品やお店を1ページで紹介する縦長のWebページのこと。
+              このツールは「何をどの順番で書くか」の<b>設計図</b>を、業種・読み手・ゴールを選ぶだけで作ります。
+              できた文章を <b>ChatGPT や Claude に貼る</b>と、原稿やLPそのものに変わります（ツール自体は無料・AI不要）。
+            </p>
           </div>
         </div>
-        <p class="card__desc intro-summary">
-          業種・読み手・ゴールを選ぶだけで、LPの構成案を作れる無料ツールです。
-        </p>
-        <details class="intro-more">
-          <summary>もう少し詳しく</summary>
-          <p>
-            LPは、商品やお店を1ページで紹介する縦長のWebページです。できた構成案をChatGPTやClaudeに貼ると、原稿やLPそのものにできます。
-          </p>
-        </details>
       </div>
 
       <!-- タブ（PromptMaker シリーズ。app.js が自動生成） -->
@@ -75,7 +71,8 @@
           <div class="card">
             <h2 class="card__title"><span>⚡</span><span>プリセット</span></h2>
             <p class="card__desc">
-              業種別の見本を1つ選ぶと、設定と設計図がまとまります。迷ったら<b>🎁 おまかせ</b>。
+              業種に合った組み合わせを<b>自分で選ぶ</b>入口。1クリックで全項目が埋まり、設計図がコピーされます。<br>
+              選ぶのも迷うなら、右下の<b>🎁 おまかせ</b>にお任せ。
             </p>
             <div class="presets" id="presets"></div>
           </div>
@@ -90,17 +87,17 @@
           <!-- ステップ①：基本設定 -->
           <div class="card">
             <h2 class="card__title"><span>①</span><span>基本設定</span></h2>
-            <p class="card__desc">業種・読み手・ゴールを選ぶと、見取り図と出力が変わります。</p>
+            <p class="card__desc">3つ選ぶだけ。右の見取り図（＝LPの形のプレビュー）と出力がリアルタイムで変わります。</p>
             <div id="basicFields"></div>
           </div>
 
           <!-- ステップ②：画像を用意する（template が imageSlots を持つときだけ表示） -->
           <div class="card" id="imageCard" hidden>
             <div class="mascot-note" style="margin-bottom:14px">
-              <img class="mascot-note__img" src="assets/mascot/mascot-image.webp" alt="画像を持つマスコット" loading="lazy" decoding="async" />
+              <img class="mascot-note__img" src="assets/mascot/mascot-image.webp" alt="画像を持つマスコット" />
               <div class="mascot-note__body">
                 <h2 class="card__title"><span>②</span><span>画像を用意する（任意）</span></h2>
-                <p class="card__desc" style="margin-bottom:0">必要なら、AI用プロンプトで画像を作り、ここにセットできます。使わなくてもOK。</p>
+                <p class="card__desc" style="margin-bottom:0">画像も使うなら、プロンプト（＝AIへの指示文）をコピーして画像生成AIで作り、ここに戻すだけ。使わなくてもOK。</p>
               </div>
             </div>
             <div id="imageSlots"></div>
@@ -166,7 +163,7 @@
 
             <!-- 貼る先の案内（マスコット） -->
             <div class="mascot-hint">
-              <img class="mascot-hint__img" src="assets/mascot/mascot-launch.webp" alt="発進するマスコット" loading="lazy" decoding="async" />
+              <img class="mascot-hint__img" src="assets/mascot/mascot-launch.webp" alt="発進するマスコット" />
               <p class="mascot-hint__text">
                 下の文章を「📋 コピー」→ <b>ChatGPT や Claude に貼って送信</b>。原稿やLPになって返ってきます。
               </p>
@@ -174,7 +171,7 @@
 
             <!-- 仕上がり例（プリセット適用中＆画像があるときだけ表示） -->
             <figure class="sample" id="sample" hidden>
-              <img class="sample__img" id="sampleImage" alt="" loading="lazy" decoding="async" />
+              <img class="sample__img" id="sampleImage" alt="" />
               <figcaption class="sample__caption" id="sampleCaption"></figcaption>
             </figure>
 
@@ -222,7 +219,7 @@
       <div class="modal__panel">
         <button class="modal__close" id="detailClose" type="button" aria-label="閉じる">✕</button>
         <figure class="modal__media">
-          <img class="modal__img" id="detailImage" alt="" decoding="async" />
+          <img class="modal__img" id="detailImage" alt="" />
           <figcaption class="modal__caption">仕上がり例</figcaption>
         </figure>
         <div class="modal__body">
@@ -257,6 +254,6 @@
     <script src="js/template.icon.js"></script>
     <script src="js/template.mascot.js"></script>
     <script src="js/imageWorkflow.js"></script>
-    <script src="js/app.js?v=20260718-4"></script>
+    <script src="js/app.js"></script>
   </body>
 </html>

@@ -108,8 +108,8 @@ global.PromptMaker.registerTemplate({
 - [x] LP作成にSEOメタ情報の指示を追加（2026-07-18）― title/meta description/OGP/Twitter Card/canonical/
       lang=ja、見出し階層、img alt、faviconをLP制作プロンプト／設計図に自動同梱。
 - [x] 画像作成の既定比率を1:1→4:5（縦長SNS）に変更（2026-07-18）― 主要SNSが投稿画像を1:1固定で扱わなくなったため
-- [x] 画像作成・アイコン作成・マスコット作成のプリセットにも見本画像プロンプトを整備（2026-07-18、その後
-      実際の見本画像も追加済み：LP/画像作成/マスコットはWebP、アイコンは高品質SVG）
+- [x] 画像作成・アイコン作成・マスコット作成のプリセットにも見本画像プロンプトを整備（2026-07-18）
+      ― `assets/presets/{visual,icon,mascot}/README.md` に、各プリセットの実出力から生成したプロンプトを掲載
 - [ ] LP作成の深掘り（見出し複数パターン生成・多言語対応など）
 - [ ] 画像作成 × LP作成の連携強化（画像作成側で作ったテイストをLP側にそのまま引き継ぐ）
 - [ ] v2（ステップ版）を画像作成・アイコン作成・マスコット作成にも対応させる（JOURNEY.md「質問ゲート型ウィザード」参照）
@@ -148,9 +148,9 @@ global.PromptMaker.registerTemplate({
 UIが壊れることはない）。画像を足す手順：
 
 1. Visual PromptMaker などでLPの完成イメージ画像を作る。
-2. **長辺720px・WebP**（150KB以下が目安）に整え、`assets/presets/<テンプレid>/<プリセットID>.webp`
-   （例 `assets/presets/lp/resto.webp`）で保存。拡張子は webp → png → jpg → jpeg の順で
-   自動検出される（アイコン見本だけはSVG優先。写真・LP見本はWebP、アイコン見本はSVG）。
+2. **長辺720px・png**（150KB以下が目安）に整え、`assets/presets/<テンプレid>/<プリセットID>.png`
+   （例 `assets/presets/lp/resto.png`）で保存。拡張子は png → webp → jpg → jpeg の順で
+   自動検出される（`js/app.js` の `IMAGE_EXTS`。同梱画像は現在すべて png）。
 3. ツールを開き直すと、サムネイル・拡大・仕上がり例に自動で反映される（コード変更は不要）。
 
 （旧 `tutorial.html` の「見本画像の足し方」カードから移設。エンドユーザー向けの内容ではなく

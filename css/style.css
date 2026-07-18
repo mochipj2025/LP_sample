@@ -444,15 +444,6 @@ button {
   opacity: 1;
 }
 
-.preset-card--icon .preset-card__thumb {
-  background: #fffaf6;
-}
-
-.preset-card--icon .preset-card__img {
-  padding: 8px;
-  object-fit: contain;
-}
-
 .preset-card:hover .preset-card__thumb.has-image .preset-card__img {
   transform: scale(1.04);
 }
@@ -1337,61 +1328,14 @@ button {
 
 @media (max-width: 560px) {
   .header__links {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 10px;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .header__action {
-    justify-content: flex-start;
-    min-width: 0;
-    width: 100%;
-    padding: 10px 12px;
-    gap: 8px;
-  }
-
-  .header__action--primary {
-    grid-column: 1 / -1;
     justify-content: center;
+    width: 100%;
   }
-
-  .header__action-icon {
-    font-size: 17px;
-  }
-}
-
-/* 冒頭説明は要点を先に見せ、補足は必要な人だけ開ける */
-.card--intro .mascot-note {
-  margin-bottom: 12px;
-}
-
-.intro-summary {
-  margin: 0;
-  color: var(--ink-soft);
-  font-size: 14px;
-  line-height: 1.75;
-}
-
-.intro-more {
-  margin-top: 10px;
-  padding-top: 8px;
-  border-top: 1px solid var(--line);
-}
-
-.intro-more summary {
-  width: fit-content;
-  color: var(--rose-deep);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-}
-
-.intro-more p {
-  margin: 8px 0 0;
-  color: var(--ink-soft);
-  font-size: 13px;
-  line-height: 1.75;
 }
 
 /* =========================================================================
@@ -1990,33 +1934,6 @@ body {
   line-height: 1.85;
 }
 
-@media (max-width: 560px) {
-  .shell {
-    padding: 24px 14px 44px;
-  }
-
-  .header {
-    margin-bottom: 18px;
-    padding-bottom: 18px;
-  }
-
-  .header__sub {
-    font-size: 13.5px;
-    line-height: 1.7;
-  }
-
-  .card {
-    margin-bottom: 16px;
-    padding: 18px 16px;
-  }
-
-  .card__desc {
-    margin-bottom: 16px;
-    line-height: 1.7;
-    letter-spacing: 0;
-  }
-}
-
 @media (max-width: 680px) {
   body {
     font-size: 16.5px;
@@ -2101,21 +2018,5 @@ body {
   .mascot-note__img {
     width: 66px;
     height: 66px;
-  }
-}
-
-@media (max-width: 560px) {
-  .header__note {
-    margin-top: 8px;
-    font-size: 10.5px;
-  }
-
-  .card--intro .mascot-note {
-    gap: 10px;
-  }
-
-  .card--intro .mascot-note__img {
-    width: 48px;
-    height: 48px;
   }
 }

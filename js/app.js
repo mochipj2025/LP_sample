@@ -22,7 +22,7 @@
    * サンプル画像の設定
    * ------------------------------------------------------------------
    * 画像の置き場所は  assets/presets/<templateId>/<presetId>.<ext>
-   *   例) assets/presets/lp/cafe.webp
+   *   例) assets/presets/lp/cafe.png
    *
    * テンプレートごとにフォルダを分けているので、
    * 別テンプレートを追加しても同名プリセットが衝突しない。
@@ -33,9 +33,9 @@
    * ------------------------------------------------------------------ */
 
   const ASSET_DIR = 'assets/presets';
-  const ASSET_VERSION = '20260718-4';
-  // 写真・LP見本はWebP、アイコン見本はSVG。実在する形式から試す。
-  const IMAGE_EXTS = ['webp', 'png', 'jpg', 'jpeg'];
+  // 現在同梱しているLPプリセットは png。実在する形式から試して
+  // ページを開くたびに不要な404を発生させない。
+  const IMAGE_EXTS = ['png', 'webp', 'jpg', 'jpeg'];
 
   /** プリセットのサンプル画像のベースパス（拡張子なし）を返す */
   function imageBasePath(preset) {
@@ -58,13 +58,10 @@
     }
 
     // image を明示していれば、そのパスだけを試す
-    const extensions = template.id === 'icon'
-      ? ['svg', 'png', 'webp', 'jpg', 'jpeg']
-      : IMAGE_EXTS;
     const candidates = preset.image
       ? [preset.image]
-      : extensions.map(function (ext) {
-          return imageBasePath(preset) + '.' + ext + '?v=' + ASSET_VERSION;
+      : IMAGE_EXTS.map(function (ext) {
+          return imageBasePath(preset) + '.' + ext;
         });
 
     let index = 0;
@@ -459,7 +456,6 @@
   /** プリセット 1 枚分のカードを組み立てる */
   function renderPresetCard(preset) {
     const card = el('div', 'preset-card');
-    if (template.id === 'icon') card.classList.add('preset-card--icon');
 
     /* --- サムネイル領域 ------------------------------------------- */
     const thumb = el('div', 'preset-card__thumb');
@@ -471,10 +467,8 @@
 
     const img = el('img', 'preset-card__img');
     img.alt = preset.name + ' の仕上がり例';
-    // プリセットは少数かつ軽量化済み。後から画像が差し替わって見えないよう
-    // カード生成時に読み込み、デコードだけ非同期にする。
-    img.loading = 'eager';
-    img.decoding = 'async';
+    // lazy にはしない。画面外だと読み込みが起きず、
+    // 「画像あり/なし」の判定（拡大ボタンの表示）がスクロールするまで確定しないため。
     thumb.appendChild(img);
 
     // 拡大ボタン。画像が読めるまでは出さない

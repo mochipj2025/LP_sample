@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" role="img" aria-labelledby="title">
-  <title id="title">山をモチーフにしたアプリアイコン</title>
-  <g stroke="#302b38" stroke-width="20" stroke-linejoin="round">
-    <path fill="#5e8b83" d="M88 505 250 226c15-26 52-26 67 0l162 279c15 26-4 58-34 58H122c-30 0-49-32-34-58Z"/>
-    <path fill="#f3c75f" d="M291 505 443 263c16-25 52-25 68 0l152 242c17 26-2 60-33 60H324c-31 0-50-34-33-60Z"/>
-    <path fill="#e77d9d" d="m213 505 117-205c15-27 54-27 69 0l117 205c15 26-4 58-34 58H247c-30 0-49-32-34-58Z"/>
-  </g>
-</svg>

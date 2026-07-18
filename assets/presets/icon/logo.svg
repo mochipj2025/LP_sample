@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" role="img" aria-labelledby="title">
-  <title id="title">PとMを組み合わせたモノグラム</title>
-  <circle cx="360" cy="360" r="284" fill="#fff8ef" stroke="#302b38" stroke-width="18"/>
-  <path d="M198 520V205h151c79 0 126 42 126 106s-47 108-126 108H198" fill="none" stroke="#5e8b83" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="m280 518 80-172 80 108 82-108 82 172" fill="none" stroke="#e77d9d" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="360" cy="346" r="22" fill="#f3c75f" stroke="#302b38" stroke-width="10"/>
-</svg>
