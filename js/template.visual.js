@@ -202,7 +202,7 @@
   const DEFAULT_STATE = {
     usage: 'SNS投稿',
     subject: '',
-    ratio: '1:1（正方形）',
+    ratio: '4:5（縦長SNS）',
     tone: '親しみやすい',
     variations: '1枚だけ',
     brandName: '',
