@@ -140,7 +140,7 @@ UIが壊れることはない）。画像を足す手順：
 1. Visual PromptMaker などでLPの完成イメージ画像を作る。
 2. **長辺720px・WebP**（150KB以下が目安）に整え、`assets/presets/<テンプレid>/<プリセットID>.webp`
    （例 `assets/presets/lp/resto.webp`）で保存。拡張子は webp → png → jpg → jpeg の順で
-   自動検出される（`js/app.js` の `IMAGE_EXTS`。同梱画像は現在すべて WebP）。
+   自動検出される（透過アイコンだけはPNG優先。写真・LP見本はWebP、透過アイコンはPNG）。
 3. ツールを開き直すと、サムネイル・拡大・仕上がり例に自動で反映される（コード変更は不要）。
 
 （旧 `tutorial.html` の「見本画像の足し方」カードから移設。エンドユーザー向けの内容ではなく

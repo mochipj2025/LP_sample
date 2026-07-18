@@ -33,8 +33,8 @@
    * ------------------------------------------------------------------ */
 
   const ASSET_DIR = 'assets/presets';
-  // 現在同梱しているプリセットは webp。実在する形式から試して
-  // ページを開くたびに不要な404を発生させない。
+  const ASSET_VERSION = '20260718-3';
+  // 写真・LP見本はWebP、透過アイコンはPNG。実在する形式から試す。
   const IMAGE_EXTS = ['webp', 'png', 'jpg', 'jpeg'];
 
   /** プリセットのサンプル画像のベースパス（拡張子なし）を返す */
@@ -58,10 +58,13 @@
     }
 
     // image を明示していれば、そのパスだけを試す
+    const extensions = template.id === 'icon'
+      ? ['png', 'webp', 'jpg', 'jpeg']
+      : IMAGE_EXTS;
     const candidates = preset.image
       ? [preset.image]
-      : IMAGE_EXTS.map(function (ext) {
-          return imageBasePath(preset) + '.' + ext;
+      : extensions.map(function (ext) {
+          return imageBasePath(preset) + '.' + ext + '?v=' + ASSET_VERSION;
         });
 
     let index = 0;
@@ -467,9 +470,9 @@
 
     const img = el('img', 'preset-card__img');
     img.alt = preset.name + ' の仕上がり例';
-    // 初期表示で全プリセット画像を一括取得しない。カードが近づいた時点で
-    // 読み込み、成功後に拡大ボタンを有効にする。
-    img.loading = 'lazy';
+    // プリセットは少数かつ軽量化済み。後から画像が差し替わって見えないよう
+    // カード生成時に読み込み、デコードだけ非同期にする。
+    img.loading = 'eager';
     img.decoding = 'async';
     thumb.appendChild(img);
 

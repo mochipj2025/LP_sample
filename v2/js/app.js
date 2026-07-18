@@ -33,6 +33,7 @@
 
   // v2/ から見た assets の相対パス（../js/app.js の ASSET_DIR と同じ考え方）。
   var ASSET_DIR = '../assets/presets';
+  var ASSET_VERSION = '20260718-3';
   var IMAGE_EXTS = ['webp', 'png', 'jpg', 'jpeg'];
 
   /**
@@ -48,7 +49,8 @@
       return;
     }
     var basePath = ASSET_DIR + '/' + template.id + '/' + preset.id;
-    var candidates = IMAGE_EXTS.map(function (ext) { return basePath + '.' + ext; });
+    var extensions = template.id === 'icon' ? ['png', 'webp', 'jpg', 'jpeg'] : IMAGE_EXTS;
+    var candidates = extensions.map(function (ext) { return basePath + '.' + ext + '?v=' + ASSET_VERSION; });
     var index = 0;
 
     img.addEventListener('load', function () {
@@ -120,7 +122,7 @@
     thumb.appendChild(el('span', 'v2-preset-card__thumb-icon', preset.icon || ''));
     var img = el('img', 'v2-preset-card__thumb-img');
     img.alt = preset.name + ' の仕上がり例';
-    img.loading = 'lazy';
+    img.loading = 'eager';
     img.decoding = 'async';
     thumb.appendChild(img);
     card.appendChild(thumb);
