@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" role="img" aria-labelledby="title">
+  <title id="title">笑顔の星のグッズアイコン</title>
+  <path fill="#f3c75f" stroke="#302b38" stroke-width="20" stroke-linejoin="round" d="m360 86 76 154 170 25-123 120 29 169-152-80-152 80 29-169-123-120 170-25Z"/>
+  <circle cx="296" cy="348" r="19" fill="#302b38"/>
+  <circle cx="424" cy="348" r="19" fill="#302b38"/>
+  <path d="M303 407c30 42 84 42 114 0" fill="none" stroke="#302b38" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="255" cy="400" r="25" fill="#e77d9d" opacity=".86"/>
+  <circle cx="465" cy="400" r="25" fill="#e77d9d" opacity=".86"/>
+  <path d="m117 118 16 35 35 16-35 16-16 35-16-35-35-16 35-16ZM595 104l11 24 24 11-24 11-11 24-11-24-24-11 24-11Z" fill="#e77d9d" stroke="#302b38" stroke-width="10" stroke-linejoin="round"/>
+</svg>

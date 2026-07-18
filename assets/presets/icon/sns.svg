@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" role="img" aria-labelledby="title">
+  <title id="title">笑顔の太陽のSNSアイコン</title>
+  <g fill="none" stroke="#302b38" stroke-width="20" stroke-linecap="round">
+    <path d="M360 72v58M360 590v58M72 360h58M590 360h58M156 156l41 41M523 523l41 41M156 564l41-41M523 197l41-41"/>
+  </g>
+  <circle cx="360" cy="360" r="204" fill="#f3c75f" stroke="#302b38" stroke-width="20"/>
+  <circle cx="294" cy="342" r="18" fill="#302b38"/>
+  <circle cx="426" cy="342" r="18" fill="#302b38"/>
+  <path d="M303 410c29 39 85 39 114 0" fill="none" stroke="#302b38" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="255" cy="394" r="24" fill="#e77d9d" opacity=".82"/>
+  <circle cx="465" cy="394" r="24" fill="#e77d9d" opacity=".82"/>
+</svg>

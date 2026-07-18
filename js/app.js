@@ -33,8 +33,8 @@
    * ------------------------------------------------------------------ */
 
   const ASSET_DIR = 'assets/presets';
-  // 現在同梱しているLPプリセットは png。実在する形式から試して
-  // ページを開くたびに不要な404を発生させない。
+  // 同梱見本の形式は系統ごとに異なる（LP=png、画像作成/マスコット=webp、
+  // アイコン=svg）。実在する可能性が高い順に試し、最初に読めたものを採用する。
   const IMAGE_EXTS = ['png', 'webp', 'jpg', 'jpeg'];
 
   /** プリセットのサンプル画像のベースパス（拡張子なし）を返す */
@@ -57,10 +57,15 @@
       return;
     }
 
+    // アイコン見本は SVG。svg を先頭に置いて無駄な 404 を避ける。
+    const exts = template.id === 'icon'
+      ? ['svg', 'png', 'webp', 'jpg', 'jpeg']
+      : IMAGE_EXTS;
+
     // image を明示していれば、そのパスだけを試す
     const candidates = preset.image
       ? [preset.image]
-      : IMAGE_EXTS.map(function (ext) {
+      : exts.map(function (ext) {
           return imageBasePath(preset) + '.' + ext;
         });
 

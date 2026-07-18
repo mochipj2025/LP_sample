@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" role="img" aria-labelledby="title">
+  <title id="title">検索・保存・設定・通知のUIアイコンセット</title>
+  <g stroke="#302b38" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="78" y="78" width="246" height="246" rx="48" fill="#fff8ef"/>
+    <rect x="396" y="78" width="246" height="246" rx="48" fill="#fff8ef"/>
+    <rect x="78" y="396" width="246" height="246" rx="48" fill="#fff8ef"/>
+    <rect x="396" y="396" width="246" height="246" rx="48" fill="#fff8ef"/>
+    <circle cx="185" cy="185" r="54" fill="#e77d9d"/>
+    <path d="m225 225 52 52" fill="none"/>
+    <path d="M466 132h106v137l-53-34-53 34Z" fill="#f3c75f"/>
+    <circle cx="201" cy="519" r="54" fill="#5e8b83"/>
+    <path d="M201 429v34M201 575v34M111 519h34M257 519h34M137 455l24 24M241 559l24 24M137 583l24-24M241 479l24-24" fill="none"/>
+    <path d="M519 456c-40 0-66 30-66 70v42h132v-42c0-40-26-70-66-70Z" fill="#e77d9d"/>
+    <path d="M431 568h176M496 596c8 22 38 22 46 0" fill="none"/>
+  </g>
+</svg>
