@@ -444,6 +444,15 @@ button {
   opacity: 1;
 }
 
+.preset-card--icon .preset-card__thumb {
+  background: #fffaf6;
+}
+
+.preset-card--icon .preset-card__img {
+  padding: 8px;
+  object-fit: contain;
+}
+
 .preset-card:hover .preset-card__thumb.has-image .preset-card__img {
   transform: scale(1.04);
 }

@@ -33,8 +33,8 @@
    * ------------------------------------------------------------------ */
 
   const ASSET_DIR = 'assets/presets';
-  const ASSET_VERSION = '20260718-3';
-  // 写真・LP見本はWebP、透過アイコンはPNG。実在する形式から試す。
+  const ASSET_VERSION = '20260718-4';
+  // 写真・LP見本はWebP、アイコン見本はSVG。実在する形式から試す。
   const IMAGE_EXTS = ['webp', 'png', 'jpg', 'jpeg'];
 
   /** プリセットのサンプル画像のベースパス（拡張子なし）を返す */
@@ -59,7 +59,7 @@
 
     // image を明示していれば、そのパスだけを試す
     const extensions = template.id === 'icon'
-      ? ['png', 'webp', 'jpg', 'jpeg']
+      ? ['svg', 'png', 'webp', 'jpg', 'jpeg']
       : IMAGE_EXTS;
     const candidates = preset.image
       ? [preset.image]
@@ -459,6 +459,7 @@
   /** プリセット 1 枚分のカードを組み立てる */
   function renderPresetCard(preset) {
     const card = el('div', 'preset-card');
+    if (template.id === 'icon') card.classList.add('preset-card--icon');
 
     /* --- サムネイル領域 ------------------------------------------- */
     const thumb = el('div', 'preset-card__thumb');

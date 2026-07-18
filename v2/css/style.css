@@ -175,6 +175,15 @@
   opacity: 1;
 }
 
+.v2-preset-card--icon .v2-preset-card__thumb {
+  background: #fffaf6;
+}
+
+.v2-preset-card--icon .v2-preset-card__thumb-img {
+  padding: 10px;
+  object-fit: contain;
+}
+
 .v2-preset-card__head {
   display: flex;
   align-items: center;

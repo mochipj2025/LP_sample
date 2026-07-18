@@ -33,7 +33,7 @@
 
   // v2/ から見た assets の相対パス（../js/app.js の ASSET_DIR と同じ考え方）。
   var ASSET_DIR = '../assets/presets';
-  var ASSET_VERSION = '20260718-3';
+  var ASSET_VERSION = '20260718-4';
   var IMAGE_EXTS = ['webp', 'png', 'jpg', 'jpeg'];
 
   /**
@@ -49,7 +49,7 @@
       return;
     }
     var basePath = ASSET_DIR + '/' + template.id + '/' + preset.id;
-    var extensions = template.id === 'icon' ? ['png', 'webp', 'jpg', 'jpeg'] : IMAGE_EXTS;
+    var extensions = template.id === 'icon' ? ['svg', 'png', 'webp', 'jpg', 'jpeg'] : IMAGE_EXTS;
     var candidates = extensions.map(function (ext) { return basePath + '.' + ext + '?v=' + ASSET_VERSION; });
     var index = 0;
 
@@ -114,6 +114,7 @@
 
   function renderPresetCard(preset) {
     var card = el('button', 'v2-preset-card');
+    if (template.id === 'icon') card.classList.add('v2-preset-card--icon');
     card.type = 'button';
 
     // サムネイル領域：読めるまでは絵文字＋ウォッシュの土台。読めたら差し替わる。
